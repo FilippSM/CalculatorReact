@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.result {
+  text-align: left;
+
+}
