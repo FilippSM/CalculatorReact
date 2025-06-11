@@ -2,6 +2,7 @@ import { TextField } from "@mui/material";
 import "../../App.css";
 import { useState, type ChangeEvent } from "react";
 import styles from "./Density.module.css";
+import { valuesDensity } from "./bdDensity";
 
 export const Density = () => {
   const [data, setData] = useState<string>("");
@@ -19,6 +20,14 @@ export const Density = () => {
     const cleaned = value.replace(/[^0-9,. ]/g, "");
     setDataTemperature(cleaned);
   };
+
+  const mathDensity20 = () => {
+    const density = "0.8700"
+    const temerature = "24.0"
+
+    const densityInTable = valuesDensity[density][temerature]
+
+  }
 
   return (
     <div className={styles.container}>
