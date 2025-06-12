@@ -1,4 +1,10 @@
-export const valuesDensity = {
+export type DensityTable = Record<
+  string, // Ключи плотности (например "0.5600")
+  Record<string, number> // Температурные коэффициенты
+>;
+
+
+export const valuesDensity: DensityTable = {
   "0.5600": {
     "-25.0": 0.5000,
     "-24.5": 0.5010,

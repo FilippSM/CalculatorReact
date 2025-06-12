@@ -22,12 +22,15 @@ export const Density = () => {
   };
 
   const mathDensity20 = () => {
-    const density = "0.8700"
-    const temerature = "24.0"
+    const density = "0.5600".padEnd(6, "0");
+    const temerature = "24.0";
 
-    const densityInTable = valuesDensity[density][temerature]
+    
+    const densityInTable = valuesDensity[density];
+    return densityInTable;
+  };
 
-  }
+  console.log(mathDensity20());
 
   return (
     <div className={styles.container}>
