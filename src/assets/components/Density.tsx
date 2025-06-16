@@ -1,12 +1,13 @@
 import { TextField } from "@mui/material";
 import "../../App.css";
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import styles from "./Density.module.css";
 import { valuesDensity } from "./bdDensity";
 
 export const Density = () => {
   const [data, setData] = useState<string>("");
   const [dataTemperature, setDataTemperature] = useState<string>("");
+  const [post, setPost] = useState<number | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -21,16 +22,34 @@ export const Density = () => {
     setDataTemperature(cleaned);
   };
 
-  const mathDensity20 = () => {
-    const density = "0.5600".padEnd(6, "0");
-    const temerature = "24.0";
+  const calcDensity20 = () => {
+    const numDens = Number(data.replace(",", "."));
+    const numTemp = dataTemperature.replace(",", ".");
 
-    
-    const densityInTable = valuesDensity[density];
+    const aroundNumDens = (Math.ceil(numDens * 100) / 100).toFixed(3);
+
+    const densForTable = String(aroundNumDens).padEnd(6, "0");
+    let tempForTable = numTemp;
+
+    if (!numTemp.includes(".")) {
+      tempForTable = tempForTable.padEnd(tempForTable.length + 2, ".0"); // Добавляем ".0"
+    }
+
+    const densityInTable = valuesDensity[densForTable][tempForTable];
+    console.log(densityInTable);
+
     return densityInTable;
   };
 
-  console.log(mathDensity20());
+  useEffect(() => {
+    if (data === "" || dataTemperature === "") {
+      setPost(null);
+      return;
+    }
+
+    const density = Number(calcDensity20());
+    setPost(density);
+  }, [data, dataTemperature]);
 
   return (
     <div className={styles.container}>
@@ -62,7 +81,9 @@ export const Density = () => {
         />
       </div>
 
-      <div className={styles.result}>{`Result: ${data + dataTemperature}`}</div>
+      <div className={styles.result}>{
+      `Result: ${post !== null ? post : ""} ${post !== null ? "г/см*куб" : ""}`}
+      </div>
     </div>
   );
 };
