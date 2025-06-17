@@ -1,22 +1,34 @@
-import { TextField } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  type SelectChangeEvent,
+} from "@mui/material";
 import "../../App.css";
 import { useEffect, useState, type ChangeEvent } from "react";
 import styles from "./Density.module.css";
 import { valuesDensity } from "./bdDensity";
 
 export const Density = () => {
+  const [correction, setCorrection] = useState<string>("0.0014");
   const [data, setData] = useState<string>("");
   const [dataTemperature, setDataTemperature] = useState<string>("");
-  const [post, setPost] = useState<number | null>(null);
+  const [post, setPost] = useState<string | null>(null);
+
+  const handleChangeCorrection = (e: SelectChangeEvent<string>) => {
+    setCorrection(e.target.value);
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.currentTarget.value;
     // Разрешаем: цифры и ..
     const cleaned = value.replace(/[^0-9,. ]/g, "");
     setData(cleaned);
   };
   const handleTemprerature = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+    const value = e.currentTarget.value;
     // Разрешаем: цифры и ..
     const cleaned = value.replace(/[^0-9,. ]/g, "");
     setDataTemperature(cleaned);
@@ -35,10 +47,12 @@ export const Density = () => {
       tempForTable = tempForTable.padEnd(tempForTable.length + 2, ".0"); // Добавляем ".0"
     }
 
-    const densityInTable = valuesDensity[densForTable][tempForTable];
-    console.log(densityInTable);
+    const densityInTable = valuesDensity[densForTable][tempForTable] + Number(correction);
 
-    return densityInTable;
+    console.log(densityInTable)
+    console.log(String(densityInTable).padEnd(6, "0"))
+
+    return String(densityInTable).padEnd(6, "0");
   };
 
   useEffect(() => {
@@ -47,42 +61,58 @@ export const Density = () => {
       return;
     }
 
-    const density = Number(calcDensity20());
+    const density = calcDensity20();
     setPost(density);
-  }, [data, dataTemperature]);
+  }, [data, dataTemperature, correction]);
 
   return (
     <div className={styles.container}>
       <h4>Расчет плотности по ГОСТ 3900</h4>
       <div className={styles.inputs}>
-        <TextField
-          label="Density"
-          variant="outlined"
-          value={data}
-          onChange={handleChange}
-          // Дополнительные параметры для лучшего UX
-          slotProps={{
-            input: {
-              inputMode: "numeric",
-            },
-          }}
-        />
-        {/* <div>Введенное значение: {data}</div> */}
-        <TextField
-          label="Temperature"
-          variant="outlined"
-          value={dataTemperature}
-          onChange={handleTemprerature}
-          slotProps={{
-            input: {
-              inputMode: "numeric",
-            },
-          }}
-        />
+        <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
+          <InputLabel>correction</InputLabel>
+          <Select
+            value={correction} // Устанавливаем значение
+            label="Correction"
+            onChange={handleChangeCorrection} // Обработчик изменения
+          >
+            <MenuItem value={"0"}>-</MenuItem>
+            <MenuItem value={"0.0014"}>0.0014</MenuItem>
+            <MenuItem value={"0.0007"}>0.0007</MenuItem>
+          </Select>
+        </FormControl>
+        <div className={styles.inputsGroup}>
+          <TextField
+            label="Density"
+            variant="outlined"
+            value={data}
+            onChange={handleChange}
+            // Дополнительные параметры для лучшего UX
+            slotProps={{
+              input: {
+                inputMode: "numeric",
+              },
+            }}
+          />
+          {/* <div>Введенное значение: {data}</div> */}
+          <TextField
+            label="Temperature"
+            variant="outlined"
+            value={dataTemperature}
+            onChange={handleTemprerature}
+            slotProps={{
+              input: {
+                inputMode: "numeric",
+              },
+            }}
+          />
+        </div>
       </div>
 
-      <div className={styles.result}>{
-      `Result: ${post !== null ? post : ""} ${post !== null ? "г/см*куб" : ""}`}
+      <div className={styles.result}>
+        {`Result: ${post !== null ? post : ""} ${
+          post !== null ? "г/см*куб" : ""
+        }`}
       </div>
     </div>
   );
