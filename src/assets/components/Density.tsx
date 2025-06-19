@@ -13,12 +13,17 @@ import { valuesDensity } from "./bdDensity";
 
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014");
+  const [unit, setUnit] = useState<string>("кг/м3");
   const [data, setData] = useState<string>("");
   const [dataTemperature, setDataTemperature] = useState<string>("");
   const [post, setPost] = useState<string | null>(null);
 
   const handleChangeCorrection = (e: SelectChangeEvent<string>) => {
     setCorrection(e.target.value);
+  };
+
+  const handleChangeUnit = (e: SelectChangeEvent<string>) => {
+    setUnit(e.target.value);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +52,10 @@ export const Density = () => {
       tempForTable = tempForTable.padEnd(tempForTable.length + 2, ".0"); // Добавляем ".0"
     }
 
-    const densityInTable = valuesDensity[densForTable][tempForTable] + Number(correction);
+    const correctionDensity = Number(aroundNumDens) - numDens
+    const densInTable = valuesDensity[densForTable][tempForTable]
+
+    const densityInTable = densInTable - correctionDensity + Number(correction);
 
     console.log(densityInTable)
     console.log(String(densityInTable).padEnd(6, "0"))
@@ -65,6 +73,7 @@ export const Density = () => {
     setPost(density);
   }, [data, dataTemperature, correction]);
 
+
   return (
     <div className={styles.container}>
       <h4>Расчет плотности по ГОСТ 3900</h4>
@@ -77,8 +86,19 @@ export const Density = () => {
             onChange={handleChangeCorrection} // Обработчик изменения
           >
             <MenuItem value={"0"}>-</MenuItem>
-            <MenuItem value={"0.0014"}>0.0014</MenuItem>
-            <MenuItem value={"0.0007"}>0.0007</MenuItem>
+            <MenuItem value={"0.0014"}>{unit === "кг/м3" ? "1.4" : "0.0014" }</MenuItem>
+            <MenuItem value={"0.0007"}>{unit === "кг/м3" ? "0.7" : "0.0007" }</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
+          <InputLabel>unit</InputLabel>
+          <Select
+            value={unit} // Устанавливаем значение
+            label="Unit"
+            onChange={handleChangeUnit} // Обработчик изменения
+          >
+            <MenuItem value={"г/см3"}>г/см3</MenuItem>
+            <MenuItem value={"кг/м3"}>кг/м3</MenuItem>
           </Select>
         </FormControl>
         <div className={styles.inputsGroup}>
