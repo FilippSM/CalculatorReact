@@ -40,7 +40,13 @@ export const Density = () => {
   };
 
   const calcDensity20 = () => {
-    const numDens = Number(data.replace(",", "."));
+    let numDens = Number(data.replace(",", "."));
+
+    //для "кг/м3"
+    if (unit === "кг/м3") {
+      numDens = numDens/1000
+    }
+
     const numTemp = dataTemperature.replace(",", ".");
 
     const aroundNumDens = (Math.ceil(numDens * 100) / 100).toFixed(3);
@@ -55,12 +61,16 @@ export const Density = () => {
     const correctionDensity = Number(aroundNumDens) - numDens
     const densInTable = valuesDensity[densForTable][tempForTable]
 
-    const densityInTable = densInTable - correctionDensity + Number(correction);
+    let densityInTable = densInTable - correctionDensity + Number(correction);
 
-    console.log(densityInTable)
-    console.log(String(densityInTable).padEnd(6, "0"))
-
-    return String(densityInTable).padEnd(6, "0");
+    //для "кг/м3"
+    if (unit === "кг/м3") {
+      densityInTable = densityInTable * 1000
+      return densityInTable.toFixed(1);
+    } else {
+      return densityInTable.toFixed(4);
+    }
+    
   };
 
   useEffect(() => {
