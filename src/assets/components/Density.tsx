@@ -40,37 +40,38 @@ export const Density = () => {
   };
 
   const calcDensity20 = () => {
-    let numDens = Number(data.replace(",", "."));
+    try {
+      let numDens = Number(data.replace(",", "."));
 
-    //для "кг/м3"
-    if (unit === "кг/м3") {
-      numDens = numDens/1000
+      //для "кг/м3"
+      if (unit === "кг/м3") {
+        numDens = numDens / 1000;
+      }
+
+      const numTemp = dataTemperature.replace(",", ".");
+      const aroundNumDens = (Math.ceil(numDens * 100) / 100).toFixed(3);
+      const densForTable = String(aroundNumDens).padEnd(6, "0");
+      let tempForTable = numTemp;
+
+      if (!numTemp.includes(".")) {
+        tempForTable = tempForTable.padEnd(tempForTable.length + 2, ".0"); // Добавляем ".0"
+      }
+
+      const correctionDensity = Number(aroundNumDens) - numDens;
+      const densInTable = valuesDensity[densForTable][tempForTable];
+
+      let densityInTable = densInTable - correctionDensity + Number(correction);
+
+      //для "кг/м3"
+      if (unit === "кг/м3") {
+        densityInTable = densityInTable * 1000;
+        return densityInTable.toFixed(1);
+      } else {
+        return densityInTable.toFixed(4);
+      }
+    } catch (error) {
+      alert(error)
     }
-
-    const numTemp = dataTemperature.replace(",", ".");
-
-    const aroundNumDens = (Math.ceil(numDens * 100) / 100).toFixed(3);
-
-    const densForTable = String(aroundNumDens).padEnd(6, "0");
-    let tempForTable = numTemp;
-
-    if (!numTemp.includes(".")) {
-      tempForTable = tempForTable.padEnd(tempForTable.length + 2, ".0"); // Добавляем ".0"
-    }
-
-    const correctionDensity = Number(aroundNumDens) - numDens
-    const densInTable = valuesDensity[densForTable][tempForTable]
-
-    let densityInTable = densInTable - correctionDensity + Number(correction);
-
-    //для "кг/м3"
-    if (unit === "кг/м3") {
-      densityInTable = densityInTable * 1000
-      return densityInTable.toFixed(1);
-    } else {
-      return densityInTable.toFixed(4);
-    }
-    
   };
 
   useEffect(() => {
@@ -80,9 +81,10 @@ export const Density = () => {
     }
 
     const density = calcDensity20();
-    setPost(density);
+    if (density) {
+      setPost(density);
+    }
   }, [data, dataTemperature, correction]);
-
 
   return (
     <div className={styles.container}>
@@ -96,8 +98,12 @@ export const Density = () => {
             onChange={handleChangeCorrection} // Обработчик изменения
           >
             <MenuItem value={"0"}>-</MenuItem>
-            <MenuItem value={"0.0014"}>{unit === "кг/м3" ? "1.4" : "0.0014" }</MenuItem>
-            <MenuItem value={"0.0007"}>{unit === "кг/м3" ? "0.7" : "0.0007" }</MenuItem>
+            <MenuItem value={"0.0014"}>
+              {unit === "кг/м3" ? "1.4" : "0.0014"}
+            </MenuItem>
+            <MenuItem value={"0.0007"}>
+              {unit === "кг/м3" ? "0.7" : "0.0007"}
+            </MenuItem>
           </Select>
         </FormControl>
         <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
