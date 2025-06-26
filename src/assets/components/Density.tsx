@@ -45,17 +45,17 @@ export const Density = () => {
       let numDens = Number(data.replace(",", "."));
 
       //для "кг/м3"
-      if (unit === "кг/м³" && numDens > 1.11 ) {
+      if (unit === "кг/м³" && numDens > 1.11) {
         numDens = numDens / 1000;
-        setConvertStatus("")
+        setConvertStatus("");
       } else if (unit === "кг/м³" && numDens < 1.11) {
         numDens = numDens;
-        setConvertStatus("density converting in kg/m³")
+        setConvertStatus("density converting in kg/m³");
       } else if (unit === "г/см³" && numDens > 1.11) {
         numDens = numDens / 1000;
-        setConvertStatus("density converting in g/cm³")
+        setConvertStatus("density converting in g/cm³");
       } else if (unit === "г/см³" && numDens < 1.11) {
-        setConvertStatus("")
+        setConvertStatus("");
       }
 
       const numTemp = dataTemperature.replace(",", ".");
@@ -80,7 +80,8 @@ export const Density = () => {
         return densityInTable.toFixed(4);
       }
     } catch (error) {
-      alert("Invalid Syntaxis");
+      console.log("Invalid Syntaxis");
+      setPost("Invalid Syntaxis");
     }
   };
 
@@ -90,10 +91,14 @@ export const Density = () => {
       return;
     }
 
-    const density = calcDensity20();
-    if (density) {
-      setPost(density);
-    }
+    const timer = setTimeout(() => {
+      const density = calcDensity20();
+      if (density) {
+        setPost(density);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [data, dataTemperature, correction]);
 
   return (
@@ -157,7 +162,6 @@ export const Density = () => {
 
       <div className={styles.result}>
         <p>{convertStatus}</p>
-            
 
         {`Result: ${post !== null ? post : ""}${
           post !== null ? ` ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}` : ""
