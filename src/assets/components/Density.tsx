@@ -17,6 +17,7 @@ export const Density = () => {
   const [data, setData] = useState<string>("");
   const [dataTemperature, setDataTemperature] = useState<string>("");
   const [post, setPost] = useState<string | null>(null);
+  const [convertStatus, setConvertStatus] = useState<string>("");
 
   const handleChangeCorrection = (e: SelectChangeEvent<string>) => {
     setCorrection(e.target.value);
@@ -46,13 +47,16 @@ export const Density = () => {
       //для "кг/м3"
       if (unit === "кг/м³" && numDens > 1.11 ) {
         numDens = numDens / 1000;
+        setConvertStatus("")
       } else if (unit === "кг/м³" && numDens < 1.11) {
         numDens = numDens;
+        setConvertStatus("density converting in kg/m³")
       } else if (unit === "г/см³" && numDens > 1.11) {
         numDens = numDens / 1000;
+        setConvertStatus("density converting in g/cm³")
+      } else if (unit === "г/см³" && numDens < 1.11) {
+        setConvertStatus("")
       }
-
-      console.log(numDens)
 
       const numTemp = dataTemperature.replace(",", ".");
       const aroundNumDens = (Math.ceil(numDens * 100) / 100).toFixed(3);
@@ -152,6 +156,9 @@ export const Density = () => {
       </div>
 
       <div className={styles.result}>
+        <p>{convertStatus}</p>
+            
+
         {`Result: ${post !== null ? post : ""}${
           post !== null ? ` ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}` : ""
         }`}
