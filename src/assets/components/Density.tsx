@@ -3,6 +3,7 @@ import "../../App.css"
 import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 import { valuesDensity } from "./bdDensity"
+import { SimplePopup } from "./SimplePopup"
 
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014")
@@ -98,6 +99,7 @@ export const Density = () => {
     <div className={styles.container}>
       <h4>Расчет плотности по ГОСТ 3900</h4>
       <div className={styles.inputs}>
+        <SimplePopup />
         <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
           <InputLabel>correction</InputLabel>
           <Select

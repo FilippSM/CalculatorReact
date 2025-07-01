@@ -1,7 +1,13 @@
-import { Density } from "./assets/components/Density";
+import { Density } from "./assets/components/Density"
+import { SimplePopup } from "./assets/components/SimplePopup"
+
 
 function App() {
-  return <Density />;
+  return (
+    <>
+      <Density />
+    </>
+  )
 }
 
-export default App;
+export default App
