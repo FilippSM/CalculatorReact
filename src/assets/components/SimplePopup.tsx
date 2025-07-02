@@ -19,7 +19,23 @@ export function SimplePopup() {
 
   return (
     <div>
-      <Button aria-describedby={id} variant="contained" onClick={handleClick} sx={{ textTransform: "none" }}>
+      <Button
+        aria-describedby={id}
+        variant="outlined"
+        onClick={handleClick}
+        sx={{
+          textTransform: "none",
+          backgroundColor: "#ffeb3b", // Желтый цвет
+          color: "rgba(0, 0, 0, 0.87)", // Цвет текста (черный)
+          minWidth: "24px", // Минимальная ширина
+          width: "24px", // Фиксированная ширина
+          height: "24px", // Фиксированная высота
+          padding: "4px", // Внутренние отступы
+          "&:hover": {
+            backgroundColor: "#ffd600", // Цвет при наведении (темнее)
+          },
+        }}
+      >
         i
       </Button>
       <Popover
@@ -42,7 +58,9 @@ export function SimplePopup() {
           },
         }}
       >
-        <Typography sx={{ p: 2 }}>Для автоматического расчета для нескольких значений надо ввести иданные через пробел: 981 982</Typography>
+        <Typography sx={{ p: 2 }}>
+          Для автоматического расчета для нескольких значений надо ввести иданные через пробел: 981 982
+        </Typography>
       </Popover>
     </div>
   )

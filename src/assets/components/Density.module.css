@@ -18,3 +18,10 @@
 .result {
   text-align: left;
 }
+
+.headerDencity {
+  display: flex;
+  align-items: center; /* Вертикальное центрирование */
+  justify-content: center; /* Горизонтальное центрирование */
+  gap: 10px;
+}

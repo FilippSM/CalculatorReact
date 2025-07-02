@@ -97,9 +97,11 @@ export const Density = () => {
 
   return (
     <div className={styles.container}>
-      <h4>Расчет плотности по ГОСТ 3900</h4>
-      <div className={styles.inputs}>
+      <div className={styles.headerDencity}>
+        <h4>Расчет плотности по ГОСТ 3900</h4>
         <SimplePopup />
+      </div>
+      <div className={styles.inputs}>
         <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
           <InputLabel>correction</InputLabel>
           <Select
