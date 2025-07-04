@@ -4,6 +4,7 @@ import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 import { valuesDensity } from "./bdDensity"
 import { SimplePopup } from "./SimplePopup"
+import { useDebounce } from "../utils/useDebounce"
 
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014")
@@ -12,6 +13,9 @@ export const Density = () => {
   const [dataTemperature, setDataTemperature] = useState<string>("")
   const [post, setPost] = useState<string | null>(null)
   const [convertStatus, setConvertStatus] = useState<string>("")
+
+  const debouncedData = useDebounce(data, 300);
+  const debouncedTemperature = useDebounce(dataTemperature, 300);
 
   const handleChangeCorrection = (e: SelectChangeEvent<string>) => {
     setCorrection(e.target.value)
@@ -80,20 +84,17 @@ export const Density = () => {
   }
 
   useEffect(() => {
-    if (data === "" || dataTemperature === "") {
-      setPost(null)
-      return
+    if (debouncedData === "" || debouncedTemperature === "") {
+      setPost(null);
+      return;
     }
 
-    const timer = setTimeout(() => {
-      const density = calcDensity20()
-      if (density) {
-        setPost(density)
-      }
-    }, 300)
+    const density = calcDensity20();
+    if (density) {
+      setPost(density);
+    }
+  }, [debouncedData, debouncedTemperature, correction]);
 
-    return () => clearTimeout(timer)
-  }, [data, dataTemperature, correction])
 
   return (
     <div className={styles.container}>
