@@ -1,9 +1,9 @@
-import { Density } from "./assets/components/Density"
+import { Routing } from "./assets/Route/Routing"
 
 function App() {
   return (
     <>
-      <Density />
+      <Routing />
     </>
   )
 }
