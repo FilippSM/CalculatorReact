@@ -1,0 +1,46 @@
+/* global.css */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #ffffff; /* Замените на ваш цвет */
+  color: #1F1F20; /* Замените на ваш цвет */
+  min-width: 300px;
+}
+
+.no-scroll {
+  overflow: hidden;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  background-color: unset;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+h1, h2, h3 {
+  color: #7572D5; /* Замените на цвет акцента */
+}

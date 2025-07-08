@@ -1,5 +1,4 @@
 import { FormControl, InputLabel, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material"
-import "../../App.css"
 import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 import { valuesDensity } from "./bdDensity"
