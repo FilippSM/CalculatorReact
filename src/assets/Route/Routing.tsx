@@ -5,7 +5,7 @@ import { Main } from "../components/Pages/Main"
 import { NotFound } from "../components/Pages/NotFound"
 
 export const Path = {
-  Density: "/CalculatorReact",
+  Density: "/CalculatorReact/",
   Login: "/CalculatorReact/Login",
   Main: "/CalculatorReact/Main",
   NotFound: "*",
