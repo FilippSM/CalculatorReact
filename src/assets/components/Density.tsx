@@ -4,6 +4,7 @@ import styles from "./Density.module.css"
 import { valuesDensity } from "./bdDensity"
 import { SimplePopup } from "./SimplePopup"
 import { useDebounce } from "../utils/useDebounce"
+import { Container } from "./Container/Container"
 
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014")
@@ -13,8 +14,8 @@ export const Density = () => {
   const [post, setPost] = useState<string | null>(null)
   const [convertStatus, setConvertStatus] = useState<string>("")
 
-  const debouncedData = useDebounce(data, 300);
-  const debouncedTemperature = useDebounce(dataTemperature, 300);
+  const debouncedData = useDebounce(data, 300)
+  const debouncedTemperature = useDebounce(dataTemperature, 300)
 
   const handleChangeCorrection = (e: SelectChangeEvent<string>) => {
     setCorrection(e.target.value)
@@ -84,80 +85,81 @@ export const Density = () => {
 
   useEffect(() => {
     if (debouncedData === "" || debouncedTemperature === "") {
-      setPost(null);
-      return;
+      setPost(null)
+      return
     }
 
-    const density = calcDensity20();
+    const density = calcDensity20()
     if (density) {
-      setPost(density);
+      setPost(density)
     }
-  }, [debouncedData, debouncedTemperature, correction]);
-
+  }, [debouncedData, debouncedTemperature, correction])
 
   return (
-    <div className={styles.container}>
-      <div className={styles.headerDencity}>
-        <h4>Расчет плотности по ГОСТ 3900</h4>
-        <SimplePopup />
-      </div>
-      <div className={styles.inputs}>
-        <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
-          <InputLabel>correction</InputLabel>
-          <Select
-            value={correction} // Устанавливаем значение
-            label="Correction"
-            onChange={handleChangeCorrection} // Обработчик изменения
-          >
-            <MenuItem value={"0"}>-</MenuItem>
-            <MenuItem value={"0.0014"}>{unit === "кг/м³" ? "1.4" : "0.0014"}</MenuItem>
-            <MenuItem value={"0.0007"}>{unit === "кг/м³" ? "0.7" : "0.0007"}</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
-          <InputLabel>unit</InputLabel>
-          <Select
-            value={unit} // Устанавливаем значение
-            label="Unit"
-            onChange={handleChangeUnit} // Обработчик изменения
-          >
-            <MenuItem value={"г/см³"}>г/см³</MenuItem>
-            <MenuItem value={"кг/м³"}>кг/м³</MenuItem>
-          </Select>
-        </FormControl>
-        <div className={styles.inputsGroup}>
-          <TextField
-            label={`Density, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
-            variant="outlined"
-            value={data}
-            onChange={handleChange}
-            // Дополнительные параметры для лучшего UX
-            slotProps={{
-              input: {
-                inputMode: "numeric",
-              },
-            }}
-          />
-          {/* <div>Введенное значение: {data}</div> */}
-          <TextField
-            label="Temperature, °C"
-            variant="outlined"
-            value={dataTemperature}
-            onChange={handleTemprerature}
-            slotProps={{
-              input: {
-                inputMode: "numeric",
-              },
-            }}
-          />
+    <Container>
+      <div className={styles.container}>
+        <div className={styles.headerDencity}>
+          <h4>Расчет плотности по ГОСТ 3900</h4>
+          <SimplePopup />
+        </div>
+        <div className={styles.inputs}>
+          <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
+            <InputLabel>correction</InputLabel>
+            <Select
+              value={correction} // Устанавливаем значение
+              label="Correction"
+              onChange={handleChangeCorrection} // Обработчик изменения
+            >
+              <MenuItem value={"0"}>-</MenuItem>
+              <MenuItem value={"0.0014"}>{unit === "кг/м³" ? "1.4" : "0.0014"}</MenuItem>
+              <MenuItem value={"0.0007"}>{unit === "кг/м³" ? "0.7" : "0.0007"}</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
+            <InputLabel>unit</InputLabel>
+            <Select
+              value={unit} // Устанавливаем значение
+              label="Unit"
+              onChange={handleChangeUnit} // Обработчик изменения
+            >
+              <MenuItem value={"г/см³"}>г/см³</MenuItem>
+              <MenuItem value={"кг/м³"}>кг/м³</MenuItem>
+            </Select>
+          </FormControl>
+          <div className={styles.inputsGroup}>
+            <TextField
+              label={`Density, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
+              variant="outlined"
+              value={data}
+              onChange={handleChange}
+              // Дополнительные параметры для лучшего UX
+              slotProps={{
+                input: {
+                  inputMode: "numeric",
+                },
+              }}
+            />
+            {/* <div>Введенное значение: {data}</div> */}
+            <TextField
+              label="Temperature, °C"
+              variant="outlined"
+              value={dataTemperature}
+              onChange={handleTemprerature}
+              slotProps={{
+                input: {
+                  inputMode: "numeric",
+                },
+              }}
+            />
+          </div>
+        </div>
+
+        <div className={styles.result}>
+          <p>{convertStatus}</p>
+
+          {`Result: ${post !== null ? post : ""}${post !== null ? ` ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}` : ""}`}
         </div>
       </div>
-
-      <div className={styles.result}>
-        <p>{convertStatus}</p>
-
-        {`Result: ${post !== null ? post : ""}${post !== null ? ` ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}` : ""}`}
-      </div>
-    </div>
+    </Container>
   )
 }
