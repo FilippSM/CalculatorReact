@@ -99,7 +99,7 @@ export const Density = () => {
     <Container>
       <div className={styles.container}>
         <div className={styles.headerDencity}>
-          <h4>Расчет плотности по ГОСТ 3900</h4>
+          <h4>Расчет плотности по ГОСТ 3900 № 1</h4>
           <SimplePopup />
         </div>
         <div className={styles.inputs}>
