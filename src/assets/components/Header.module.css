@@ -2,7 +2,9 @@
   display: flex;
   gap: 20px;
   padding: 15px;
-  background-color: #f8f9fa;
+  /* background-color: #f8f9fa; */
+
+
 }
 
 .link {
