@@ -10,6 +10,7 @@ export const Header = () => {
         <nav className={styles.nav}>
           <NavLink 
             to={Path.Density}
+            end 
             className={({ isActive }) => 
               isActive ? `${styles.link} ${styles.active}` : styles.link
             }
