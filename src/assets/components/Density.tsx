@@ -47,7 +47,6 @@ export const Density = () => {
         numDens = numDens / 1000
         setConvertStatus("")
       } else if (unit === "кг/м³" && numDens < 1.11) {
-        numDens = numDens
         setConvertStatus("density converting in kg/m³")
       } else if (unit === "г/см³" && numDens > 1.11) {
         numDens = numDens / 1000
@@ -77,7 +76,7 @@ export const Density = () => {
       } else {
         return densityInTable.toFixed(4)
       }
-    } catch (error) {
+    } catch {
       console.log("Invalid Syntaxis")
       setPost("Invalid Syntaxis")
     }
@@ -94,6 +93,18 @@ export const Density = () => {
       setPost(density)
     }
   }, [debouncedData, debouncedTemperature, correction])
+
+  //test fetch
+  useEffect(() => {
+    const params = new URLSearchParams({
+      density: "0.5900",
+      temperature: "-25.0",
+    })
+
+    fetch(`https://server-calculator-react.vercel.app/dens?${params}`)
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+  }, [])
 
   return (
     <Container>
