@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material"
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material"
 import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 import { valuesDensity } from "./bdDensity"
@@ -163,6 +163,7 @@ export const Density = () => {
               }}
             />
           </div>
+          
         </div>
 
         <div className={styles.result}>
@@ -170,6 +171,7 @@ export const Density = () => {
 
           {`Result: ${post !== null ? post : ""}${post !== null ? ` ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}` : ""}`}
         </div>
+        <Button variant="contained" sx={{ minWidth: 70, maxWidth: 100 }}>Save</Button>
       </div>
     </Container>
   )

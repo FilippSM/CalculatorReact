@@ -1,3 +1,5 @@
+import { Container } from "../Container/Container"
+
 export const Login = () => {
-    return <div>Login</div>  
+    return <Container>Login</Container>  
 }

@@ -1,5 +1,5 @@
+import { Container } from "../Container/Container"
+
 export const Main = () => {
-    return <div>
-        Main
-        </div>  
+  return <Container>Main</Container>
 }
