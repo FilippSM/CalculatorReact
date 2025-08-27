@@ -5,6 +5,7 @@ import { valuesDensity } from "./bdDensity"
 import { SimplePopup } from "./SimplePopup"
 import { useDebounce } from "../utils/useDebounce"
 import { Container } from "./Container/Container"
+import { useSaveDensityMutation } from "../../features/api/densityApi"
 
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014")
@@ -16,6 +17,15 @@ export const Density = () => {
 
   const debouncedData = useDebounce(data, 300)
   const debouncedTemperature = useDebounce(dataTemperature, 300)
+
+  const [saveDensity] = useSaveDensityMutation()
+
+  const handleSave = async () => {
+    const densityData = {"density": "0,599"}
+
+    // Отправляем на сервер
+    await saveDensity(densityData)
+  }
 
   const handleChangeCorrection = (e: SelectChangeEvent<string>) => {
     setCorrection(e.target.value)
@@ -101,7 +111,7 @@ export const Density = () => {
       temperature: "-25.0",
     })
 
-    fetch(`https://server-calculator-react.vercel.app/dens?${params}`)
+    fetch(`https://server-calculator-react.vercel.app/dens/query?${params}`)
       .then((res) => res.json())
       .then((data) => console.log(data))
   }, [])
@@ -163,7 +173,6 @@ export const Density = () => {
               }}
             />
           </div>
-          
         </div>
 
         <div className={styles.result}>
@@ -171,7 +180,9 @@ export const Density = () => {
 
           {`Result: ${post !== null ? post : ""}${post !== null ? ` ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}` : ""}`}
         </div>
-        <Button variant="contained" sx={{ minWidth: 70, maxWidth: 100 }}>Save</Button>
+        <Button variant="contained" sx={{ minWidth: 70, maxWidth: 100 }} onClick={handleSave}>
+          Save
+        </Button>
       </div>
     </Container>
   )
