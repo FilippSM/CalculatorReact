@@ -21,7 +21,7 @@ export const Density = () => {
   const [saveDensity] = useSaveDensityMutation()
 
   const handleSave = async () => {
-    const densityData = {"density": "0,599"}
+    const densityData = {"density": post}
 
     // Отправляем на сервер
     await saveDensity(densityData)
@@ -120,7 +120,7 @@ export const Density = () => {
     <Container>
       <div className={styles.container}>
         <div className={styles.headerDencity}>
-          <h4>Расчет плотности по ГОСТ 3900 № 1</h4>
+          <h1>Расчет плотности по ГОСТ 3900 № 1</h1>
           <SimplePopup />
         </div>
         <div className={styles.inputs}>

@@ -33,6 +33,14 @@ export const Header = () => {
           >
             Main
           </NavLink>
+          <NavLink 
+            to={Path.Results}
+            className={({ isActive }) => 
+              isActive ? `${styles.link} ${styles.active}` : styles.link
+            }
+          >
+            Results
+          </NavLink>
         </nav>
       </Container>
     </>
