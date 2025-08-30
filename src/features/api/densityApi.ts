@@ -25,7 +25,14 @@ export const densityApi = createApi({
       }),
       invalidatesTags: ['Density'],
     }),
+    deleteDensity: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/dens/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Density'],
+    }),
   }),
 })
 
-export const { useGetDensityQuery, useSaveDensityMutation } = densityApi
+export const { useGetDensityQuery, useSaveDensityMutation, useDeleteDensityMutation } = densityApi
