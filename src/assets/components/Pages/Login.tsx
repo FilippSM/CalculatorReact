@@ -1,4 +1,5 @@
-import { CeateAuthForm } from "../../../features/api/auth/ui/CeateAuthForm.tsx/ceateAuthForm"
+
+import { CeateAuthForm } from "../../../features/api/auth/ui/CeateAuthForm.tsx/CeateAuthForm"
 import { Container } from "../Container/Container"
 
 export const Login = () => {
