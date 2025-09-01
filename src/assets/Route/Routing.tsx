@@ -6,10 +6,10 @@ import { NotFound } from "../components/Pages/NotFound"
 import { Results } from "../components/Pages/Results"
 
 export const Path = {
-  Density: "/CalculatorReact/",
-  Login: "/CalculatorReact/Login",
-  Main: "/CalculatorReact/Main",
-  Results: "/CalculatorReact/Results",
+  Density: "/",
+  Login: "/Login",
+  Main: "/Main",
+  Results: "/Results",
   NotFound: "*",
 } as const
 
