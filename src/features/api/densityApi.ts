@@ -1,15 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
-export type Density20 = {
-  id: number
-  densityFor20: string
-}
-
+import type { Density20 } from './densityApi.types'
 
 export const densityApi = createApi({
   reducerPath: 'densityApi',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: 'https://server-calculator-react.vercel.app/' 
+    baseUrl: import.meta.env.VITE_BASE_URL
   }),
   tagTypes: ['Density'],
   endpoints: (builder) => ({
@@ -36,3 +31,5 @@ export const densityApi = createApi({
 })
 
 export const { useGetDensityQuery, useSaveDensityMutation, useDeleteDensityMutation } = densityApi
+
+

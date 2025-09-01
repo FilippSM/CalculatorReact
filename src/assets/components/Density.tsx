@@ -21,7 +21,7 @@ export const Density = () => {
   const [saveDensity] = useSaveDensityMutation()
 
   const handleSave = async () => {
-    const densityData = {"density": post}
+    const densityData = { density: post }
 
     // Отправляем на сервер
     await saveDensity(densityData)
