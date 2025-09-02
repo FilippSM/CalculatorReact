@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { densityApi } from '../features/api/densityApi'
+import { densityApi } from '../features/density/api/densityApi'
+
 
 export const store = configureStore({
   reducer: {

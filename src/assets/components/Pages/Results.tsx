@@ -1,8 +1,8 @@
 import { Button } from "@mui/material"
-import { useDeleteDensityMutation, useGetDensityQuery} from "../../../features/api/densityApi"
 import { Container } from "../Container/Container"
-import type { Density20 } from "../../../features/api/densityApi.types"
 import styles from "./Results.module.css"
+import type { Density20 } from "../../../features/density/api/densityApi.types"
+import { useDeleteDensityMutation, useGetDensityQuery } from "../../../features/density/api/densityApi"
 
 export const Results = () => {
   const { data: densitys20, isLoading } = useGetDensityQuery()
