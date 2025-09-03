@@ -9,25 +9,30 @@ export const Results = () => {
   const [deleteDensity] = useDeleteDensityMutation()
 
   const handleDelete = (id: number) => {
-    deleteDensity(id)
+    if (confirm("Are you sure tou want to delete the density data?")) {
+      deleteDensity(id)
+    }
   }
 
   return (
     <Container>
       <h1>Results</h1>
-      {isLoading ? <h1>Loading....</h1> : <ul>
-        {densitys20?.data?.map((density20: Density20) => {
-          return (
-            <li key={density20.id} className={styles.resultsList}>
-              {`Плотность при 20 °C: ${density20.densityFor20}`}
-              <Button variant="contained" color="error" onClick={() => handleDelete(density20.id)}>
-                X
-              </Button>
-            </li>
-          )
-        })}
-      </ul>}
-      
+      {isLoading ? (
+        <h1>Loading....</h1>
+      ) : (
+        <ul>
+          {densitys20?.data?.map((density20: Density20) => {
+            return (
+              <li key={density20.id} className={styles.resultsList}>
+                {`Плотность при 20 °C: ${density20.densityFor20}`}
+                <Button variant="contained" color="error" onClick={() => handleDelete(density20.id)}>
+                  X
+                </Button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </Container>
   )
 }

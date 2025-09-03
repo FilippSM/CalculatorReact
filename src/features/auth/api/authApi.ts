@@ -1,20 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import type { Auth } from './authApi.types'
+import type { AuthFormData } from '../ui/CeateAuthForm.types'
 
-export const densityApi = createApi({
+export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({ 
     baseUrl: import.meta.env.VITE_BASE_URL
   }),
   tagTypes: ['Auth'],
   endpoints: (builder) => ({
-    getDensity: builder.query<{data: Auth[]}, void>({
-      query: () => '/dens',
+    getAuth: builder.query<{data: Auth[]}, void>({
+      query: () => '/auth',
       providesTags: ['Auth'],
     }),
-    saveDensity: builder.mutation({
+    saveAuth: builder.mutation<{data: Auth[]}, AuthFormData>({
       query: (densityData) => ({
-        url: '/dens',
+        url: '/auth',
         method: 'POST',
         body: densityData,
       }),
@@ -22,3 +23,5 @@ export const densityApi = createApi({
     }),
   }),
 })
+
+export const {useGetAuthQuery, useSaveAuthMutation } = authApi
