@@ -2,16 +2,30 @@ import { Button } from "@mui/material"
 import { Container } from "../Container/Container"
 import styles from "./Results.module.css"
 import type { Density20 } from "../../../features/density/api/densityApi.types"
-import { useDeleteDensityMutation, useGetDensityQuery } from "../../../features/density/api/densityApi"
+import {
+  useChangeDensityMutation,
+  useDeleteDensityMutation,
+  useGetDensityQuery,
+} from "../../../features/density/api/densityApi"
 
 export const Results = () => {
   const { data: densitys20, isLoading } = useGetDensityQuery()
   const [deleteDensity] = useDeleteDensityMutation()
+  const [changeDensity] = useChangeDensityMutation()
 
   const handleDelete = (id: number) => {
     if (confirm("Are you sure tou want to delete the density data?")) {
       deleteDensity(id)
     }
+  }
+
+  const handleChange = (id: number, newDensity: string) => {
+    changeDensity({
+      id: id,          
+      densityData: {          
+        density: newDensity
+      }
+    })
   }
 
   return (
@@ -27,6 +41,18 @@ export const Results = () => {
                 {`Плотность при 20 °C: ${density20.densityFor20}`}
                 <Button variant="contained" color="error" onClick={() => handleDelete(density20.id)}>
                   X
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#ff9800",
+                    "&:hover": {
+                      backgroundColor: "#f57c00",
+                    },
+                  }}
+                  onClick={() => handleChange(1, "666666")}
+                >
+                  Change
                 </Button>
               </li>
             )

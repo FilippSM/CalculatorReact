@@ -12,7 +12,7 @@ export const densityApi = createApi({
       query: () => '/dens',
       providesTags: ['Density'],
     }),
-    saveDensity: builder.mutation({
+    saveDensity: builder.mutation<void, { density: string | null }>({
       query: (densityData) => ({
         url: '/dens',
         method: 'POST',
@@ -27,9 +27,17 @@ export const densityApi = createApi({
       }),
       invalidatesTags: ['Density'],
     }),
+    changeDensity: builder.mutation<{data: Density20[]}, {id: number, densityData: { density: string }}>({
+      query: ({id, densityData}) => ({
+        url: `/dens/${id}`,
+        method: 'PUT',
+        body: densityData,
+      }),
+      invalidatesTags: ['Density'],
+    }),
   }),
 })
 
-export const { useGetDensityQuery, useSaveDensityMutation, useDeleteDensityMutation } = densityApi
+export const { useGetDensityQuery, useSaveDensityMutation, useDeleteDensityMutation, useChangeDensityMutation } = densityApi
 
 
