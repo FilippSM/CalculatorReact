@@ -4,3 +4,9 @@
 
   align-items: center;        /* выравнивание по вертикали */
 }
+
+
+.resultsForm {
+  display: flex;
+  gap: 10px;
+}
