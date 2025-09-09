@@ -7,7 +7,6 @@ import { valuesDensity } from "../bdDensity"
 import { Container } from "../../../assets/components/Container/Container"
 import { SimplePopup } from "./SimplePopup"
 
-
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014")
   const [unit, setUnit] = useState<string>("кг/м³")
