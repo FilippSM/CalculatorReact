@@ -4,7 +4,6 @@ import { Routing } from "./assets/Route/Routing"
 function App() {
   return (
     <>
-  {/*     <h1>123</h1> */}
       <Header />
       <Routing />
     </>

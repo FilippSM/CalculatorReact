@@ -44,4 +44,9 @@ export default defineConfig({
     host: true, // для работы в Docker
     port: 3000
   },
+  resolve: {
+    alias: {
+      '@/': `${path.resolve(__dirname, 'src')}/`,
+    },
+  },
 })

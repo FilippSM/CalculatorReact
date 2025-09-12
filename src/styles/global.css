@@ -2,32 +2,35 @@
 *,
 *::before,
 *::after {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 body {
+  /* Замените на ваш цвет */
+  min-width: 300px;
   margin: 0;
-  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 
-    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: Nunito, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+
+  /* Замените на ваш цвет */
+  color: #1F1F20;
+  background-color: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #ffffff; /* Замените на ваш цвет */
-  color: #1F1F20; /* Замените на ваш цвет */
-  min-width: 300px;
 }
 
 .no-scroll {
-  overflow: hidden;
   height: 100%;
+  overflow: hidden;
 }
 
 a {
+  white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
-  white-space: nowrap;
 }
 
 ul {
@@ -35,12 +38,16 @@ ul {
 }
 
 button {
+  white-space: nowrap;
+  cursor: pointer;
   background-color: unset;
   border: none;
-  cursor: pointer;
-  white-space: nowrap;
 }
 
-h1, h2, h3 {
-  color: #7572D5; /* Замените на цвет акцента */
+h1,
+h2,
+h3 {
+  color: #7572D5;
+
+  /* Замените на цвет акцента */
 }

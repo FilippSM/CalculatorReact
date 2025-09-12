@@ -1,21 +1,18 @@
 .container {
   display: flex;
-
-  gap: 10px;
   flex-direction: column;
+  gap: 10px;
 
-  
+
 }
 
 .inputs {
   display: flex;
-  
-
-  gap: 10px;
   flex-direction: column;
+  gap: 10px;
 }
 
-.inputsGroup {
+.inputs-group {
   display: flex;
   gap: 10px;
 }
@@ -24,9 +21,9 @@
   text-align: left;
 }
 
-.headerDencity {
+.header-dencity {
   display: flex;
-  align-items: center; 
-  justify-content: center; 
   gap: 10px;
+  align-items: center;
+  justify-content: center;
 }

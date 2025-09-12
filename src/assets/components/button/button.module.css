@@ -1,24 +1,24 @@
 .primary {
-  background-color: #1976d2; 
   color: white;
+  background-color: #1976d2;
   border: none;
 }
 
 .secondary {
-  background-color: black; 
   color: white;
+  background-color: black;
   border: none;
 }
 
 .outlined {
-  background-color: transparent; 
   color: black;
+  background-color: transparent;
   border-color: black;
 }
 
 .text {
-  background-color: transparent; 
   color: black;
+  background-color: transparent;
   border-color: transparent;
 }
 

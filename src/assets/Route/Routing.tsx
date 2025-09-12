@@ -3,7 +3,8 @@ import { Login } from "../components/Pages/Login"
 import { Main } from "../components/Pages/Main"
 import { NotFound } from "../components/Pages/NotFound"
 import { Results } from "../components/Pages/Results"
-import { Density } from "../../features/density/ui/Density"
+import { Density } from "@/features/density/ui"
+
 
 export const Path = {
   Density: "/",
