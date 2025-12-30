@@ -1,0 +1,123 @@
+@use "../../styles/variables" as *;
+
+.button {
+  box-sizing: border-box;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 23px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16px;
+  cursor: pointer;
+  outline: none;
+  border-radius: 2px;
+  transition: all 0.2s ease-in-out;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* ================= VARIANTS ================= */
+
+.primary {
+  color: color(light, 100);
+  background-color: color(accent, 500);
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: color(accent, 100);
+  }
+
+  &:active {
+    color: color(light, 500);
+    background-color: color(accent, 700);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px color(accent, 700);
+  }
+
+  &:disabled {
+    color: color(light, 900);
+    background-color: color(accent, 900);
+  }
+}
+
+.secondary {
+  color: color(light, 100);
+  background-color: color(dark, 300);
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: color(dark, 100);
+  }
+
+  &:active {
+    background-color: color(primary, 100);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px color(accent, 300);
+  }
+
+  &:disabled {
+    color: color(light, 900);
+    background-color: color(dark, 500);
+  }
+}
+
+.outlined {
+  color: color(accent, 500);
+  background-color: transparent;
+  border: 1px solid color(accent, 500);
+
+  &:hover {
+    color: color(accent, 100);
+    border-color: color(accent, 100);
+  }
+
+  &:active {
+    color: color(accent, 700);
+    border-color: color(accent, 700);
+  }
+
+  &:focus-visible {
+    color: color(accent, 700);
+    border-color: color(accent, 700);
+    box-shadow: 0 0 0 2px color(accent, 700);
+  }
+
+  &:disabled {
+    color: color(accent, 900);
+    border-color: color(accent, 900);
+  }
+}
+
+.textButton {
+  color: color(accent, 500);
+  background-color: transparent;
+  border: 1px solid transparent;
+
+  &:hover {
+    color: color(accent, 100);
+  }
+
+  &:active {
+    color: color(accent, 700);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px color(accent, 700);
+  }
+
+  &:disabled {
+    color: color(accent, 900);
+  }
+}
