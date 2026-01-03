@@ -8,6 +8,11 @@ import { valuesDensity } from "../bdDensity"
 import { Container } from "@/assets/components/Container/Container"
 import { SimplePopup } from "../../Popup"
 
+export const cleanNumericInput = (value: string): string => {
+  return value.replace(/[^0-9,. ]/g, "")
+}
+
+
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014")
   const [unit, setUnit] = useState<string>("кг/м³")
@@ -39,7 +44,11 @@ export const Density = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
     // Разрешаем: цифры и ..
-    const cleaned = value.replace(/[^0-9,. ]/g, "")
+
+    const cleaned = cleanNumericInput(value)
+
+    //const cleaned = value.replace(/[^0-9,. ]/g, "")
+
     setData(cleaned)
   }
   const handleTemprerature = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +57,9 @@ export const Density = () => {
     const cleaned = value.replace(/[^0-9,. ]/g, "")
     setDataTemperature(cleaned)
   }
+
+  
+
 
   const calcDensity20 = () => {
     try {
