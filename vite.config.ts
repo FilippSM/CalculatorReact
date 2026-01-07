@@ -1,4 +1,55 @@
-/// <reference types="vitest/config" />
+/// <reference types="vitest" />
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'node:path'
+
+export default defineConfig({
+  plugins: [react()],
+  base: '/CalculatorReact/',
+  
+  server: {
+    host: true,
+    port: 3000
+  },
+  
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  
+  // Vitest конфигурация
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
+    include: ['**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.storybook/**',
+      '**/*.stories.{js,ts,jsx,tsx}'
+    ],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'coverage/**',
+        'dist/**',
+        '**/node_modules/**',
+        '**/*.d.ts',
+        '**/stories/**',
+        '**/.storybook/**',
+        'src/test/**',
+        '**/*.config.*'
+      ]
+    }
+  }
+})
+
+
+
+/* /// <reference types="vitest/config" />
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 
@@ -50,3 +101,4 @@ export default defineConfig({
     },
   },
 })
+ */

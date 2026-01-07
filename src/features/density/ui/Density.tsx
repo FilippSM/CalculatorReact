@@ -2,11 +2,16 @@ import { Button, FormControl, InputLabel, MenuItem, Select, TextField, type Sele
 import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 
+import { useDebounce } from "@/assets/utils/useDebounce"
 import { useSaveDensityMutation } from "../api/densityApi"
 import { valuesDensity } from "../bdDensity"
-import { Container } from "../../../assets/components/Container/Container"
-import { SimplePopup } from "./SimplePopup"
-import { useDebounce } from "@/assets/utils/useDebounce"
+import { Container } from "@/assets/components/Container/Container"
+import { SimplePopup } from "../../Popup"
+
+export const cleanNumericInput = (value: string): string => {
+  return value.replace(/[^0-9,. ]/g, "")
+}
+
 
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014")
@@ -39,7 +44,11 @@ export const Density = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
     // Разрешаем: цифры и ..
-    const cleaned = value.replace(/[^0-9,. ]/g, "")
+
+    const cleaned = cleanNumericInput(value)
+
+    //const cleaned = value.replace(/[^0-9,. ]/g, "")
+
     setData(cleaned)
   }
   const handleTemprerature = (e: ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +57,9 @@ export const Density = () => {
     const cleaned = value.replace(/[^0-9,. ]/g, "")
     setDataTemperature(cleaned)
   }
+
+  
+
 
   const calcDensity20 = () => {
     try {
@@ -120,7 +132,7 @@ export const Density = () => {
   return (
     <Container>
       <div className={styles.container}>
-        <div className={styles['header-dencity']}>
+        <div className={styles["header-dencity"]}>
           <h1>Расчет плотности по ГОСТ 3900 № 1</h1>
           <SimplePopup />
         </div>
@@ -148,7 +160,7 @@ export const Density = () => {
               <MenuItem value={"кг/м³"}>кг/м³</MenuItem>
             </Select>
           </FormControl>
-          <div className={styles['inputs-group']}>
+          <div className={styles["inputs-group"]}>
             <TextField
               label={`Density, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
               variant="outlined"

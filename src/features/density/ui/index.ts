@@ -1,2 +1,1 @@
-export {Density} from "./Density.tsx"
-export {SimplePopup} from "./SimplePopup.tsx"
+export { Density } from "./Density.tsx"
