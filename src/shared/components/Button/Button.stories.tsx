@@ -1,9 +1,8 @@
-// Button.stories.ts
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { Button } from "./Button"
 
 const meta = {
-  title: "Components/ButtonX",
+  title: "Components/Button",
   component: Button,
   tags: ["autodocs"],
   argTypes: { onClick: { action: "clicked" } },
