@@ -2,7 +2,7 @@ import { Button, FormControl, InputLabel, MenuItem, Select, TextField, type Sele
 import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 
-import { useDebounce } from "@/assets/utils/useDebounce"
+import { useDebounce } from "@/shared/hooks/useDebounce"
 import { useSaveDensityMutation } from "../api/densityApi"
 import { valuesDensity } from "../bdDensity"
 import { Container } from "@/assets/components/Container/Container"
