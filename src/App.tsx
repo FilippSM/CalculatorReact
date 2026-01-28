@@ -1,5 +1,5 @@
-import { Header } from "./assets/components/Header"
-import { Routing } from "./assets/routing/routes"
+import { Routing } from "./app/routing/routes"
+import { Header } from "./widgets/header"
 
 function App() {
   return (

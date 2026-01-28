@@ -1,1 +1,0 @@
-export { SimplePopup } from "./SimplePopup"

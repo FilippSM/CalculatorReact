@@ -1,7 +1,7 @@
 .form {
   max-width: 400px;
-  margin: 2rem auto;
   padding: 2rem;
+  margin: 2rem auto;
 }
 
 .field {
@@ -26,59 +26,66 @@
 
 
 .data {
-  margin-top: 1rem;
   padding: 1rem;
+  margin-top: 1rem;
   background: #f5f5f5;
 }
 
 .button {
+  /* Для позиционирования псевдоэлементов */
+  position: relative;
   width: 100%;
   padding: 0.75rem 1.5rem;
   margin-top: 1rem;
-  background-color: #1976d2; /* Более современный синий */
-  color: white;
-  border: none;
-  border-radius: 4px; /* Более мягкие углы */
+  overflow: hidden;
   font-size: 0.875rem;
   font-weight: 500;
+  color: white;
   text-transform: uppercase;
-  letter-spacing: 0.02857em;
+  letter-spacing: 0.0286em;
   cursor: pointer;
-  
+  background-color: #1976d2;
+
+  /* Более современный синий */
+  border: none;
+  border-radius: 4px;
+
+  /* Более мягкие углы */
+
   /* Тень для эффекта "поднятости" */
-  box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 
-              0px 4px 5px 0px rgba(0,0,0,0.14), 
-              0px 1px 10px 0px rgba(0,0,0,0.12);
-  
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%),
+    0 4px 5px 0 rgb(0 0 0 / 14%),
+    0 1px 10px 0 rgb(0 0 0 / 12%);
+
   /* Плавные переходы */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Для позиционирования псевдоэлементов */
-  position: relative;
-  overflow: hidden;
 }
 
 /* Эффект при наведении */
 .button:hover {
-  background-color: #1565c0; /* Чуть темнее */
-  box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2), 
-              0px 6px 10px 0px rgba(0,0,0,0.14), 
-              0px 1px 18px 0px rgba(0,0,0,0.12);
+  background-color: #1565c0;
+
+  /* Чуть темнее */
+  box-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%),
+    0 6px 10px 0 rgb(0 0 0 / 14%),
+    0 1px 18px 0 rgb(0 0 0 / 12%);
 }
 
 /* Эффект при клике (active) */
 .button:active {
-  background-color: #0d47a1; /* Еще темнее */
-  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.2), 
-              0px 2px 3px 0px rgba(0,0,0,0.14), 
-              0px 1px 4px 0px rgba(0,0,0,0.12);
+  background-color: #0d47a1;
+
+  /* Еще темнее */
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%),
+    0 2px 3px 0 rgb(0 0 0 / 14%),
+    0 1px 4px 0 rgb(0 0 0 / 12%);
 }
 
 /* Disabled состояние */
 .button:disabled {
-  background-color: rgba(0, 0, 0, 0.12);
-  color: rgba(0, 0, 0, 0.38);
-  box-shadow: none;
+  color: rgb(0 0 0 / 38%);
   cursor: not-allowed;
+  background-color: rgb(0 0 0 / 12%);
+  box-shadow: none;
   transform: none;
 }

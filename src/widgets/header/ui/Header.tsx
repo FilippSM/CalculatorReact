@@ -1,5 +1,5 @@
 import { NavLink } from "react-router"
-import { Path } from "../routing/routes"
+import { Path } from "../../app/routing/routes"
 import { Container } from "./Container/Container"
 import styles from "./Header.module.css"
 

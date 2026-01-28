@@ -1,16 +1,16 @@
-import { useForm, type SubmitHandler} from "react-hook-form"
+import { useForm, type SubmitHandler } from "react-hook-form"
 import styles from "./CreateAuthForm.module.css"
 import { useSaveAuthMutation } from "../api/authApi"
-import type { AuthFormData } from "./CeateAuthForm.types"
+import type { AuthFormData } from "../api"
+
 
 export function CreateAuthForm() {
   const { register, handleSubmit, reset } = useForm<AuthFormData>()
 
   const [createLogin] = useSaveAuthMutation()
 
-  const onSubmit: SubmitHandler<AuthFormData> = data => {
-    createLogin(data)
-    .then(() => {
+  const onSubmit: SubmitHandler<AuthFormData> = (data) => {
+    createLogin(data).then(() => {
       reset()
     })
   }

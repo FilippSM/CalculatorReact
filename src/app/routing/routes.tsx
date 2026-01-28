@@ -1,15 +1,15 @@
 import { Route, Routes } from "react-router"
-import { Login } from "../components/Pages/Login"
-import { Main } from "../components/Pages/Main"
-import { NotFound } from "../components/Pages/NotFound"
-import { Results } from "../components/Pages/Results"
+import { Login } from "../../pages/login/ui/LoginPage"
 import { Density } from "@/features/density/ui/Density"
+import { Main } from "@/pages/main"
+import { Results } from "@/pages/results"
+import { NotFound } from "@/pages/notFound"
 
 export const Path = {
   Density: "/",
-  Login: "/Login",
-  Main: "/Main",
-  Results: "/Results",
+  Login: "/LoginPage",
+  Main: "/MainPage",
+  Results: "/ResultsPage",
   NotFound: "*",
 } as const
 
