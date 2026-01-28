@@ -1,0 +1,16 @@
+@use "../../../styles/colors" as *;
+
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+
+  &.disabled {
+    color:color(light, 300);
+    cursor: not-allowed;
+  }
+
+  &.active {
+    color: color(light, 900);
+  }
+}

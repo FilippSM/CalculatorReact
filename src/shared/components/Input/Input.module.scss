@@ -1,0 +1,111 @@
+@use "../../../styles/colors" as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 250px;
+}
+
+.label {
+  margin-bottom: 4px;
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  width: 100%;
+  padding: 6px 12px;
+  color: color(light, 900);
+  outline: none;
+  background: transparent;
+  border: 1px solid color(dark, 100);
+  border-radius: 4px;
+
+  &::placeholder {
+    color: color(light, 900);
+  }
+
+  &:hover {
+    border-color: color(light, 900);
+  }
+
+  &:focus,
+  &:focus-visible {
+    color: color(light, 100);
+    border-color: transparent;
+    box-shadow: 0 0 0 2px color(accent, 100);
+  }
+
+  &:disabled {
+    color: color(dark, 300);
+    pointer-events: none;
+    border-color: color(dark, 300);
+
+    &::placeholder {
+      color: color(dark, 300);
+    }
+  }
+}
+
+.search {
+  padding-left: 38px;
+}
+
+.error {
+  border-color: color(danger, 500);
+}
+
+.errorMessage {
+  min-height: 24px;
+  color: color(danger, 500);
+
+  //   word-break: break-word //error stylelint;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.errorAbsolute {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  left: 0;
+}
+
+.iconButton {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  padding: 0;
+  color: color(light, 100);
+  cursor: pointer;
+  background: transparent;
+
+  &:disabled {
+    color: color(dark, 300);
+    pointer-events: none;
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  top: 6px;
+  left: 12px;
+  color: color(light, 900);
+}
+
+.locationIcon {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  color: color(light, 900);
+  cursor: pointer;
+}
+
+.requiredMark {
+  color: color(danger, 500);
+}
