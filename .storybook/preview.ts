@@ -1,6 +1,6 @@
 import type { Preview } from "@storybook/react-vite"
 import '@fontsource-variable/roboto'
-import '../src/styles/index.scss'
+import '../src/shared/styles/index.scss'
 
 const preview: Preview = {
   parameters: {
