@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { Density20 } from './densityApi.types'
+import type { Density20 } from './types'
 
 export const densityApi = createApi({
   reducerPath: 'densityApi',

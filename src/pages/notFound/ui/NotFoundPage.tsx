@@ -1,5 +1,5 @@
 import { Button } from "@mui/material"
-import { Path } from "../../Route/Routing"
+import { Path } from "../app/routing/routes"
 import { Link } from "react-router"
 
 export const NotFound = () => {

@@ -3,3 +3,5 @@ export type Auth = {
   login: string
   password: string
 }
+
+export type AuthFormData = Pick<Auth, 'login' | 'password'>

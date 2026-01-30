@@ -1,18 +1,17 @@
 import { Button } from "@mui/material"
-import { Container } from "../Container/Container"
+import { Container } from "../assets/components/Container/Container"
 import styles from "./Results.module.css"
-import type { Density20 } from "../../../features/density/api/densityApi.types"
+import type { Density20 } from "../features/density/api/densityApi.types"
 import {
   useChangeDensityMutation,
   useDeleteDensityMutation,
   useGetDensityQuery,
-} from "../../../features/density/api/densityApi"
+} from "../features/density/api/densityApi"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { useState } from "react"
 
 export const Results = () => {
   const [densityId, setDensityId] = useState<number | null>(null)
-
 
   const { data: densitys20, isLoading } = useGetDensityQuery()
   const [deleteDensity] = useDeleteDensityMutation()
@@ -20,9 +19,9 @@ export const Results = () => {
 
   const { register, handleSubmit, reset } = useForm<Density20>()
 
-  const onSubmit: SubmitHandler<Density20> = data => {
-    if(!densityId) return
-    
+  const onSubmit: SubmitHandler<Density20> = (data) => {
+    if (!densityId) return
+
     changeDensity({
       id: densityId,
       densityData: {
@@ -43,14 +42,13 @@ export const Results = () => {
     if (density20) {
       setDensityId(density20.id)
       reset({
-        densityFor20: density20.densityFor20
+        densityFor20: density20.densityFor20,
       })
     } else {
       setDensityId(null)
     }
   }
 
-  
   return (
     <Container>
       <h1>Results</h1>
@@ -59,18 +57,21 @@ export const Results = () => {
       ) : (
         <ul>
           {densitys20?.data?.map((density20: Density20) => {
-
             const isEditing = density20.id === densityId
 
             return (
               <li key={density20.id} className={styles.resultsList}>
-                {
-                  isEditing ?
+                {isEditing ? (
                   <form onSubmit={handleSubmit(onSubmit)} className={styles.resultsForm}>
-                      <input {...register("densityFor20")} placeholder="density" />
-                      <Button type={"submit"} variant="contained" color="success">save</Button>
-                      <Button type={"button"} variant="contained" color="error" onClick={() => editHandleChange(null)}>cancel</Button>
-                  </form> :
+                    <input {...register("densityFor20")} placeholder="density" />
+                    <Button type={"submit"} variant="contained" color="success">
+                      save
+                    </Button>
+                    <Button type={"button"} variant="contained" color="error" onClick={() => editHandleChange(null)}>
+                      cancel
+                    </Button>
+                  </form>
+                ) : (
                   <>
                     {`Плотность при 20 °C: ${density20.densityFor20}`}
                     <Button variant="contained" color="error" onClick={() => handleDelete(density20.id)}>
@@ -89,7 +90,7 @@ export const Results = () => {
                       Change
                     </Button>
                   </>
-                }           
+                )}
               </li>
             )
           })}

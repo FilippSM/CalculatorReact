@@ -2,16 +2,15 @@ import { Button, FormControl, InputLabel, MenuItem, Select, TextField, type Sele
 import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 
-import { useDebounce } from "@/assets/utils/useDebounce"
+import { useDebounce } from "@/shared/hooks/useDebounce"
 import { useSaveDensityMutation } from "../api/densityApi"
-import { valuesDensity } from "../bdDensity"
-import { Container } from "@/assets/components/Container/Container"
-import { SimplePopup } from "../../Popup"
+import { valuesDensity } from "../lib/bdDensity"
+import { Container } from "@/shared/components/Container/Container"
+import { SimplePopup } from "../../../shared/components/Popup"
 
 export const cleanNumericInput = (value: string): string => {
   return value.replace(/[^0-9,. ]/g, "")
 }
-
 
 export const Density = () => {
   const [correction, setCorrection] = useState<string>("0.0014")
@@ -57,9 +56,6 @@ export const Density = () => {
     const cleaned = value.replace(/[^0-9,. ]/g, "")
     setDataTemperature(cleaned)
   }
-
-  
-
 
   const calcDensity20 = () => {
     try {
