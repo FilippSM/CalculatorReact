@@ -1,7 +1,7 @@
 import { NavLink } from "react-router"
-import { Path } from "../../app/routing/routes"
-import { Container } from "./Container/Container"
 import styles from "./Header.module.css"
+import { Container } from "@/shared/components/Container"
+import { Path } from "@/app/routing"
 
 export const Header = () => {
   return (

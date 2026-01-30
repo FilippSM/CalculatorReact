@@ -1,4 +1,4 @@
-import { Container } from "../assets/components/Container/Container"
+import { Container } from "@/shared/components/Container"
 import * as Tooltip from "@radix-ui/react-tooltip"
 
 export const Main = () => {

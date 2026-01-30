@@ -1,14 +1,9 @@
 import { Button } from "@mui/material"
-import { Container } from "../assets/components/Container/Container"
-import styles from "./Results.module.css"
-import type { Density20 } from "../features/density/api/densityApi.types"
-import {
-  useChangeDensityMutation,
-  useDeleteDensityMutation,
-  useGetDensityQuery,
-} from "../features/density/api/densityApi"
+import styles from "./ResultsPage.module.css"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { useState } from "react"
+import { useChangeDensityMutation, useDeleteDensityMutation, useGetDensityQuery, type Density20 } from "@/features/density/api"
+import { Container } from "@/shared/components/Container"
 
 export const Results = () => {
   const [densityId, setDensityId] = useState<number | null>(null)
