@@ -1,4 +1,4 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material"
+import { FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from "@mui/material"
 import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 
@@ -7,6 +7,8 @@ import { useSaveDensityMutation } from "../api/densityApi"
 import { valuesDensity } from "../lib/bdDensity"
 import { Container } from "@/shared/components/Container/Container"
 import { SimplePopup } from "../../../shared/components/Popup"
+import { Input } from "@/shared/components/Input"
+import { Button } from "@/shared/components/Button"
 
 export const cleanNumericInput = (value: string): string => {
   return value.replace(/[^0-9,. ]/g, "")
@@ -26,10 +28,19 @@ export const Density = () => {
   const [saveDensity] = useSaveDensityMutation()
 
   const handleSave = async () => {
+    if (!post) return // Не сохранять если нет результата
+
     const densityData = { density: post }
 
-    // Отправляем на сервер
-    await saveDensity(densityData)
+    try {
+      await saveDensity(densityData)
+      setData("") // Очищаем поле density
+      setDataTemperature("") // Очищаем поле temperature
+      setPost(null) // Очищаем результат
+      setConvertStatus("") // Очищаем статус
+    } catch (error) {
+      console.error("Ошибка сохранения:", error)
+    }
   }
 
   const handleChangeCorrection = (e: SelectChangeEvent<string>) => {
@@ -157,30 +168,13 @@ export const Density = () => {
             </Select>
           </FormControl>
           <div className={styles["inputs-group"]}>
-            <TextField
+            <Input
               label={`Density, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
-              variant="outlined"
+              type="text"
               value={data}
               onChange={handleChange}
-              // Дополнительные параметры для лучшего UX
-              slotProps={{
-                input: {
-                  inputMode: "numeric",
-                },
-              }}
             />
-            {/* <div>Введенное значение: {data}</div> */}
-            <TextField
-              label="Temperature, °C"
-              variant="outlined"
-              value={dataTemperature}
-              onChange={handleTemprerature}
-              slotProps={{
-                input: {
-                  inputMode: "numeric",
-                },
-              }}
-            />
+            <Input label="Temperature, °C" type="text" value={dataTemperature} onChange={handleTemprerature} />
           </div>
         </div>
 
@@ -189,7 +183,10 @@ export const Density = () => {
 
           {`Result: ${post !== null ? post : ""}${post !== null ? ` ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}` : ""}`}
         </div>
-        <Button variant="contained" sx={{ minWidth: 70, maxWidth: 100 }} onClick={handleSave}>
+        {/* <Button variant="contained" sx={{ minWidth: 70, maxWidth: 100 }} onClick={handleSave}>
+          Save
+        </Button> */}
+        <Button className={styles.buttonSave} variant="primary" onClick={handleSave}>
           Save
         </Button>
       </div>

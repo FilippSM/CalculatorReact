@@ -1,5 +1,5 @@
-import { CreateAuthForm } from "../../../features/auth/ui/CreateAuthForm"
-import { Container } from "../../../shared/components/Container/Container"
+import { CreateAuthForm } from "@/features/auth/ui"
+import { Container } from "@/shared/components/Container"
 
 export const Login = () => {
   return (
