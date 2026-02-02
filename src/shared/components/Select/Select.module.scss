@@ -11,29 +11,28 @@
   color: color(dark, 900);
   cursor: pointer;
   outline: none;
-  border: 1px solid color(dark, 900);
+  border: 1px solid color(light, 900);
   border-radius: 2px;
 
   &:hover {
-    color: var(--color-light-900);
+    color: color(light, 900);
   }
 
   &:active {
-    background-color: var(--color-dark-500);
+    background-color: color(dark, 500);
   }
 
   &:focus-visible {
-    color: var(--color-light-900);
-    border-color: var(--color-accent-500);
+    color: color(light, 900);
+    border-color: color(accent, 500);
   }
 
   .icon {
-    color: var(--color-light-100);
     transition: transform 0.2s ease-in-out;
   }
 
   &[data-state="open"] {
-    border-color: var(--color-light-100);
+    border-color: color(dark, 900);
 
     .icon {
       transform: rotate(180deg);
@@ -41,9 +40,9 @@
   }
 
   &:disabled {
-    color: var(--color-dark-100);
+    color: color(dark, 100);
     cursor: not-allowed;
-    border-color: var(--color-dark-100);
+    border-color: color(dark, 100);
   }
 }
 
@@ -59,9 +58,8 @@
   min-width: var(--radix-select-trigger-width);
   max-height: 300px;
   overflow: hidden auto;
-  background-color: var(--color-dark-500);
-  border: 1px solid var(--color-light-100);
-  border-radius: var(--radius-xs);
+  border: 1px solid color(dark, 500);
+  border-radius: 2px;
 }
 
 .viewport {
@@ -72,7 +70,7 @@
 .label {
   padding: 6px 8px;
   font-size: 12px;
-  color: var(--color-light-100);
+  color: color(light, 100);
 }
 
 .item {
@@ -90,27 +88,27 @@
   }
 
   &:focus {
-    color: var(--color-light-100);
+    color: color(dark, 500);
     background-color: var(--color-accent);
   }
 }
 
 .itemDefault {
   padding: 6px 12px;
-  color: var(--color-light-900);
+  color: color(light, 900);
 
   &:hover {
-    color: var(--color-accent-500);
-    background-color: var(--color-dark-300);
+    color: color(accent, 500);
+    background-color: color(dark, 300);
   }
 }
 
 .itemPagination {
   height: 24px;
   padding: 0 6px;
-  color: var(--color-light-100);
+  color: color(light, 100);
 
   &:hover {
-    background-color: var(--color-dark-100);
+    background-color: color(dark, 100);
   }
 }
