@@ -55,9 +55,12 @@
 .content {
   position: relative;
   z-index: 50;
-  min-width: var(--radix-select-trigger-width);
+
+  /* min-width: var(--radix-select-trigger-width); */
+  width: var(--radix-select-trigger-width);
   max-height: 300px;
   overflow: hidden auto;
+  background-color: color(light, 100);
   border: 1px solid color(dark, 500);
   border-radius: 2px;
 }

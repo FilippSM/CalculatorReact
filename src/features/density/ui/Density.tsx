@@ -1,4 +1,3 @@
-import { FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent } from "@mui/material"
 import { useEffect, useState, type ChangeEvent } from "react"
 import styles from "./Density.module.css"
 
@@ -9,6 +8,7 @@ import { Container } from "@/shared/components/Container/Container"
 import { SimplePopup } from "../../../shared/components/Popup"
 import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 
 export const cleanNumericInput = (value: string): string => {
   return value.replace(/[^0-9,. ]/g, "")
@@ -43,12 +43,12 @@ export const Density = () => {
     }
   }
 
-  const handleChangeCorrection = (e: SelectChangeEvent<string>) => {
-    setCorrection(e.target.value)
+  const handleChangeCorrection = (value: string) => {
+    setCorrection(value)
   }
 
-  const handleChangeUnit = (e: SelectChangeEvent<string>) => {
-    setUnit(e.target.value)
+  const handleChangeUnit = (value: string) => {
+    setUnit(value)
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +144,27 @@ export const Density = () => {
           <SimplePopup />
         </div>
         <div className={styles.inputs}>
-          <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
+          <Select value={correction} onValueChange={handleChangeCorrection}>
+            <SelectTrigger className="w-[180px]" label={"Correction"}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={"0"}>-</SelectItem>
+              <SelectItem value={"0.0014"}>{unit === "кг/м³" ? "1.4" : "0.0014"}</SelectItem>
+              <SelectItem value={"0.0007"}>{unit === "кг/м³" ? "0.7" : "0.0007"}</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={unit} onValueChange={handleChangeUnit}>
+            <SelectTrigger className="w-[180px]" label={"Unit"}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={"г/см³"}>г/см³</SelectItem>
+              <SelectItem value={"кг/м³"}>кг/м³</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
             <InputLabel>correction</InputLabel>
             <Select
               value={correction} // Устанавливаем значение
@@ -155,6 +175,8 @@ export const Density = () => {
               <MenuItem value={"0.0014"}>{unit === "кг/м³" ? "1.4" : "0.0014"}</MenuItem>
               <MenuItem value={"0.0007"}>{unit === "кг/м³" ? "0.7" : "0.0007"}</MenuItem>
             </Select>
+
+            
           </FormControl>
           <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
             <InputLabel>unit</InputLabel>
@@ -166,7 +188,7 @@ export const Density = () => {
               <MenuItem value={"г/см³"}>г/см³</MenuItem>
               <MenuItem value={"кг/м³"}>кг/м³</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
           <div className={styles["inputs-group"]}>
             <Input
               label={`Density, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
