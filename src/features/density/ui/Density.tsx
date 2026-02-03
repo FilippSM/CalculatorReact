@@ -144,17 +144,20 @@ export const Density = () => {
           <SimplePopup />
         </div>
         <div className={styles.inputs}>
-          <Select value={correction} onValueChange={handleChangeCorrection}>
-            <SelectTrigger className="w-[180px]" label={"Correction"}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={"0"}>-</SelectItem>
-              <SelectItem value={"0.0014"}>{unit === "кг/м³" ? "1.4" : "0.0014"}</SelectItem>
-              <SelectItem value={"0.0007"}>{unit === "кг/м³" ? "0.7" : "0.0007"}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={unit} onValueChange={handleChangeUnit}>
+          <div>
+            <Select value={correction} onValueChange={handleChangeCorrection}>
+              <SelectTrigger className="w-[180px]" label={"Correction"}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={"0"}>-</SelectItem>
+                <SelectItem value={"0.0014"}>{unit === "кг/м³" ? "1.4" : "0.0014"}</SelectItem>
+                <SelectItem value={"0.0007"}>{unit === "кг/м³" ? "0.7" : "0.0007"}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Select value={unit} onValueChange={handleChangeUnit}>
             <SelectTrigger className="w-[180px]" label={"Unit"}>
               <SelectValue />
             </SelectTrigger>
@@ -163,32 +166,7 @@ export const Density = () => {
               <SelectItem value={"кг/м³"}>кг/м³</SelectItem>
             </SelectContent>
           </Select>
-
-          {/* <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
-            <InputLabel>correction</InputLabel>
-            <Select
-              value={correction} // Устанавливаем значение
-              label="Correction"
-              onChange={handleChangeCorrection} // Обработчик изменения
-            >
-              <MenuItem value={"0"}>-</MenuItem>
-              <MenuItem value={"0.0014"}>{unit === "кг/м³" ? "1.4" : "0.0014"}</MenuItem>
-              <MenuItem value={"0.0007"}>{unit === "кг/м³" ? "0.7" : "0.0007"}</MenuItem>
-            </Select>
-
-            
-          </FormControl>
-          <FormControl sx={{ minWidth: 70, maxWidth: 100 }}>
-            <InputLabel>unit</InputLabel>
-            <Select
-              value={unit} // Устанавливаем значение
-              label="Unit"
-              onChange={handleChangeUnit} // Обработчик изменения
-            >
-              <MenuItem value={"г/см³"}>г/см³</MenuItem>
-              <MenuItem value={"кг/м³"}>кг/м³</MenuItem>
-            </Select>
-          </FormControl> */}
+          </div>
           <div className={styles["inputs-group"]}>
             <Input
               label={`Density, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
