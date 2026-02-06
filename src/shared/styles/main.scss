@@ -1,3 +1,5 @@
+@use "./colors" as *;
+
 *,
 *::before,
 *::after {
@@ -10,8 +12,8 @@ body {
   min-width: 300px;
   margin: 0;
   font-family: Roboto, sans-serif;
-  color: #1f1f20;
-  background-color: #fff;
+  color: color(dark, 100);
+  background-color: color(light, 100);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
