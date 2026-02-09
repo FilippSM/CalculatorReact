@@ -2,8 +2,17 @@ import { NavLink } from "react-router"
 import styles from "./Header.module.css"
 import { Container } from "@/shared/components/Container"
 import { Path } from "@/app/routing"
+import { useThemeStore } from "@/app/store"
+import { useEffect } from "react"
 
 export const Header = () => {
+  const { theme, toggleTheme } = useThemeStore()
+
+  useEffect(() => {
+    document.body.classList.remove("light", "dark")
+    document.body.classList.add(theme)
+  }, [theme])
+
   return (
     <>
       <Container>
@@ -34,6 +43,8 @@ export const Header = () => {
             Results
           </NavLink>
         </nav>
+
+        <button onClick={toggleTheme}>Переключить тему</button>
       </Container>
     </>
   )
