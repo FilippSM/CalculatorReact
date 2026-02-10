@@ -4,6 +4,7 @@ import { Container } from "@/shared/components/Container"
 import { Path } from "@/app/routing"
 import { useThemeStore } from "@/app/store"
 import { useEffect } from "react"
+import { Button } from "@/shared/components/Button"
 
 export const Header = () => {
   const { theme, toggleTheme } = useThemeStore()
@@ -44,7 +45,7 @@ export const Header = () => {
           </NavLink>
         </nav>
 
-        <button onClick={toggleTheme}>Переключить тему</button>
+        <Button onClick={toggleTheme} variant="theme"  themeMode={theme}>{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</Button>
       </Container>
     </>
   )

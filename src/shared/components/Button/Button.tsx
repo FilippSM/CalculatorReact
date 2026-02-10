@@ -4,9 +4,10 @@ import styles from './Button.module.scss'
 import type { ComponentPropsWithRef } from 'react'
 
 type Props = {
-  variant?: 'primary' | 'secondary' | 'outlined' | 'textButton'
+  variant?: 'primary' | 'secondary' | 'outlined' | 'textButton' | 'theme'
   asChild?: boolean
   fullWidth?: boolean
+  themeMode?: 'light' | 'dark'
 } & ComponentPropsWithRef<'button'>
 
 export const Button = ({
@@ -14,6 +15,7 @@ export const Button = ({
   variant = 'primary',
   className,
   fullWidth = false,
+  themeMode = 'light',
   ...rest
 }: Props) => {
   const Component = asChild ? Slot : 'button'
@@ -23,6 +25,7 @@ export const Button = ({
       className={clsx(
         styles.button,
         styles[variant],
+        themeMode && styles[`${variant}--${themeMode}`],
         fullWidth && styles.fullWidth,
         className
       )}

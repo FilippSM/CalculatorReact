@@ -121,3 +121,48 @@
     color: color(accent, 900);
   }
 }
+
+
+.theme {
+  /* color: color(dark, 100);
+  background-color: color(light, 100);
+  border: 1px solid color(dark, 100); */
+  width: 120px;
+  &--light {
+    color: color(dark, 100);
+    background-color: color(light, 100);
+    border: 1px solid color(dark, 100);
+
+    &:hover {
+      background-color: color(light, 500);
+    }
+  }
+
+  &--dark {
+    color: color(light, 100);
+    background-color: color(dark, 100);
+    border: 1px solid color(light, 100);
+
+    &:hover {
+      background-color: color(light, 900);
+    }
+  }
+
+  /* &:hover {
+    background-color: color(light, 500);
+  } */
+
+  &:active {
+    color: color(light, 500);
+    background-color: color(accent, 700);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px color(accent, 700);
+  }
+
+  &:disabled {
+    color: color(light, 900);
+    background-color: color(accent, 900);
+  }
+}
