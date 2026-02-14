@@ -4,6 +4,7 @@ import clsx from "clsx"
 import styles from "./Select.module.scss"
 import { useId, type ComponentPropsWithRef } from "react"
 import { Label } from "../Label/Label"
+import { useThemeStore } from "@/app/store"
 
 type Props = {
   label?: string
@@ -24,6 +25,8 @@ function SelectValue(props: ComponentPropsWithRef<typeof SelectPrimitive.Value>)
 }
 
 function SelectTrigger({ id, label, className, isPagination = false, children, ...props }: Props) {
+  const theme = useThemeStore((state) => state.theme)
+  
   const generatedId = useId()
   const selectId = id ?? generatedId
 
@@ -33,7 +36,7 @@ function SelectTrigger({ id, label, className, isPagination = false, children, .
 
       <SelectPrimitive.Trigger
         id={selectId}
-        className={clsx(styles.trigger, isPagination && styles.pagination, className)}
+        className={clsx(styles.trigger, styles[`trigger--${theme}`], isPagination && styles.pagination, className)}
         {...props}
       >
         {children}
@@ -56,9 +59,11 @@ function SelectContent({
   children,
   ...props
 }: ComponentPropsWithRef<typeof SelectPrimitive.Content>) {
+  const theme = useThemeStore((state) => state.theme)
+  
   return (
     <SelectPrimitive.Portal>
-      <SelectPrimitive.Content className={clsx(styles.content, className)} position={position} {...props}>
+      <SelectPrimitive.Content className={clsx(styles.content, styles[`content--${theme}`], className)} position={position} {...props}>
         <SelectPrimitive.Viewport className={clsx(position === "popper" && styles.viewport)}>
           {children}
         </SelectPrimitive.Viewport>
@@ -77,9 +82,11 @@ function SelectItem({
   isPagination = false,
   ...props
 }: ComponentPropsWithRef<typeof SelectPrimitive.Item> & { isPagination?: boolean }) {
+  const theme = useThemeStore((state) => state.theme)
+  
   return (
     <SelectPrimitive.Item
-      className={clsx(styles.item, isPagination ? styles.itemPagination : styles.itemDefault, className)}
+      className={clsx(styles.item, styles[`item--${theme}`],isPagination ? styles.itemPagination : styles.itemDefault, className)}
       {...props}
     >
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

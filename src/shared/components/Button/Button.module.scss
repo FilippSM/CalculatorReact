@@ -122,12 +122,9 @@
   }
 }
 
-
 .theme {
-  /* color: color(dark, 100);
-  background-color: color(light, 100);
-  border: 1px solid color(dark, 100); */
   width: 120px;
+
   &--light {
     color: color(dark, 100);
     background-color: color(light, 100);
@@ -135,6 +132,10 @@
 
     &:hover {
       background-color: color(light, 500);
+    }
+
+    &:active {
+      background-color: color(light, 100);
     }
   }
 
@@ -144,17 +145,12 @@
     border: 1px solid color(light, 100);
 
     &:hover {
-      background-color: color(light, 900);
+      background-color: color(dark, 300);
     }
-  }
 
-  /* &:hover {
-    background-color: color(light, 500);
-  } */
-
-  &:active {
-    color: color(light, 500);
-    background-color: color(accent, 700);
+    &:active {
+      background-color: color(dark, 100);
+    }
   }
 
   &:focus-visible {
