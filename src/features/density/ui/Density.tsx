@@ -9,6 +9,10 @@ import { SimplePopup } from "../../../shared/components/Popup"
 import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
+import { useDensityStore } from "@/app/store/densityStore"
+
+// Импортируем хранилище
+
 
 export const cleanNumericInput = (value: string): string => {
   return value.replace(/[^0-9,. ]/g, "")
@@ -21,6 +25,9 @@ export const Density = () => {
   const [dataTemperature, setDataTemperature] = useState<string>("")
   const [post, setPost] = useState<string | null>(null)
   const [convertStatus, setConvertStatus] = useState<string>("")
+  
+  // Используем Zustand store
+  const { groups, addGroup, updateGroupDensity, updateGroupTemperature } = useDensityStore()
 
   const debouncedData = useDebounce(data, 300)
   const debouncedTemperature = useDebounce(dataTemperature, 300)
@@ -61,6 +68,7 @@ export const Density = () => {
 
     setData(cleaned)
   }
+  
   const handleTemprerature = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value
     // Разрешаем: цифры и ..
@@ -167,16 +175,28 @@ export const Density = () => {
             </SelectContent>
           </Select>
           </div>
-          <div className={styles["inputs-group"]}>
-            <Input
-              label={`Density, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
-              type="text"
-              value={data}
-              onChange={handleChange}
-            />
-            <Input label="Temperature, °C" type="text" value={dataTemperature} onChange={handleTemprerature} />
-            <Button variant="outlined">+</Button>
-          </div>
+          
+          {/* Отрисовка групп полей из Zustand store */}
+          {groups.map((group, index) => (
+            <div key={group.id} className={styles["inputs-group"]}>
+              <Input
+                label={`Density, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
+                type="text"
+                value={group.density}
+                onChange={(e) => updateGroupDensity(group.id, cleanNumericInput(e.currentTarget.value))}
+              />
+              <Input 
+                label="Temperature, °C" 
+                type="text" 
+                value={group.temperature}
+                onChange={(e) => updateGroupTemperature(group.id, e.currentTarget.value.replace(/[^0-9,. ]/g, ""))}
+              />
+              {/* Кнопка "+" только для последней группы */}
+              {index === groups.length - 1 && (
+                <Button variant="outlined" onClick={addGroup}>+</Button>
+              )}
+            </div>
+          ))}
         </div>
 
         <div className={styles.result}>
