@@ -1,18 +1,17 @@
-import { useEffect, useState, type ChangeEvent } from "react"
+import { useEffect, useState } from "react"
 import styles from "./Density.module.css"
 
+import { useDensityStore } from "@/app/store/densityStore"
+import { Button } from "@/shared/components/Button"
+import { Container } from "@/shared/components/Container/Container"
+import { Input } from "@/shared/components/Input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import { useDebounce } from "@/shared/hooks/useDebounce"
+import { SimplePopup } from "../../../shared/components/Popup"
 import { useSaveDensityMutation } from "../api/densityApi"
 import { valuesDensity } from "../lib/bdDensity"
-import { Container } from "@/shared/components/Container/Container"
-import { SimplePopup } from "../../../shared/components/Popup"
-import { Input } from "@/shared/components/Input"
-import { Button } from "@/shared/components/Button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
-import { useDensityStore } from "@/app/store/densityStore"
 
 // Импортируем хранилище
-
 
 export const cleanNumericInput = (value: string): string => {
   return value.replace(/[^0-9,. ]/g, "")
@@ -23,9 +22,9 @@ export const Density = () => {
   const [unit, setUnit] = useState<string>("кг/м³")
   const [post, setPost] = useState<string | null>(null)
   const [convertStatus, setConvertStatus] = useState<string>("")
-  
+
   // Используем Zustand store
-  const { groups, addGroup, updateGroupDensity, updateGroupTemperature } = useDensityStore()
+  const { groups, addGroup, removeGroup, updateGroupDensity, updateGroupTemperature } = useDensityStore()
 
   const debouncedGroups = useDebounce(groups, 300)
 
@@ -39,7 +38,7 @@ export const Density = () => {
     try {
       await saveDensity(densityData)
       // Очищаем все группы
-      groups.forEach(group => {
+      groups.forEach((group) => {
         updateGroupDensity(group.id, "")
         updateGroupTemperature(group.id, "")
       })
@@ -81,12 +80,12 @@ export const Density = () => {
       }
 
       const correctionDensity = Number(aroundNumDens) - numDens
-      
+
       // Проверяем существует ли значение в таблице
       if (!valuesDensity[densForTable] || !valuesDensity[densForTable][tempForTable]) {
         return null
       }
-      
+
       const densInTable = valuesDensity[densForTable][tempForTable]
 
       let densityInTable = densInTable - correctionDensity + Number(correction)
@@ -105,12 +104,12 @@ export const Density = () => {
 
   useEffect(() => {
     // Рассчитываем результат для каждой группы
-    const results = groups.map(group => 
-      calcDensityForGroup(group.density, group.temperature)
-    ).filter((result): result is number => result !== null)
+    const results = groups
+      .map((group) => calcDensityForGroup(group.density, group.temperature))
+      .filter((result): result is number => result !== null)
 
     // Устанавливаем статус конвертации для отображения
-    const hasHighValue = groups.some(group => {
+    const hasHighValue = groups.some((group) => {
       if (!group.density) return false
       const numDens = Number(group.density.replace(",", "."))
       return (unit === "кг/м³" && numDens > 1.11) || (unit === "г/см³" && numDens > 1.11)
@@ -126,7 +125,7 @@ export const Density = () => {
     if (results.length > 0) {
       const sum = results.reduce((acc, val) => acc + val, 0)
       const average = sum / results.length
-      
+
       // Форматируем результат в зависимости от единиц измерения
       const formattedResult = unit === "кг/м³" ? average.toFixed(1) : average.toFixed(4)
       setPost(formattedResult)
@@ -134,7 +133,6 @@ export const Density = () => {
     } else {
       setPost(null)
     }
-
   }, [debouncedGroups, correction, unit])
 
   return (
@@ -168,11 +166,11 @@ export const Density = () => {
               </SelectContent>
             </Select>
           </div>
-          
+
           {/* Отрисовка групп полей из Zustand store */}
           {groups.map((group, index) => {
             const groupResult = calcDensityForGroup(group.density, group.temperature)
-            
+
             return (
               <div key={group.id} className={styles["inputs-group"]}>
                 <Input
@@ -181,21 +179,29 @@ export const Density = () => {
                   value={group.density}
                   onChange={(e) => updateGroupDensity(group.id, cleanNumericInput(e.currentTarget.value))}
                 />
-                <Input 
-                  label="Temperature, °C" 
-                  type="text" 
+                <Input
+                  label="Temperature, °C"
+                  type="text"
                   value={group.temperature}
                   onChange={(e) => updateGroupTemperature(group.id, e.currentTarget.value.replace(/[^0-9,. ]/g, ""))}
                 />
                 {/* Отображаем результат для каждой группы */}
                 {groupResult !== null && (
-                  <span className={styles.groupResult}>
-                    {groupResult.toFixed(unit === "кг/м³" ? 1 : 4)}
-                  </span>
+                  <div className={styles.groupResult}>
+                    <div>{`Result, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}:`}</div>
+                    <div>{groupResult.toFixed(unit === "кг/м³" ? 1 : 4)}</div>
+                  </div>
                 )}
                 {/* Кнопка "+" только для последней группы */}
                 {index === groups.length - 1 && (
-                  <Button variant="outlined" onClick={addGroup}>+</Button>
+                  <Button variant="outlined" onClick={addGroup}>
+                    +
+                  </Button>
+                )}
+                {index !== 0 && (
+                  <Button variant="outlined" onClick={() => removeGroup(group.id)}>
+                    X
+                  </Button>
                 )}
               </div>
             )
@@ -205,9 +211,7 @@ export const Density = () => {
         <div className={styles.result}>
           <p>{convertStatus}</p>
           {post !== null ? (
-            <>
-              {`Средний результат: ${post} ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}
-            </>
+            <>{`Average result: ${post} ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}`}</>
           ) : (
             "Введите значения плотности и температуры"
           )}
