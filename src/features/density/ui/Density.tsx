@@ -175,6 +175,7 @@ export const Density = () => {
               onChange={handleChange}
             />
             <Input label="Temperature, °C" type="text" value={dataTemperature} onChange={handleTemprerature} />
+            <Button variant="outlined">+</Button>
           </div>
         </div>
 
