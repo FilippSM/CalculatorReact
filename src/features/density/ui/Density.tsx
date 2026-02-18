@@ -108,8 +108,9 @@ export const Density = () => {
       .map((group) => calcDensityForGroup(group.density, group.temperature))
       .filter((result): result is number => result !== null)
 
+      //Убрать логику конвертацию ?
     // Устанавливаем статус конвертации для отображения
-    const hasHighValue = groups.some((group) => {
+   /*  const hasHighValue = groups.some((group) => {
       if (!group.density) return false
       const numDens = Number(group.density.replace(",", "."))
       return (unit === "кг/м³" && numDens > 1.11) || (unit === "г/см³" && numDens > 1.11)
@@ -119,7 +120,7 @@ export const Density = () => {
       setConvertStatus(unit === "кг/м³" ? "density converting in kg/m³" : "density converting in g/cm³")
     } else {
       setConvertStatus("")
-    }
+    } */
 
     // Рассчитываем средний результат
     if (results.length > 0) {
@@ -186,7 +187,7 @@ export const Density = () => {
                   onChange={(e) => updateGroupTemperature(group.id, e.currentTarget.value.replace(/[^0-9,. ]/g, ""))}
                 />
                 {/* Отображаем результат для каждой группы */}
-                {groupResult !== null && (
+                {groupResult !== null && groups.length > 1 && (
                   <div className={styles.groupResult}>
                     <div>{`Result, ${unit === "кг/м³" ? "kg/m³" : "g/cm³"}:`}</div>
                     <div>{groupResult.toFixed(unit === "кг/м³" ? 1 : 4)}</div>
@@ -198,7 +199,7 @@ export const Density = () => {
                     +
                   </Button>
                 )}
-                {index !== 0 && (
+                {groups.length > 1 && (
                   <Button variant="outlined" onClick={() => removeGroup(group.id)}>
                     X
                   </Button>
