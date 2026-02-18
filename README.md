@@ -11,5 +11,4 @@ React, TypeScript, Vite
 How to run it
 pnpm install
 pnpm run dev (and maybe pnpm run).
-Optional: link to a live demo if you deploy it.
 
