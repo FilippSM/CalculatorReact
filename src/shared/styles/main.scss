@@ -12,10 +12,20 @@ body {
   min-width: 300px;
   margin: 0;
   font-family: Roboto, sans-serif;
-  color: color(dark, 100);
-  background-color: color(light, 100);
+/*   color: color(dark, 100);
+  background-color: color(light, 100); */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  &.light {
+    color: color(dark, 100);
+    background-color: color(light, 100);
+  }
+
+  &.dark {
+    color: color(light, 100);
+    background-color: color(dark, 100);
+  }
 }
 
 button,

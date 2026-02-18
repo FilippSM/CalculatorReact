@@ -19,19 +19,36 @@
   width: 140px;
   padding: 6px 12px;
   font-size: var(--font-size-m);
-  color: color(dark, 100);
+  //color: color(dark, 100);
   outline: none;
   background: transparent;
-  border: 1px solid color(light, 900);
+  //border: 1px solid color(light, 900);
   border-radius: 2px;
+
+  &--light {
+    color: color(dark, 100);
+    border: 1px solid color(light, 900);
+
+    &:hover {
+      color: color(dark, 900);
+      border-color: color(dark, 900);
+    }
+
+  }
+
+  &--dark {
+    color: color(light, 100);
+    border: 1px solid color(light, 100);
+
+    &:hover {
+      background-color: color(dark, 300);
+    }
+  }
+
+
 
   &::placeholder {
     color: color(light, 900);
-  }
-
-  &:hover {
-    color: color(dark, 900);
-    border-color: color(dark, 900);
   }
 
   &:focus,

@@ -3,6 +3,7 @@ import clsx from "clsx"
 import styles from "./Input.module.scss"
 import { useState, type ChangeEvent, type ComponentPropsWithRef } from "react"
 import { Label } from "../Label/Label"
+import { useThemeStore } from "@/app/store"
 
 export type InputProps = {
   errorMessage?: string
@@ -25,7 +26,7 @@ export const Input = ({
   errorPosition = "inline",
   ...rest
 }: InputProps) => {
-
+  const theme = useThemeStore((state) => state.theme)
   const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +47,7 @@ export const Input = ({
 
       <div className={styles.inputContainer}>
         <input
-          className={clsx(styles.input, type === "search" && styles.search, errorMessage && styles.error)}
+          className={clsx(styles.input, styles[`input--${theme}`], type === "search" && styles.search, errorMessage && styles.error)}
           value={value ?? ""}
           type={inputType}
           disabled={disabled}
