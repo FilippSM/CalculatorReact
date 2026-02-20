@@ -11,8 +11,6 @@ import { SimplePopup } from "../../../shared/components/Popup"
 import { useSaveDensityMutation } from "../api/densityApi"
 import { valuesDensity } from "../lib/bdDensity"
 
-// Импортируем хранилище
-
 export const cleanNumericInput = (value: string): string => {
   return value.replace(/[^0-9,. ]/g, "")
 }
