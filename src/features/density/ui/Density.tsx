@@ -14,7 +14,7 @@ export const Density = () => {
     <Container>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1>Расчет плотности</h1>
+          <h1>Расчет плотности по ГОСТ 3900 № 1</h1>
           <SimplePopup />
         </div>
 

@@ -12,7 +12,10 @@ import { useDensityStore } from "../model/densityStore"
 import styles from "./Density.module.scss"
 
 export const DensityEntity = ({ entity }) => {
-  const { addGroup, removeGroup, updateDensity, updateTemperature, updateCorrection, updateUnit } = useDensityStore()
+  const { removeEntity, addGroup, removeGroup, updateDensity, updateTemperature, updateCorrection, updateUnit } =
+    useDensityStore()
+
+  const entitiesCount = useDensityStore((state) => state.entities.length)
 
   const debouncedGroups = useDebounce(entity.groups, 300)
 
@@ -67,6 +70,11 @@ export const DensityEntity = ({ entity }) => {
       <Button variant="primary" onClick={handleSave}>
         Save
       </Button>
+      {entitiesCount > 1 && (
+        <Button variant="outlined" onClick={() => removeEntity(entity.id)}>
+          Удалить
+        </Button>
+      )}
     </div>
   )
 }
