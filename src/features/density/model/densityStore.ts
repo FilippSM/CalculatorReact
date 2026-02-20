@@ -6,7 +6,7 @@ type DensityGroup = {
   temperature: string;
 }
 
-interface DensityStore {
+type Props = {
   groups: DensityGroup[];
   addGroup: () => void;
   removeGroup: (id: string) => void;
@@ -14,7 +14,7 @@ interface DensityStore {
   updateGroupTemperature: (id: string, value: string) => void;
 }
 
-export const useDensityStore = create<DensityStore>((set) => ({
+export const useDensityStore = create<Props>((set) => ({
   groups: [{ id: crypto.randomUUID(), density: "", temperature: "" }],
   
   addGroup: () => set((state) => ({
