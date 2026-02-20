@@ -1,7 +1,11 @@
+@use "../../../shared//styles/colors" as *;
+
 .container {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border: 1px solid color(light, 900);
+  border-radius: 2px;
 }
 
 .inputs {

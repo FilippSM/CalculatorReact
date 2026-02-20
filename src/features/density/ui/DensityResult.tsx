@@ -1,4 +1,4 @@
-import styles from "./Density.module.css";
+import styles from "./Density.module.scss";
 
 type Props = {
   post: string | null;

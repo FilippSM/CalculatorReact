@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./Density.module.css";
+import styles from "./Density.module.scss";
 import { useDensityStore } from "@/features/density/model/densityStore";
 import { Button } from "@/shared/components/Button";
 import { Container } from "@/shared/components/Container/Container";

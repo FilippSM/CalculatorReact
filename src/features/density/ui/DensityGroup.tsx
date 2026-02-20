@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/Button";
 import { Input } from "@/shared/components/Input";
-import styles from "./Density.module.css";
+import styles from "./Density.module.scss";
 import { cleanNumericInput } from "../lib";
 
 
