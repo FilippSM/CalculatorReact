@@ -84,6 +84,9 @@ export const Density = () => {
         <Button className={styles.buttonSave} variant="primary" onClick={handleSave}>
           Save
         </Button>
+        <Button variant="outlined" fullWidth={false} className={styles.addInputsGroup} onClick={() => {}}>
+          ++
+        </Button>
       </div>
     </Container>
   );
