@@ -16,7 +16,7 @@ export const Header = () => {
 
   return (
     <>
-      <Container>
+      <Container className={styles.container}>
         <nav className={styles.nav}>
           <NavLink
             to={Path.Density}
@@ -45,7 +45,7 @@ export const Header = () => {
           </NavLink>
         </nav>
 
-        <Button onClick={toggleTheme} variant="theme"  themeMode={theme}>{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</Button>
+        <Button onClick={toggleTheme} variant="theme" themeMode={theme}>{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</Button>
       </Container>
     </>
   )

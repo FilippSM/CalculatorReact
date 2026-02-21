@@ -22,8 +22,8 @@ export const Density = () => {
           <DensityEntity key={entity.id} entity={entity} />
         ))}
 
-        <Button variant="outlined" onClick={addEntity}>
-          ++ Добавить расчет
+        <Button variant="add" onClick={addEntity}>
+          Add calc
         </Button>
       </div>
     </Container>

@@ -52,12 +52,12 @@ export const DensityGroup = ({
         </div>
       )}
       {index === totalGroups - 1 && (
-        <Button variant="outlined" onClick={onAddGroup}>
+        <Button variant="outlined" className={styles.addButtonDen} onClick={onAddGroup}>
           +
         </Button>
       )}
       {totalGroups > 1 && (
-        <Button variant="outlined" onClick={() => onRemoveGroup(group.id)}>
+        <Button variant="outlined" className={styles.delButtonDen} onClick={() => onRemoveGroup(group.id)}>
           X
         </Button>
       )}

@@ -162,3 +162,30 @@
     background-color: color(accent, 900);
   }
 }
+
+.add {
+  color: color(success, 500);
+  background-color: transparent;
+  border: 1px solid color(success, 500);
+
+  &:hover {
+    color: color(success, 100);
+    border-color: color(success, 100);
+  }
+
+  &:active {
+    color: color(success, 700);
+    border-color: color(success, 700);
+  }
+
+  &:focus-visible {
+    color: color(success, 700);
+    border-color: color(success, 700);
+    box-shadow: 0 0 0 2px color(success, 700);
+  }
+
+  &:disabled {
+    color: color(accent, 900);
+    border-color: color(accent, 900);
+  }
+}

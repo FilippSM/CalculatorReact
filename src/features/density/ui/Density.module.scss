@@ -1,12 +1,12 @@
 @use "../../../shared//styles/colors" as *;
 
 .container {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 5px;
-  border: 1px solid color(light, 900);
+  padding: 10px;
+
+  // border: 1px solid color(light, 900);
   border-radius: 2px;
 }
 
@@ -19,13 +19,15 @@
 .inputs-group {
   display: flex;
   gap: 10px;
+
+  // align-items: center;
 }
 
 .result {
   text-align: left;
 }
 
-.header-dencity {
+.header {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -42,8 +44,72 @@
   gap: 8px;
 }
 
-.addInputsGroup {
+.entityBlock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+
+  // border: 1px solid color(light, 900);
+  border-radius: 2px;
+
+  &--light {
+    background-color: color(light, 500);
+  }
+
+  &--dark {
+    background-color: color(dark, 300);
+  }
+}
+
+.delGroupButton {
   position: absolute;
-  top: 60px;
+  top: 10px;
   right: 10px;
+}
+
+.delButton {
+  color: color(danger, 500);
+  border-color: color(danger, 500);
+
+  &:hover {
+    color: color(danger, 100);
+    border-color: color(danger, 100);
+  }
+
+  &:active {
+    color: color(danger, 700);
+    border-color: color(danger, 700);
+  }
+}
+
+.delButtonDen {
+  color: color(danger, 500);
+  border-color: color(danger, 500);
+
+  &:hover {
+    color: color(danger, 100);
+    border-color: color(danger, 100);
+  }
+
+  &:active {
+    color: color(danger, 700);
+    border-color: color(danger, 700);
+  }
+}
+
+.addButtonDen {
+  color: color(success, 500);
+  border-color: color(success, 500);
+
+  &:hover {
+    color: color(success, 100);
+    border-color: color(success, 100);
+  }
+
+  &:active {
+    color: color(success, 700);
+    border-color: color(success, 700);
+  }
 }

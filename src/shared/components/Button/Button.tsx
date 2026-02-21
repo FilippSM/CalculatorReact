@@ -4,7 +4,7 @@ import styles from './Button.module.scss'
 import type { ComponentPropsWithRef } from 'react'
 
 type Props = {
-  variant?: 'primary' | 'secondary' | 'outlined' | 'textButton' | 'theme'
+  variant?: 'primary' | 'secondary' | 'outlined' | 'textButton' | 'theme' | 'add'
   asChild?: boolean
   fullWidth?: boolean
   themeMode?: 'light' | 'dark'

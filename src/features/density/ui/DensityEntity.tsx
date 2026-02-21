@@ -10,8 +10,11 @@ import { DensityResult } from "./DensityResult"
 import { useDensityStore } from "../model/densityStore"
 
 import styles from "./Density.module.scss"
+import { useThemeStore } from "@/app/store"
+import clsx from "clsx"
 
 export const DensityEntity = ({ entity }) => {
+  const theme = useThemeStore((state) => state.theme)
   const { removeEntity, addGroup, removeGroup, updateDensity, updateTemperature, updateCorrection, updateUnit } =
     useDensityStore()
 
@@ -42,7 +45,7 @@ export const DensityEntity = ({ entity }) => {
   }
 
   return (
-    <div className={styles.entityBlock}>
+    <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
       <DensitySelects
         correction={entity.correction}
         unit={entity.unit}
@@ -67,13 +70,15 @@ export const DensityEntity = ({ entity }) => {
 
       <DensityResult post={post} convertStatus={convertStatus} unit={entity.unit} />
 
-      <Button variant="primary" onClick={handleSave}>
+      <Button variant="primary" className={styles.buttonSave} onClick={handleSave}>
         Save
       </Button>
       {entitiesCount > 1 && (
-        <Button variant="outlined" onClick={() => removeEntity(entity.id)}>
-          Удалить
-        </Button>
+        <div className={styles.delGroupButton}>
+          <Button variant="outlined" className={styles.delButton} onClick={() => removeEntity(entity.id)}>
+            X
+          </Button>
+        </div>
       )}
     </div>
   )
