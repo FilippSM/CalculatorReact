@@ -12,8 +12,6 @@ body {
   min-width: 300px;
   margin: 0;
   font-family: Roboto, sans-serif;
-/*   color: color(dark, 100);
-  background-color: color(light, 100); */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
@@ -55,10 +53,4 @@ button {
   cursor: pointer;
   background-color: unset;
   border: none;
-}
-
-h1,
-h2,
-h3 {
-  color: #7572d5;
 }

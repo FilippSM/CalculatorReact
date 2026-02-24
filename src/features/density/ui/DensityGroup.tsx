@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/Button";
 import { Input } from "@/shared/components/Input";
-import styles from "./Density.module.css";
+import styles from "./Density.module.scss";
 import { cleanNumericInput } from "../lib";
 
 
@@ -52,12 +52,12 @@ export const DensityGroup = ({
         </div>
       )}
       {index === totalGroups - 1 && (
-        <Button variant="outlined" onClick={onAddGroup}>
+        <Button variant="outlined" className={styles.addButtonDen} onClick={onAddGroup}>
           +
         </Button>
       )}
       {totalGroups > 1 && (
-        <Button variant="outlined" onClick={() => onRemoveGroup(group.id)}>
+        <Button variant="outlined" className={styles.delButtonDen} onClick={() => onRemoveGroup(group.id)}>
           X
         </Button>
       )}
