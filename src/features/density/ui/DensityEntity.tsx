@@ -7,13 +7,16 @@ import { DensitySelects } from "./DensitySelects"
 import { DensityGroup } from "./DensityGroup"
 import { DensityResult } from "./DensityResult"
 
-import { useDensityStore } from "../model/densityStore"
-
+import { useDensityStore, type DensityEntityProps } from "../model/densityStore"
 import styles from "./Density.module.scss"
 import { useThemeStore } from "@/app/store"
 import clsx from "clsx"
 
-export const DensityEntity = ({ entity }) => {
+type DensityEntityComponentProps = {
+  entity: DensityEntityProps
+}
+
+export const DensityEntity = ({ entity }: DensityEntityComponentProps) => {
   const theme = useThemeStore((state) => state.theme)
   const { removeEntity, addGroup, removeGroup, updateDensity, updateTemperature, updateCorrection, updateUnit } =
     useDensityStore()

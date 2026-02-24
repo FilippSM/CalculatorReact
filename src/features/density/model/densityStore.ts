@@ -6,7 +6,7 @@ export type DensityGroup = {
   temperature: string
 }
 
-export type DensityEntity = {
+export type DensityEntityProps = {
   id: string
   correction: string
   unit: string
@@ -14,7 +14,7 @@ export type DensityEntity = {
 }
 
 type DensityStore = {
-  entities: DensityEntity[]
+  entities: DensityEntityProps[]
 
   addEntity: () => void
   removeEntity: (entityId: string) => void
