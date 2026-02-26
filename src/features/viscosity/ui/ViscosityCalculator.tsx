@@ -4,14 +4,7 @@ import { useState } from "react"
 import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
 
-import {
-  calculateViscosity,
-  calculateIV,
-  convertToSeconds,
-  normalizeNumber,
-} from "../lib/viscosty"
-
-
+import { calculateViscosity, calculateIV, convertToSeconds, normalizeNumber } from "../lib/viscosty"
 
 export const ViscosityCalculator = () => {
   const [time100, setTime100] = useState("")
@@ -58,9 +51,12 @@ export const ViscosityCalculator = () => {
           Calculate
         </Button>
 
-        <Input label="Viscosity 100°C" value={result100 ?? ""} disabled />
+        <div>Result100: {result100 ?? ""}</div>
+        <div>Result40: {result40 ?? ""}</div>
+        <div>ResultIV: {iv ?? ""}</div>
+       {/*  <Input label="Viscosity 100°C" value={result100 ?? ""} disabled />
         <Input label="Viscosity 40°C" value={result40 ?? ""} disabled />
-        <Input label="Viscosity Index" value={iv ?? ""} disabled />
+        <Input label="Viscosity Index" value={iv ?? ""} disabled /> */}
       </div>
     </div>
   )

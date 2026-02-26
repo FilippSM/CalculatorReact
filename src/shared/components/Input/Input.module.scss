@@ -33,7 +33,6 @@
       color: color(dark, 900);
       border-color: color(dark, 900);
     }
-
   }
 
   &--dark {
@@ -41,11 +40,9 @@
     border: 1px solid color(light, 100);
 
     &:hover {
-      background-color: color(dark, 300);
+      background-color: color(dark, 100);
     }
   }
-
-
 
   &::placeholder {
     color: color(light, 900);
