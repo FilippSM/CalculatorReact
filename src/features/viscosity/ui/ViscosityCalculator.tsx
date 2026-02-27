@@ -5,8 +5,13 @@ import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
 
 import { calculateViscosity, calculateIV, convertToSeconds, normalizeNumber } from "../lib/viscosty"
+import { useThemeStore } from "@/app/store"
+import clsx from "clsx"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 
 export const ViscosityCalculator = () => {
+  const theme = useThemeStore((state) => state.theme)
+
   const [time100, setTime100] = useState("")
   const [time40, setTime40] = useState("")
   const [const100, setConst100] = useState("")
@@ -42,11 +47,39 @@ export const ViscosityCalculator = () => {
         <h1>Расчет вязкости по ГОСТ 33 № 2</h1>
         <SimplePopup />
       </div>
-      <div style={{ maxWidth: 400 }}>
-        <Input label="Time 100°C" value={time100} onValueChange={setTime100} />
-        <Input label="Constant 100°C" value={const100} onValueChange={setConst100} />
-        <Input label="Time 40°C" value={time40} onValueChange={setTime40} />
-        <Input label="Constant 40°C" value={const40} onValueChange={setConst40} />
+      <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
+        <div>
+          <Input label="Time 100°C" value={time100} onValueChange={setTime100} />
+          <Input label="Constant 100°C" value={const100} onValueChange={setConst100} />
+          <Input label="Time 40°C" value={time40} onValueChange={setTime40} />
+          <Input label="Constant 40°C" value={const40} onValueChange={setConst40} />
+        </div>
+        <div>
+          <div>
+            <Select onValueChange={() => {}}>
+              <SelectTrigger className="w-[180px]" label={"Correction"}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={"0"}>-</SelectItem>
+                <SelectItem value={"0.0014"}>{"1"}</SelectItem>
+                <SelectItem value={"0.0007"}>{"2"}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Select onValueChange={() => {}}>
+              <SelectTrigger className="w-[180px]" label={"Unit"}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={"г/см³"}>г/см³</SelectItem>
+                <SelectItem value={"кг/м³"}>кг/м³</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         <Button onClick={handleCalculate} fullWidth>
           Calculate
         </Button>
@@ -54,9 +87,6 @@ export const ViscosityCalculator = () => {
         <div>Result100: {result100 ?? ""}</div>
         <div>Result40: {result40 ?? ""}</div>
         <div>ResultIV: {iv ?? ""}</div>
-       {/*  <Input label="Viscosity 100°C" value={result100 ?? ""} disabled />
-        <Input label="Viscosity 40°C" value={result40 ?? ""} disabled />
-        <Input label="Viscosity Index" value={iv ?? ""} disabled /> */}
       </div>
     </div>
   )

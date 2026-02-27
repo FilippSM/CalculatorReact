@@ -1,3 +1,5 @@
+@use "../../../shared//styles/colors" as *;
+
 .container {
   display: flex;
   flex-direction: column;
@@ -11,4 +13,23 @@
   gap: 10px;
   align-items: center;
   justify-content: center;
+}
+
+.entityBlock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+
+  // border: 1px solid color(light, 900);
+  border-radius: 2px;
+
+  &--light {
+    background-color: color(light, 500);
+  }
+
+  &--dark {
+    background-color: color(dark, 300);
+  }
 }
