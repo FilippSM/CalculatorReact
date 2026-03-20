@@ -1,10 +1,10 @@
-import { NavLink } from "react-router"
-import styles from "./Header.module.css"
-import { Container } from "@/shared/components/Container"
 import { Path } from "@/app/routing"
 import { useThemeStore } from "@/app/store"
-import { useEffect } from "react"
 import { Button } from "@/shared/components/Button"
+import { Container } from "@/shared/components/Container"
+import { useEffect } from "react"
+import { Link } from "react-router"
+import styles from "./Header.module.css"
 
 export const Header = () => {
   const { theme, toggleTheme } = useThemeStore()
@@ -18,34 +18,23 @@ export const Header = () => {
     <>
       <Container className={styles.container}>
         <nav className={styles.nav}>
-          <NavLink
-            to={Path.Density}
-            end
-            className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}
-          >
-            Density
-          </NavLink>
-          <NavLink
-            to={Path.Login}
-            className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}
-          >
-            Login
-          </NavLink>
-          <NavLink
-            to={Path.Main}
-            className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}
-          >
-            Main
-          </NavLink>
-          <NavLink
-            to={Path.Results}
-            className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}
-          >
-            Results
-          </NavLink>
+          <Button asChild variant="secondary">
+            <Link to={Path.Tests}>Test</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link to={Path.Login}>Login</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link to={Path.Main}>Main</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link to={Path.Results}>Results</Link>
+          </Button>
         </nav>
 
-        <Button onClick={toggleTheme} variant="theme" themeMode={theme}>{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</Button>
+        <Button onClick={toggleTheme} variant="theme" themeMode={theme}>
+          {theme === "light" ? "Light Mode" : "Dark Mode"}
+        </Button>
       </Container>
     </>
   )
