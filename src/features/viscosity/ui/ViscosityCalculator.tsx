@@ -8,6 +8,7 @@ import { calculateViscosity, calculateIV, convertToSeconds, normalizeNumber } fr
 import { useThemeStore } from "@/app/store"
 import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
+import { constansVisc } from "../constans/constans-visc"
 
 export const ViscosityCalculator = () => {
   const theme = useThemeStore((state) => state.theme)
@@ -69,14 +70,16 @@ export const ViscosityCalculator = () => {
           <div className={styles.viscosityBlock}>
             <Input label="Time 100°C" value={time100} onValueChange={setTime100} />
             <div>
-              <Select value={"#"} onValueChange={() => {}}>
-                <SelectTrigger className="w-[180px]" label={"Correction"}>
-                  <SelectValue />
+              <Select onValueChange={() => {}} defaultValue="">
+                <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
+                  <SelectValue placeholder="Выберите вискозиметр" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={"0"}>-</SelectItem>
-                  <SelectItem value={"0.0014"}>1</SelectItem>
-                  <SelectItem value={"0.0007"}>2</SelectItem>
+                  {constansVisc.map((item) => (
+                    <SelectItem key={item.id} value={item.constant.toString()}>
+                      {item.id}, diameter: {item.diameter}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -85,7 +88,7 @@ export const ViscosityCalculator = () => {
             <Input label="Time 40°C" value={time100} onValueChange={setTime100} />
             <div>
               <Select value={"#"} onValueChange={() => {}}>
-                <SelectTrigger className="w-[180px]" label={"Unit"}>
+                <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
