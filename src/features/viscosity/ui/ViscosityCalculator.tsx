@@ -42,6 +42,8 @@ export const ViscosityCalculator = () => {
     setIV(ivValue)
   }
 
+  const [data, setData] = useState("input")
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -49,7 +51,18 @@ export const ViscosityCalculator = () => {
         <SimplePopup />
       </div>
       <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
-        <div className={styles.viscositysBlock}>
+        <div>
+          <Select value={data} onValueChange={setData}>
+            <SelectTrigger className="w-[180px]" label={"Select data"}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={"input"}>input</SelectItem>
+              <SelectItem value={"select"}>select</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {/*         <div className={styles.viscositysBlock}>
           <div className={styles.viscosityBlock}>
             <Input label="Time 100°C" value={time100} onValueChange={setTime100} />
             <Input label="Constant 100°C" value={const100} onValueChange={setConst100} />
@@ -68,11 +81,10 @@ export const ViscosityCalculator = () => {
 
         <div>
           <div className={styles.viscosityBlock}>
-            <Input label="Time 100°C" value={time100} onValueChange={setTime100} />
             <div>
               <Select onValueChange={() => {}} defaultValue="">
                 <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
-                  <SelectValue placeholder="Выберите вискозиметр" />
+                  <SelectValue placeholder="Select viscometer" />
                 </SelectTrigger>
                 <SelectContent>
                   {constansVisc.map((item) => (
@@ -85,18 +97,76 @@ export const ViscosityCalculator = () => {
             </div>
           </div>
           <div className={styles.viscosityBlock}>
-            <Input label="Time 40°C" value={time100} onValueChange={setTime100} />
             <div>
-              <Select value={"#"} onValueChange={() => {}}>
+              <Select onValueChange={() => {}} defaultValue="">
                 <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
-                  <SelectValue />
+                  <SelectValue placeholder="Select viscometer" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={"г/см³"}>г/см³</SelectItem>
-                  <SelectItem value={"кг/м³"}>кг/м³</SelectItem>
+                  {constansVisc.map((item) => (
+                    <SelectItem key={item.id} value={item.constant.toString()}>
+                      {item.id}, diameter: {item.diameter}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
+          </div>
+        </div> */}
+
+        <div className={styles.viscositysBlock}>
+          <div className={styles.viscosityBlock}>
+            <Input label="Time 100°C" value={time100} onValueChange={setTime100} />
+
+            {data === "input" ? (
+              <Input label="Constant 100°C" value={const100} onValueChange={setConst100} />
+            ) : (
+              <div>
+                <Select onValueChange={(value) => setConst100(value)} defaultValue="">
+                  <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
+                    <SelectValue placeholder="Select viscometer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {constansVisc.map((item) => (
+                      <SelectItem key={item.id} value={item.constant.toString()}>
+                        {item.id}, diameter: {item.diameter}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <Button variant="add" onClick={() => {}}>
+              +
+            </Button>
+          </div>
+
+          <div className={styles.viscosityBlock}>
+            <Input label="Time 40°C" value={time40} onValueChange={setTime40} />
+
+            {data === "input" ? (
+              <Input label="Constant 40°C" value={const40} onValueChange={setConst40} />
+            ) : (
+              <div>
+                <Select onValueChange={(value) => setConst40(value)} defaultValue="">
+                  <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
+                    <SelectValue placeholder="Select viscometer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {constansVisc.map((item) => (
+                      <SelectItem key={item.id} value={item.constant.toString()}>
+                        {item.id}, diameter: {item.diameter}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <Button variant="add" onClick={() => {}}>
+              +
+            </Button>
           </div>
         </div>
 

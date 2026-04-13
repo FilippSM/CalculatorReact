@@ -33,12 +33,19 @@
     background-color: color(dark, 300);
   }
 }
+
 .viscositysBlock {
   display: flex;
-  gap: 10px;
   flex-direction: column;
+  gap: 10px;
 }
+
 .viscosityBlock {
   display: flex;
   gap: 10px;
+}
+
+.selectViscosityBlock {
+  display: flex;
+  flex-direction: column;
 }
