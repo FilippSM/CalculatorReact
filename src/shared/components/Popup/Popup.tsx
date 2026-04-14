@@ -3,7 +3,11 @@ import Popover from "@mui/material/Popover"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 
-export function SimplePopup() {
+type Props = {
+  description: string 
+} 
+
+export function SimplePopup({ description }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -59,7 +63,7 @@ export function SimplePopup() {
         }}
       >
         <Typography sx={{ p: 2 }}>
-          Расчет происходит автоматически, необходимо ввести данные в поле Density и Temperature
+          {description}
         </Typography>
       </Popover>
     </div>
