@@ -11,35 +11,60 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { constansVisc } from "../constans/constans-visc"
 import { useDebounce } from "@/shared/hooks/useDebounce"
 
+type ViscosityGroup = {
+  id: string
+  time: string
+  constant: string
+}
+
+const createViscosityGroup = (): ViscosityGroup => ({
+  id: `${Date.now()}-${Math.random()}`,
+  time: "",
+  constant: "",
+})
+
 export const ViscosityCalculator = () => {
   const theme = useThemeStore((state) => state.theme)
 
-  const [time100, setTime100] = useState("")
-  const [time40, setTime40] = useState("")
-  const [const100, setConst100] = useState("")
-  const [const40, setConst40] = useState("")
+  const [groups100, setGroups100] = useState<ViscosityGroup[]>([createViscosityGroup()])
+  const [groups40, setGroups40] = useState<ViscosityGroup[]>([createViscosityGroup()])
   const [data, setData] = useState("input")
 
   const [result100, setResult100] = useState<number | null>(null)
   const [result40, setResult40] = useState<number | null>(null)
   const [iv, setIV] = useState<number | null>(null)
 
-  // Apply debounce to all input values
-  const debouncedTime100 = useDebounce(time100, 500)
-  const debouncedTime40 = useDebounce(time40, 500)
-  const debouncedConst100 = useDebounce(const100, 500)
-  const debouncedConst40 = useDebounce(const40, 500)
+  const debouncedGroups100 = useDebounce(groups100, 500)
+  const debouncedGroups40 = useDebounce(groups40, 500)
   const debouncedData = useDebounce(data, 100)
 
   const handleCalculate = () => {
-    const t100 = convertToSeconds(debouncedTime100)
-    const t40 = convertToSeconds(debouncedTime40)
+    const viscosityValues100 = debouncedGroups100
+      .map((group) => {
+        const t100 = convertToSeconds(group.time)
+        const c100 = normalizeNumber(group.constant)
+        return calculateViscosity(t100, c100)
+      })
+      .filter((value) => !isNaN(value))
 
-    const c100 = normalizeNumber(debouncedConst100)
-    const c40 = normalizeNumber(debouncedConst40)
+    const viscosityValues40 = debouncedGroups40
+      .map((group) => {
+        const t40 = convertToSeconds(group.time)
+        const c40 = normalizeNumber(group.constant)
+        return calculateViscosity(t40, c40)
+      })
+      .filter((value) => !isNaN(value))
 
-    const v100 = calculateViscosity(t100, c100)
-    const v40 = calculateViscosity(t40, c40)
+    const v100 =
+      viscosityValues100.length > 0
+        ? viscosityValues100.reduce((sum, value) => sum + value, 0) / viscosityValues100.length
+        : NaN
+
+    const v40 =
+      viscosityValues40.length > 0
+        ? viscosityValues40.reduce((sum, value) => sum + value, 0) / viscosityValues40.length
+        : NaN
+
     const ivValue = calculateIV(v100, v40)
 
     setResult100(v100)
@@ -50,15 +75,30 @@ export const ViscosityCalculator = () => {
   // Handle mode switch - reset constants when switching between input and select
   const handleDataModeChange = (newMode: string) => {
     setData(newMode)
-    // Reset constants when switching modes to avoid stale data
-    setConst100("")
-    setConst40("")
+    setGroups100((prev) => prev.map((group) => ({ ...group, constant: "" })))
+    setGroups40((prev) => prev.map((group) => ({ ...group, constant: "" })))
+  }
+
+  const updateGroup100 = (id: string, field: "time" | "constant", value: string) => {
+    setGroups100((prev) => prev.map((group) => (group.id === id ? { ...group, [field]: value } : group)))
+  }
+
+  const updateGroup40 = (id: string, field: "time" | "constant", value: string) => {
+    setGroups40((prev) => prev.map((group) => (group.id === id ? { ...group, [field]: value } : group)))
+  }
+
+  const addGroup100 = () => {
+    setGroups100((prev) => [...prev, createViscosityGroup()])
+  }
+
+  const addGroup40 = () => {
+    setGroups40((prev) => [...prev, createViscosityGroup()])
   }
 
   // Trigger calculation when debounced values change
   useEffect(() => {
     handleCalculate()
-  }, [debouncedTime100, debouncedTime40, debouncedConst100, debouncedConst40, debouncedData])
+  }, [debouncedGroups100, debouncedGroups40, debouncedData])
 
   const description = `Расчет происходит автоматически, выбрать способ ввода константы в Select data, 
 необходимо ввести данные в поле Time и Constant или выбрать вискозиметр в Viscometr`
@@ -82,77 +122,85 @@ export const ViscosityCalculator = () => {
           </Select>
         </div>
         <div className={styles.viscositysBlock}>
-          <div className={styles.viscosityBlock}>
-            <Input label="Time 100°C" value={time100} onValueChange={setTime100} />
+          {groups100.map((group, index) => (
+            <div key={group.id} className={styles.viscosityBlock}>
+              <Input label="Time 100°C" value={group.time} onValueChange={(value) => updateGroup100(group.id, "time", value)} />
 
-            {data === "input" ? (
-              <Input
-                key="const100-input" // Add key to force re-render
-                label="Constant 100°C"
-                value={const100}
-                onValueChange={setConst100}
-              />
-            ) : (
-              <div>
-                <Select
-                  key="const100-select" // Add key to force re-render
-                  onValueChange={setConst100}
-                  value={const100 || ""}
-                >
-                  <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
-                    <SelectValue placeholder="Select viscometer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {constansVisc.map((item) => (
-                      <SelectItem key={item.id} value={item.constant.toString()}>
-                        {item.id}, diameter: {item.diameter}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+              {data === "input" ? (
+                <Input
+                  key={`const100-input-${group.id}`}
+                  label="Constant 100°C"
+                  value={group.constant}
+                  onValueChange={(value) => updateGroup100(group.id, "constant", value)}
+                />
+              ) : (
+                <div>
+                  <Select
+                    key={`const100-select-${group.id}`}
+                    onValueChange={(value) => updateGroup100(group.id, "constant", value)}
+                    value={group.constant || ""}
+                  >
+                    <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
+                      <SelectValue placeholder="Select viscometer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {constansVisc.map((item) => (
+                        <SelectItem key={item.id} value={item.constant.toString()}>
+                          {item.id}, diameter: {item.diameter}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
-            <Button variant="add" onClick={() => {}}>
-              +
-            </Button>
-          </div>
+              {index === groups100.length - 1 && (
+                <Button variant="add" onClick={addGroup100}>
+                  +
+                </Button>
+              )}
+            </div>
+          ))}
 
-          <div className={styles.viscosityBlock}>
-            <Input label="Time 40°C" value={time40} onValueChange={setTime40} />
+          {groups40.map((group, index) => (
+            <div key={group.id} className={styles.viscosityBlock}>
+              <Input label="Time 40°C" value={group.time} onValueChange={(value) => updateGroup40(group.id, "time", value)} />
 
-            {data === "input" ? (
-              <Input
-                key="const40-input" // Add key to force re-render
-                label="Constant 40°C"
-                value={const40}
-                onValueChange={setConst40}
-              />
-            ) : (
-              <div>
-                <Select
-                  key="const40-select" // Add key to force re-render
-                  onValueChange={setConst40}
-                  value={const40 || ""}
-                >
-                  <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
-                    <SelectValue placeholder="Select viscometer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {constansVisc.map((item) => (
-                      <SelectItem key={item.id} value={item.constant.toString()}>
-                        {item.id}, diameter: {item.diameter}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+              {data === "input" ? (
+                <Input
+                  key={`const40-input-${group.id}`}
+                  label="Constant 40°C"
+                  value={group.constant}
+                  onValueChange={(value) => updateGroup40(group.id, "constant", value)}
+                />
+              ) : (
+                <div>
+                  <Select
+                    key={`const40-select-${group.id}`}
+                    onValueChange={(value) => updateGroup40(group.id, "constant", value)}
+                    value={group.constant || ""}
+                  >
+                    <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
+                      <SelectValue placeholder="Select viscometer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {constansVisc.map((item) => (
+                        <SelectItem key={item.id} value={item.constant.toString()}>
+                          {item.id}, diameter: {item.diameter}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
-            <Button variant="add" onClick={() => {}}>
-              +
-            </Button>
-          </div>
+              {index === groups40.length - 1 && (
+                <Button variant="add" onClick={addGroup40}>
+                  +
+                </Button>
+              )}
+            </div>
+          ))}
         </div>
 
         <div>Result100: {result100 !== null && !isNaN(result100) ? result100 : ""}</div>
