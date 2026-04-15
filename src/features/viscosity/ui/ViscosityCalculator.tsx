@@ -95,6 +95,20 @@ export const ViscosityCalculator = () => {
     setGroups40((prev) => [...prev, createViscosityGroup()])
   }
 
+  const removeGroup100 = (id: string) => {
+    setGroups100((prev) => {
+      if (prev.length <= 1) return prev
+      return prev.filter((group) => group.id !== id)
+    })
+  }
+
+  const removeGroup40 = (id: string) => {
+    setGroups40((prev) => {
+      if (prev.length <= 1) return prev
+      return prev.filter((group) => group.id !== id)
+    })
+  }
+
   // Trigger calculation when debounced values change
   useEffect(() => {
     handleCalculate()
@@ -159,6 +173,11 @@ export const ViscosityCalculator = () => {
                   +
                 </Button>
               )}
+              {groups100.length > 1 && (
+                <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup100(group.id)}>
+                  X
+                </Button>
+              )}
             </div>
           ))}
 
@@ -197,6 +216,11 @@ export const ViscosityCalculator = () => {
               {index === groups40.length - 1 && (
                 <Button variant="add" onClick={addGroup40}>
                   +
+                </Button>
+              )}
+              {groups40.length > 1 && (
+                <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup40(group.id)}>
+                  X
                 </Button>
               )}
             </div>

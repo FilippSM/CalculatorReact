@@ -49,3 +49,18 @@
   display: flex;
   flex-direction: column;
 }
+
+.delButtonVisc {
+  color: color(danger, 500);
+  border-color: color(danger, 500);
+
+  &:hover {
+    color: color(danger, 100);
+    border-color: color(danger, 100);
+  }
+
+  &:active {
+    color: color(danger, 700);
+    border-color: color(danger, 700);
+  }
+}
