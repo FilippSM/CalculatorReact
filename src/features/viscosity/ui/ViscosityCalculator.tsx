@@ -1,6 +1,6 @@
 import { SimplePopup } from "@/shared/components/Popup"
 import styles from "./ViscosityCalculator.module.scss"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
 
@@ -10,30 +10,23 @@ import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import { constansVisc } from "../constans/constans-visc"
 import { useDebounce } from "@/shared/hooks/useDebounce"
-
-type ViscosityGroup = {
-  id: string
-  time: string
-  constant: string
-}
-
-const createViscosityGroup = (): ViscosityGroup => ({
-  id: `${Date.now()}-${Math.random()}`,
-  time: "",
-  constant: "",
-})
+import { useViscosityStore, type ViscosityEntity } from "../model/storeViscosityCalculator"
 
 type ViscosityCalculatorEntityProps = {
-  showRemoveButton: boolean
-  onRemove: () => void
+  entityId: string
 }
 
-const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalculatorEntityProps) => {
+const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps) => {
   const theme = useThemeStore((state) => state.theme)
 
-  const [groups100, setGroups100] = useState<ViscosityGroup[]>([createViscosityGroup()])
-  const [groups40, setGroups40] = useState<ViscosityGroup[]>([createViscosityGroup()])
-  const [data, setData] = useState("input")
+  const entitiesCount = useViscosityStore((s) => s.entities.length)
+  const entity = useViscosityStore((s) => s.entities.find((e) => e.id === entityId))
+  const { setDataMode, updateGroup100, updateGroup40, addGroup100, addGroup40, removeGroup100, removeGroup40, removeEntity, clearEntity } =
+    useViscosityStore()
+
+  const data = entity?.dataMode ?? "input"
+  const groups100 = entity?.groups100 ?? []
+  const groups40 = entity?.groups40 ?? []
 
   const [result100, setResult100] = useState<number | null>(null)
   const [result40, setResult40] = useState<number | null>(null)
@@ -43,7 +36,7 @@ const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalc
   const debouncedGroups40 = useDebounce(groups40, 500)
   const debouncedData = useDebounce(data, 100)
 
-  const handleCalculate = () => {
+  const calculate = () => {
     const viscosityValues100 = debouncedGroups100
       .map((group) => {
         const t100 = convertToSeconds(group.time)
@@ -61,14 +54,10 @@ const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalc
       .filter((value) => !isNaN(value))
 
     const v100 =
-      viscosityValues100.length > 0
-        ? viscosityValues100.reduce((sum, value) => sum + value, 0) / viscosityValues100.length
-        : NaN
+      viscosityValues100.length > 0 ? viscosityValues100.reduce((sum, value) => sum + value, 0) / viscosityValues100.length : NaN
 
     const v40 =
-      viscosityValues40.length > 0
-        ? viscosityValues40.reduce((sum, value) => sum + value, 0) / viscosityValues40.length
-        : NaN
+      viscosityValues40.length > 0 ? viscosityValues40.reduce((sum, value) => sum + value, 0) / viscosityValues40.length : NaN
 
     const ivValue = calculateIV(v100, v40)
 
@@ -77,52 +66,19 @@ const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalc
     setIV(ivValue)
   }
 
-  // Handle mode switch - reset constants when switching between input and select
-  const handleDataModeChange = (newMode: string) => {
-    setData(newMode)
-    setGroups100((prev) => prev.map((group) => ({ ...group, constant: "" })))
-    setGroups40((prev) => prev.map((group) => ({ ...group, constant: "" })))
-  }
-
-  const updateGroup100 = (id: string, field: "time" | "constant", value: string) => {
-    setGroups100((prev) => prev.map((group) => (group.id === id ? { ...group, [field]: value } : group)))
-  }
-
-  const updateGroup40 = (id: string, field: "time" | "constant", value: string) => {
-    setGroups40((prev) => prev.map((group) => (group.id === id ? { ...group, [field]: value } : group)))
-  }
-
-  const addGroup100 = () => {
-    setGroups100((prev) => [...prev, createViscosityGroup()])
-  }
-
-  const addGroup40 = () => {
-    setGroups40((prev) => [...prev, createViscosityGroup()])
-  }
-
-  const removeGroup100 = (id: string) => {
-    setGroups100((prev) => {
-      if (prev.length <= 1) return prev
-      return prev.filter((group) => group.id !== id)
-    })
-  }
-
-  const removeGroup40 = (id: string) => {
-    setGroups40((prev) => {
-      if (prev.length <= 1) return prev
-      return prev.filter((group) => group.id !== id)
-    })
-  }
-
-  // Trigger calculation when debounced values change
   useEffect(() => {
-    handleCalculate()
+    calculate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedGroups100, debouncedGroups40, debouncedData])
+
+  const dataMode: ViscosityEntity["dataMode"] = data as ViscosityEntity["dataMode"]
+
+  if (!entity) return null
 
   return (
     <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
       <div>
-        <Select value={data} onValueChange={handleDataModeChange}>
+        <Select value={dataMode} onValueChange={(v) => setDataMode(entityId, v as ViscosityEntity["dataMode"])}>
           <SelectTrigger className="w-[180px]" label={"Select data"}>
             <SelectValue />
           </SelectTrigger>
@@ -132,23 +88,24 @@ const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalc
           </SelectContent>
         </Select>
       </div>
+
       <div className={styles.viscositysBlock}>
         {groups100.map((group, index) => (
           <div key={group.id} className={styles.viscosityBlock}>
-            <Input label="Time 100°C" value={group.time} onValueChange={(value) => updateGroup100(group.id, "time", value)} />
+            <Input label="Time 100°C" value={group.time} onValueChange={(value) => updateGroup100(entityId, group.id, "time", value)} />
 
-            {data === "input" ? (
+            {dataMode === "input" ? (
               <Input
                 key={`const100-input-${group.id}`}
                 label="Constant 100°C"
                 value={group.constant}
-                onValueChange={(value) => updateGroup100(group.id, "constant", value)}
+                onValueChange={(value) => updateGroup100(entityId, group.id, "constant", value)}
               />
             ) : (
               <div>
                 <Select
                   key={`const100-select-${group.id}`}
-                  onValueChange={(value) => updateGroup100(group.id, "constant", value)}
+                  onValueChange={(value) => updateGroup100(entityId, group.id, "constant", value)}
                   value={group.constant || ""}
                 >
                   <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
@@ -166,12 +123,12 @@ const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalc
             )}
 
             {index === groups100.length - 1 && (
-              <Button variant="add" onClick={addGroup100}>
+              <Button variant="add" onClick={() => addGroup100(entityId)}>
                 +
               </Button>
             )}
             {groups100.length > 1 && (
-              <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup100(group.id)}>
+              <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup100(entityId, group.id)}>
                 X
               </Button>
             )}
@@ -180,20 +137,20 @@ const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalc
 
         {groups40.map((group, index) => (
           <div key={group.id} className={styles.viscosityBlock}>
-            <Input label="Time 40°C" value={group.time} onValueChange={(value) => updateGroup40(group.id, "time", value)} />
+            <Input label="Time 40°C" value={group.time} onValueChange={(value) => updateGroup40(entityId, group.id, "time", value)} />
 
-            {data === "input" ? (
+            {dataMode === "input" ? (
               <Input
                 key={`const40-input-${group.id}`}
                 label="Constant 40°C"
                 value={group.constant}
-                onValueChange={(value) => updateGroup40(group.id, "constant", value)}
+                onValueChange={(value) => updateGroup40(entityId, group.id, "constant", value)}
               />
             ) : (
               <div>
                 <Select
                   key={`const40-select-${group.id}`}
-                  onValueChange={(value) => updateGroup40(group.id, "constant", value)}
+                  onValueChange={(value) => updateGroup40(entityId, group.id, "constant", value)}
                   value={group.constant || ""}
                 >
                   <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
@@ -211,12 +168,12 @@ const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalc
             )}
 
             {index === groups40.length - 1 && (
-              <Button variant="add" onClick={addGroup40}>
+              <Button variant="add" onClick={() => addGroup40(entityId)}>
                 +
               </Button>
             )}
             {groups40.length > 1 && (
-              <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup40(group.id)}>
+              <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup40(entityId, group.id)}>
                 X
               </Button>
             )}
@@ -228,32 +185,27 @@ const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalc
       <div>Result40: {result40 !== null && !isNaN(result40) ? result40 : ""}</div>
       <div>ResultIV: {iv !== null && !isNaN(iv) ? iv : ""}</div>
 
-      {showRemoveButton && (
-        <div className={styles.delEntityButton}>
-          <Button variant="outlined" className={styles.delButtonVisc} onClick={onRemove}>
+      <div className={styles.delEntityButton}>
+        {entitiesCount > 1 && (
+          <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeEntity(entityId)}>
             X
           </Button>
-        </div>
-      )}
+        )}
+        <Button variant="outlined" onClick={() => clearEntity(entityId)}>
+          Clear
+        </Button>
+      </div>
     </div>
   )
 }
 
 export const ViscosityCalculator = () => {
-  const description = `Расчет происходит автоматически, выбрать способ ввода константы в Select data, 
+  const description = `Расчет происходит автоматически, выбрать способ ввода константы в Select data,
 необходимо ввести данные в поле Time и Constant или выбрать вискозиметр в Viscometr`
-  const [entities, setEntities] = useState<string[]>([`${Date.now()}-${Math.random()}`])
 
-  const addEntity = () => {
-    setEntities((prev) => [...prev, `${Date.now()}-${Math.random()}`])
-  }
-
-  const removeEntity = (entityId: string) => {
-    setEntities((prev) => {
-      if (prev.length <= 1) return prev
-      return prev.filter((id) => id !== entityId)
-    })
-  }
+  const entities = useViscosityStore((s) => s.entities)
+  const addEntity = useViscosityStore((s) => s.addEntity)
+  const clearStore = useViscosityStore((s) => s.clearStore)
 
   return (
     <div className={styles.container}>
@@ -262,16 +214,15 @@ export const ViscosityCalculator = () => {
         <SimplePopup description={description} />
       </div>
 
-      {entities.map((entityId) => (
-        <ViscosityCalculatorEntity
-          key={entityId}
-          showRemoveButton={entities.length > 1}
-          onRemove={() => removeEntity(entityId)}
-        />
+      {entities.map((entity) => (
+        <ViscosityCalculatorEntity key={entity.id} entityId={entity.id} />
       ))}
 
       <Button variant="add" onClick={addEntity}>
         Add calc
+      </Button>
+      <Button variant="outlined" onClick={clearStore}>
+        Clear
       </Button>
     </div>
   )
