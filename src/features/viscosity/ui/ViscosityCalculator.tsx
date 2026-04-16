@@ -23,7 +23,12 @@ const createViscosityGroup = (): ViscosityGroup => ({
   constant: "",
 })
 
-export const ViscosityCalculator = () => {
+type ViscosityCalculatorEntityProps = {
+  showRemoveButton: boolean
+  onRemove: () => void
+}
+
+const ViscosityCalculatorEntity = ({ showRemoveButton, onRemove }: ViscosityCalculatorEntityProps) => {
   const theme = useThemeStore((state) => state.theme)
 
   const [groups100, setGroups100] = useState<ViscosityGroup[]>([createViscosityGroup()])
@@ -114,8 +119,141 @@ export const ViscosityCalculator = () => {
     handleCalculate()
   }, [debouncedGroups100, debouncedGroups40, debouncedData])
 
+  return (
+    <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
+      <div>
+        <Select value={data} onValueChange={handleDataModeChange}>
+          <SelectTrigger className="w-[180px]" label={"Select data"}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={"input"}>input</SelectItem>
+            <SelectItem value={"select"}>select</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className={styles.viscositysBlock}>
+        {groups100.map((group, index) => (
+          <div key={group.id} className={styles.viscosityBlock}>
+            <Input label="Time 100°C" value={group.time} onValueChange={(value) => updateGroup100(group.id, "time", value)} />
+
+            {data === "input" ? (
+              <Input
+                key={`const100-input-${group.id}`}
+                label="Constant 100°C"
+                value={group.constant}
+                onValueChange={(value) => updateGroup100(group.id, "constant", value)}
+              />
+            ) : (
+              <div>
+                <Select
+                  key={`const100-select-${group.id}`}
+                  onValueChange={(value) => updateGroup100(group.id, "constant", value)}
+                  value={group.constant || ""}
+                >
+                  <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
+                    <SelectValue placeholder="Select viscometer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {constansVisc.map((item) => (
+                      <SelectItem key={item.id} value={item.constant.toString()}>
+                        {item.id}, diameter: {item.diameter}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {index === groups100.length - 1 && (
+              <Button variant="add" onClick={addGroup100}>
+                +
+              </Button>
+            )}
+            {groups100.length > 1 && (
+              <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup100(group.id)}>
+                X
+              </Button>
+            )}
+          </div>
+        ))}
+
+        {groups40.map((group, index) => (
+          <div key={group.id} className={styles.viscosityBlock}>
+            <Input label="Time 40°C" value={group.time} onValueChange={(value) => updateGroup40(group.id, "time", value)} />
+
+            {data === "input" ? (
+              <Input
+                key={`const40-input-${group.id}`}
+                label="Constant 40°C"
+                value={group.constant}
+                onValueChange={(value) => updateGroup40(group.id, "constant", value)}
+              />
+            ) : (
+              <div>
+                <Select
+                  key={`const40-select-${group.id}`}
+                  onValueChange={(value) => updateGroup40(group.id, "constant", value)}
+                  value={group.constant || ""}
+                >
+                  <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
+                    <SelectValue placeholder="Select viscometer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {constansVisc.map((item) => (
+                      <SelectItem key={item.id} value={item.constant.toString()}>
+                        {item.id}, diameter: {item.diameter}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {index === groups40.length - 1 && (
+              <Button variant="add" onClick={addGroup40}>
+                +
+              </Button>
+            )}
+            {groups40.length > 1 && (
+              <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup40(group.id)}>
+                X
+              </Button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div>Result100: {result100 !== null && !isNaN(result100) ? result100 : ""}</div>
+      <div>Result40: {result40 !== null && !isNaN(result40) ? result40 : ""}</div>
+      <div>ResultIV: {iv !== null && !isNaN(iv) ? iv : ""}</div>
+
+      {showRemoveButton && (
+        <div className={styles.delEntityButton}>
+          <Button variant="outlined" className={styles.delButtonVisc} onClick={onRemove}>
+            X
+          </Button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export const ViscosityCalculator = () => {
   const description = `Расчет происходит автоматически, выбрать способ ввода константы в Select data, 
 необходимо ввести данные в поле Time и Constant или выбрать вискозиметр в Viscometr`
+  const [entities, setEntities] = useState<string[]>([`${Date.now()}-${Math.random()}`])
+
+  const addEntity = () => {
+    setEntities((prev) => [...prev, `${Date.now()}-${Math.random()}`])
+  }
+
+  const removeEntity = (entityId: string) => {
+    setEntities((prev) => {
+      if (prev.length <= 1) return prev
+      return prev.filter((id) => id !== entityId)
+    })
+  }
 
   return (
     <div className={styles.container}>
@@ -123,115 +261,16 @@ export const ViscosityCalculator = () => {
         <h1>Calculate GOST 33</h1>
         <SimplePopup description={description} />
       </div>
-      <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
-        <div>
-          <Select value={data} onValueChange={handleDataModeChange}>
-            <SelectTrigger className="w-[180px]" label={"Select data"}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={"input"}>input</SelectItem>
-              <SelectItem value={"select"}>select</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className={styles.viscositysBlock}>
-          {groups100.map((group, index) => (
-            <div key={group.id} className={styles.viscosityBlock}>
-              <Input label="Time 100°C" value={group.time} onValueChange={(value) => updateGroup100(group.id, "time", value)} />
 
-              {data === "input" ? (
-                <Input
-                  key={`const100-input-${group.id}`}
-                  label="Constant 100°C"
-                  value={group.constant}
-                  onValueChange={(value) => updateGroup100(group.id, "constant", value)}
-                />
-              ) : (
-                <div>
-                  <Select
-                    key={`const100-select-${group.id}`}
-                    onValueChange={(value) => updateGroup100(group.id, "constant", value)}
-                    value={group.constant || ""}
-                  >
-                    <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
-                      <SelectValue placeholder="Select viscometer" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {constansVisc.map((item) => (
-                        <SelectItem key={item.id} value={item.constant.toString()}>
-                          {item.id}, diameter: {item.diameter}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+      {entities.map((entityId) => (
+        <ViscosityCalculatorEntity
+          key={entityId}
+          showRemoveButton={entities.length > 1}
+          onRemove={() => removeEntity(entityId)}
+        />
+      ))}
 
-              {index === groups100.length - 1 && (
-                <Button variant="add" onClick={addGroup100}>
-                  +
-                </Button>
-              )}
-              {groups100.length > 1 && (
-                <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup100(group.id)}>
-                  X
-                </Button>
-              )}
-            </div>
-          ))}
-
-          {groups40.map((group, index) => (
-            <div key={group.id} className={styles.viscosityBlock}>
-              <Input label="Time 40°C" value={group.time} onValueChange={(value) => updateGroup40(group.id, "time", value)} />
-
-              {data === "input" ? (
-                <Input
-                  key={`const40-input-${group.id}`}
-                  label="Constant 40°C"
-                  value={group.constant}
-                  onValueChange={(value) => updateGroup40(group.id, "constant", value)}
-                />
-              ) : (
-                <div>
-                  <Select
-                    key={`const40-select-${group.id}`}
-                    onValueChange={(value) => updateGroup40(group.id, "constant", value)}
-                    value={group.constant || ""}
-                  >
-                    <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
-                      <SelectValue placeholder="Select viscometer" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {constansVisc.map((item) => (
-                        <SelectItem key={item.id} value={item.constant.toString()}>
-                          {item.id}, diameter: {item.diameter}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {index === groups40.length - 1 && (
-                <Button variant="add" onClick={addGroup40}>
-                  +
-                </Button>
-              )}
-              {groups40.length > 1 && (
-                <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeGroup40(group.id)}>
-                  X
-                </Button>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div>Result100: {result100 !== null && !isNaN(result100) ? result100 : ""}</div>
-        <div>Result40: {result40 !== null && !isNaN(result40) ? result40 : ""}</div>
-        <div>ResultIV: {iv !== null && !isNaN(iv) ? iv : ""}</div>
-      </div>
-      <Button variant="add" onClick={() => {}}>
+      <Button variant="add" onClick={addEntity}>
         Add calc
       </Button>
     </div>
