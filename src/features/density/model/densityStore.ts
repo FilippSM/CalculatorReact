@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { createJSONStorage, persist } from "zustand/middleware"
 import { produce } from "immer"
 
 export type DensityGroup = {
@@ -28,6 +29,7 @@ type DensityStore = {
 
   updateCorrection: (entityId: string, value: string) => void
   updateUnit: (entityId: string, value: string) => void
+  clearStore: () => void
 }
 
 const createGroup = (): DensityGroup => ({
@@ -43,86 +45,102 @@ const createEntity = (): DensityEntityProps => ({
   groups: [createGroup()],
 })
 
-export const useDensityStore = create<DensityStore>((set) => ({
-    entities: [createEntity()],
+const createInitialState = (): Pick<DensityStore, "entities"> => ({
+  entities: [createEntity()],
+})
 
-    addEntity: () =>
-      set(
-        produce((state: DensityStore) => {
-          state.entities.push(createEntity())
-        }),
-      ),
+export const useDensityStore = create<DensityStore>()(
+  persist(
+    (set) => ({
+      ...createInitialState(),
 
-    removeEntity: (entityId) =>
-      set(
-        produce((state: DensityStore) => {
-          state.entities = state.entities.filter((entity) => entity.id !== entityId)
-        }),
-      ),
+      addEntity: () =>
+        set(
+          produce((state: DensityStore) => {
+            state.entities.push(createEntity())
+          }),
+        ),
 
-    addGroup: (entityId) =>
-      set(
-        produce((state: DensityStore) => {
-          const entity = state.entities.find((item) => item.id === entityId)
-          if (!entity) return
+      removeEntity: (entityId) =>
+        set(
+          produce((state: DensityStore) => {
+            state.entities = state.entities.filter((entity) => entity.id !== entityId)
+          }),
+        ),
 
-          entity.groups.push(createGroup())
-        }),
-      ),
+      addGroup: (entityId) =>
+        set(
+          produce((state: DensityStore) => {
+            const entity = state.entities.find((item) => item.id === entityId)
+            if (!entity) return
 
-    removeGroup: (entityId, groupId) =>
-      set(
-        produce((state: DensityStore) => {
-          const entity = state.entities.find((item) => item.id === entityId)
-          if (!entity) return
+            entity.groups.push(createGroup())
+          }),
+        ),
 
-          entity.groups = entity.groups.filter((group) => group.id !== groupId)
-        }),
-      ),
+      removeGroup: (entityId, groupId) =>
+        set(
+          produce((state: DensityStore) => {
+            const entity = state.entities.find((item) => item.id === entityId)
+            if (!entity) return
 
-    updateDensity: (entityId, groupId, value) =>
-      set(
-        produce((state: DensityStore) => {
-          const entity = state.entities.find((item) => item.id === entityId)
-          if (!entity) return
+            entity.groups = entity.groups.filter((group) => group.id !== groupId)
+          }),
+        ),
 
-          const group = entity.groups.find((item) => item.id === groupId)
-          if (!group) return
+      updateDensity: (entityId, groupId, value) =>
+        set(
+          produce((state: DensityStore) => {
+            const entity = state.entities.find((item) => item.id === entityId)
+            if (!entity) return
 
-          group.density = value
-        }),
-      ),
+            const group = entity.groups.find((item) => item.id === groupId)
+            if (!group) return
 
-    updateTemperature: (entityId, groupId, value) =>
-      set(
-        produce((state: DensityStore) => {
-          const entity = state.entities.find((item) => item.id === entityId)
-          if (!entity) return
+            group.density = value
+          }),
+        ),
 
-          const group = entity.groups.find((item) => item.id === groupId)
-          if (!group) return
+      updateTemperature: (entityId, groupId, value) =>
+        set(
+          produce((state: DensityStore) => {
+            const entity = state.entities.find((item) => item.id === entityId)
+            if (!entity) return
 
-          group.temperature = value
-        }),
-      ),
+            const group = entity.groups.find((item) => item.id === groupId)
+            if (!group) return
 
-    updateCorrection: (entityId, value) =>
-      set(
-        produce((state: DensityStore) => {
-          const entity = state.entities.find((item) => item.id === entityId)
-          if (!entity) return
+            group.temperature = value
+          }),
+        ),
 
-          entity.correction = value
-        }),
-      ),
+      updateCorrection: (entityId, value) =>
+        set(
+          produce((state: DensityStore) => {
+            const entity = state.entities.find((item) => item.id === entityId)
+            if (!entity) return
 
-    updateUnit: (entityId, value) =>
-      set(
-        produce((state: DensityStore) => {
-          const entity = state.entities.find((item) => item.id === entityId)
-          if (!entity) return
+            entity.correction = value
+          }),
+        ),
 
-          entity.unit = value
-        }),
-      ),
-}))
+      updateUnit: (entityId, value) =>
+        set(
+          produce((state: DensityStore) => {
+            const entity = state.entities.find((item) => item.id === entityId)
+            if (!entity) return
+
+            entity.unit = value
+          }),
+        ),
+
+      clearStore: () => {
+        set(createInitialState())
+      },
+    }),
+    {
+      name: "density-store",
+      storage: createJSONStorage(() => sessionStorage),
+    },
+  ),
+)
