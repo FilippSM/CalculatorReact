@@ -30,37 +30,26 @@ type DensityStore = {
   updateUnit: (entityId: string, value: string) => void
 }
 
+const createGroup = (): DensityGroup => ({
+  id: crypto.randomUUID(),
+  density: "",
+  temperature: "",
+})
+
+const createEntity = (): DensityEntityProps => ({
+  id: crypto.randomUUID(),
+  correction: "0.0014",
+  unit: "кг/м³",
+  groups: [createGroup()],
+})
+
 export const useDensityStore = create<DensityStore>((set) => ({
-    entities: [
-      {
-        id: crypto.randomUUID(),
-        correction: "0.0014",
-        unit: "кг/м³",
-        groups: [
-          {
-            id: crypto.randomUUID(),
-            density: "",
-            temperature: "",
-          },
-        ],
-      },
-    ],
+    entities: [createEntity()],
 
     addEntity: () =>
       set(
         produce((state: DensityStore) => {
-          state.entities.push({
-            id: crypto.randomUUID(),
-            correction: "0.0014",
-            unit: "кг/м³",
-            groups: [
-              {
-                id: crypto.randomUUID(),
-                density: "",
-                temperature: "",
-              },
-            ],
-          })
+          state.entities.push(createEntity())
         }),
       ),
 
@@ -77,11 +66,7 @@ export const useDensityStore = create<DensityStore>((set) => ({
           const entity = state.entities.find((item) => item.id === entityId)
           if (!entity) return
 
-          entity.groups.push({
-            id: crypto.randomUUID(),
-            density: "",
-            temperature: "",
-          })
+          entity.groups.push(createGroup())
         }),
       ),
 
