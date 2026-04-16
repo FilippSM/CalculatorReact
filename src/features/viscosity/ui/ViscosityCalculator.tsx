@@ -185,16 +185,16 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
       <div>Result40: {result40 !== null && !isNaN(result40) ? result40 : ""}</div>
       <div>ResultIV: {iv !== null && !isNaN(iv) ? iv : ""}</div>
 
-      <div className={styles.delEntityButton}>
-        {entitiesCount > 1 && (
+      {entitiesCount > 1 && (
+        <div className={styles.delEntityButton}>
           <Button variant="outlined" className={styles.delButtonVisc} onClick={() => removeEntity(entityId)}>
             X
           </Button>
-        )}
-        <Button variant="outlined" onClick={() => clearEntity(entityId)}>
-          Clear
-        </Button>
-      </div>
+          <Button variant="outlined" onClick={() => clearEntity(entityId)}>
+            Clear
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
