@@ -24,6 +24,8 @@ type DensityStore = {
   addGroup: (entityId: string) => void
   removeGroup: (entityId: string, groupId: string) => void
 
+  clearEntity: (entityId: string) => void
+
   updateDensity: (entityId: string, groupId: string, value: string) => void
   updateTemperature: (entityId: string, groupId: string, value: string) => void
 
@@ -87,6 +89,17 @@ export const useDensityStore = create<DensityStore>()(
             entity.groups = entity.groups.filter((group) => group.id !== groupId)
           }),
         ),
+
+    clearEntity: (entityId) =>
+      set(
+        produce((state: DensityStore) => {
+          const entity = state.entities.find((item) => item.id === entityId)
+          if (!entity) return
+
+          // Reset inputs for this entity only
+          entity.groups = [createGroup()]
+        }),
+      ),
 
       updateDensity: (entityId, groupId, value) =>
         set(
