@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { produce } from "immer"
 
 export type DensityGroup = {
   id: string
@@ -30,107 +31,113 @@ type DensityStore = {
 }
 
 export const useDensityStore = create<DensityStore>((set) => ({
-  entities: [
-    {
-      id: crypto.randomUUID(),
-      correction: "0.0014",
-      unit: "кг/м³",
-      groups: [
-        {
-          id: crypto.randomUUID(),
-          density: "",
-          temperature: "",
-        },
-      ],
-    },
-  ],
+    entities: [
+      {
+        id: crypto.randomUUID(),
+        correction: "0.0014",
+        unit: "кг/м³",
+        groups: [
+          {
+            id: crypto.randomUUID(),
+            density: "",
+            temperature: "",
+          },
+        ],
+      },
+    ],
 
-  addEntity: () =>
-    set((state) => ({
-      entities: [
-        ...state.entities,
-        {
-          id: crypto.randomUUID(),
-          correction: "0.0014",
-          unit: "кг/м³",
-          groups: [
-            {
-              id: crypto.randomUUID(),
-              density: "",
-              temperature: "",
-            },
-          ],
-        },
-      ],
-    })),
-
-  removeEntity: (entityId) =>
-    set((state) => ({
-      entities: state.entities.filter((e) => e.id !== entityId),
-    })),
-
-  addGroup: (entityId) =>
-    set((state) => ({
-      entities: state.entities.map((entity) =>
-        entity.id === entityId
-          ? {
-              ...entity,
-              groups: [
-                ...entity.groups,
-                {
-                  id: crypto.randomUUID(),
-                  density: "",
-                  temperature: "",
-                },
-              ],
-            }
-          : entity,
+    addEntity: () =>
+      set(
+        produce((state: DensityStore) => {
+          state.entities.push({
+            id: crypto.randomUUID(),
+            correction: "0.0014",
+            unit: "кг/м³",
+            groups: [
+              {
+                id: crypto.randomUUID(),
+                density: "",
+                temperature: "",
+              },
+            ],
+          })
+        }),
       ),
-    })),
 
-  removeGroup: (entityId, groupId) =>
-    set((state) => ({
-      entities: state.entities.map((entity) =>
-        entity.id === entityId
-          ? {
-              ...entity,
-              groups: entity.groups.filter((g) => g.id !== groupId),
-            }
-          : entity,
+    removeEntity: (entityId) =>
+      set(
+        produce((state: DensityStore) => {
+          state.entities = state.entities.filter((entity) => entity.id !== entityId)
+        }),
       ),
-    })),
 
-  updateDensity: (entityId, groupId, value) =>
-    set((state) => ({
-      entities: state.entities.map((entity) =>
-        entity.id === entityId
-          ? {
-              ...entity,
-              groups: entity.groups.map((g) => (g.id === groupId ? { ...g, density: value } : g)),
-            }
-          : entity,
+    addGroup: (entityId) =>
+      set(
+        produce((state: DensityStore) => {
+          const entity = state.entities.find((item) => item.id === entityId)
+          if (!entity) return
+
+          entity.groups.push({
+            id: crypto.randomUUID(),
+            density: "",
+            temperature: "",
+          })
+        }),
       ),
-    })),
 
-  updateTemperature: (entityId, groupId, value) =>
-    set((state) => ({
-      entities: state.entities.map((entity) =>
-        entity.id === entityId
-          ? {
-              ...entity,
-              groups: entity.groups.map((g) => (g.id === groupId ? { ...g, temperature: value } : g)),
-            }
-          : entity,
+    removeGroup: (entityId, groupId) =>
+      set(
+        produce((state: DensityStore) => {
+          const entity = state.entities.find((item) => item.id === entityId)
+          if (!entity) return
+
+          entity.groups = entity.groups.filter((group) => group.id !== groupId)
+        }),
       ),
-    })),
 
-  updateCorrection: (entityId, value) =>
-    set((state) => ({
-      entities: state.entities.map((entity) => (entity.id === entityId ? { ...entity, correction: value } : entity)),
-    })),
+    updateDensity: (entityId, groupId, value) =>
+      set(
+        produce((state: DensityStore) => {
+          const entity = state.entities.find((item) => item.id === entityId)
+          if (!entity) return
 
-  updateUnit: (entityId, value) =>
-    set((state) => ({
-      entities: state.entities.map((entity) => (entity.id === entityId ? { ...entity, unit: value } : entity)),
-    })),
+          const group = entity.groups.find((item) => item.id === groupId)
+          if (!group) return
+
+          group.density = value
+        }),
+      ),
+
+    updateTemperature: (entityId, groupId, value) =>
+      set(
+        produce((state: DensityStore) => {
+          const entity = state.entities.find((item) => item.id === entityId)
+          if (!entity) return
+
+          const group = entity.groups.find((item) => item.id === groupId)
+          if (!group) return
+
+          group.temperature = value
+        }),
+      ),
+
+    updateCorrection: (entityId, value) =>
+      set(
+        produce((state: DensityStore) => {
+          const entity = state.entities.find((item) => item.id === entityId)
+          if (!entity) return
+
+          entity.correction = value
+        }),
+      ),
+
+    updateUnit: (entityId, value) =>
+      set(
+        produce((state: DensityStore) => {
+          const entity = state.entities.find((item) => item.id === entityId)
+          if (!entity) return
+
+          entity.unit = value
+        }),
+      ),
 }))
