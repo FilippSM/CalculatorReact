@@ -45,6 +45,30 @@
   gap: 10px;
 }
 
+.groupResult {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.resultSummary {
+  font-weight: 500;
+}
+
+.entitySummary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.globalSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .selectViscosityBlock {
   display: flex;
   flex-direction: column;

@@ -1,6 +1,6 @@
 import { SimplePopup } from "@/shared/components/Popup"
 import styles from "./ViscosityCalculator.module.scss"
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
 import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
 
@@ -14,9 +14,32 @@ import { useViscosityStore, type ViscosityEntity } from "../model/storeViscosity
 
 type ViscosityCalculatorEntityProps = {
   entityId: string
+  globalAverage100: number | null
+  globalAverage40: number | null
+  globalAverageIV: number | null
+  showGlobalSummary: boolean
 }
 
-const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps) => {
+const getGroupResult = (time: string, constant: string) => {
+  const t = convertToSeconds(time)
+  const c = normalizeNumber(constant)
+  const result = calculateViscosity(t, c)
+  return isNaN(result) ? null : result
+}
+
+const getAverageResult = (values: Array<number | null>) => {
+  const validValues = values.filter((value): value is number => value !== null)
+  if (validValues.length === 0) return null
+  return validValues.reduce((sum, value) => sum + value, 0) / validValues.length
+}
+
+const ViscosityCalculatorEntity = ({
+  entityId,
+  globalAverage100,
+  globalAverage40,
+  globalAverageIV,
+  showGlobalSummary,
+}: ViscosityCalculatorEntityProps) => {
   const theme = useThemeStore((state) => state.theme)
 
   const entitiesCount = useViscosityStore((s) => s.entities.length)
@@ -28,48 +51,20 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
   const groups100 = entity?.groups100 ?? []
   const groups40 = entity?.groups40 ?? []
 
-  const [result100, setResult100] = useState<number | null>(null)
-  const [result40, setResult40] = useState<number | null>(null)
-  const [iv, setIV] = useState<number | null>(null)
-
   const debouncedGroups100 = useDebounce(groups100, 500)
   const debouncedGroups40 = useDebounce(groups40, 500)
-  const debouncedData = useDebounce(data, 100)
 
-  const calculate = () => {
-    const viscosityValues100 = debouncedGroups100
-      .map((group) => {
-        const t100 = convertToSeconds(group.time)
-        const c100 = normalizeNumber(group.constant)
-        return calculateViscosity(t100, c100)
-      })
-      .filter((value) => !isNaN(value))
+  const groupResults100 = useMemo(() => debouncedGroups100.map((group) => getGroupResult(group.time, group.constant)), [debouncedGroups100])
+  const groupResults40 = useMemo(() => debouncedGroups40.map((group) => getGroupResult(group.time, group.constant)), [debouncedGroups40])
 
-    const viscosityValues40 = debouncedGroups40
-      .map((group) => {
-        const t40 = convertToSeconds(group.time)
-        const c40 = normalizeNumber(group.constant)
-        return calculateViscosity(t40, c40)
-      })
-      .filter((value) => !isNaN(value))
+  const result100 = useMemo(() => getAverageResult(groupResults100), [groupResults100])
+  const result40 = useMemo(() => getAverageResult(groupResults40), [groupResults40])
 
-    const v100 =
-      viscosityValues100.length > 0 ? viscosityValues100.reduce((sum, value) => sum + value, 0) / viscosityValues100.length : NaN
-
-    const v40 =
-      viscosityValues40.length > 0 ? viscosityValues40.reduce((sum, value) => sum + value, 0) / viscosityValues40.length : NaN
-
-    const ivValue = calculateIV(v100, v40)
-
-    setResult100(v100)
-    setResult40(v40)
-    setIV(ivValue)
-  }
-
-  useEffect(() => {
-    calculate()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedGroups100, debouncedGroups40, debouncedData])
+  const iv = useMemo(() => {
+    if (result100 === null || result40 === null) return null
+    const value = calculateIV(result100, result40)
+    return isNaN(value) ? null : value
+  }, [result100, result40])
 
   const dataMode: ViscosityEntity["dataMode"] = data as ViscosityEntity["dataMode"]
 
@@ -121,6 +116,12 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
                 </Select>
               </div>
             )}
+            {groups100.length > 1 && groupResults100[index] !== null && (
+              <div className={styles.groupResult}>
+                <div>Result 100°C:</div>
+                <div>{groupResults100[index]}</div>
+              </div>
+            )}
 
             {index === groups100.length - 1 && (
               <Button variant="add" onClick={() => addGroup100(entityId)}>
@@ -166,6 +167,12 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
                 </Select>
               </div>
             )}
+            {groups40.length > 1 && groupResults40[index] !== null && (
+              <div className={styles.groupResult}>
+                <div>Result 40°C:</div>
+                <div>{groupResults40[index]}</div>
+              </div>
+            )}
 
             {index === groups40.length - 1 && (
               <Button variant="add" onClick={() => addGroup40(entityId)}>
@@ -181,9 +188,21 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
         ))}
       </div>
 
-      <div>Result100: {result100 !== null && !isNaN(result100) ? result100 : ""}</div>
-      <div>Result40: {result40 !== null && !isNaN(result40) ? result40 : ""}</div>
-      <div>ResultIV: {iv !== null && !isNaN(iv) ? iv : ""}</div>
+      {entitiesCount > 1 && (
+        <div className={styles.entitySummary}>
+          {result100 !== null && <div>Entity result 100°C: {result100}</div>}
+          {result40 !== null && <div>Entity result 40°C: {result40}</div>}
+          {iv !== null && <div>Entity viscosity index: {iv}</div>}
+        </div>
+      )}
+
+      {showGlobalSummary && (globalAverage100 !== null || globalAverage40 !== null || globalAverageIV !== null) && (
+        <div className={styles.globalSummary}>
+          {globalAverage100 !== null && <div className={styles.resultSummary}>Average result 100°C: {globalAverage100}</div>}
+          {globalAverage40 !== null && <div className={styles.resultSummary}>Average result 40°C: {globalAverage40}</div>}
+          {globalAverageIV !== null && <div className={styles.resultSummary}>Viscosity index (from averages): {globalAverageIV}</div>}
+        </div>
+      )}
 
       {entitiesCount > 1 && (
         <div className={styles.delEntityButton}>
@@ -207,6 +226,21 @@ export const ViscosityCalculator = () => {
   const addEntity = useViscosityStore((s) => s.addEntity)
   const clearStore = useViscosityStore((s) => s.clearStore)
 
+  const average100 = useMemo(() => {
+    const allResults100 = entities.flatMap((entity) => entity.groups100.map((group) => getGroupResult(group.time, group.constant)))
+    return getAverageResult(allResults100)
+  }, [entities])
+
+  const average40 = useMemo(() => {
+    const allResults40 = entities.flatMap((entity) => entity.groups40.map((group) => getGroupResult(group.time, group.constant)))
+    return getAverageResult(allResults40)
+  }, [entities])
+  const averageIV = useMemo(() => {
+    if (average100 === null || average40 === null) return null
+    const value = calculateIV(average100, average40)
+    return isNaN(value) ? null : value
+  }, [average100, average40])
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -214,8 +248,15 @@ export const ViscosityCalculator = () => {
         <SimplePopup description={description} />
       </div>
 
-      {entities.map((entity) => (
-        <ViscosityCalculatorEntity key={entity.id} entityId={entity.id} />
+      {entities.map((entity, index) => (
+        <ViscosityCalculatorEntity
+          key={entity.id}
+          entityId={entity.id}
+          globalAverage100={average100}
+          globalAverage40={average40}
+          globalAverageIV={averageIV}
+          showGlobalSummary={index === entities.length - 1}
+        />
       ))}
 
       <Button variant="add" onClick={addEntity}>
