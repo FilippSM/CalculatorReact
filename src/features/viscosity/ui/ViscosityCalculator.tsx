@@ -9,7 +9,6 @@ import { useThemeStore } from "@/app/store"
 import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import { constansVisc } from "../constans/constans-visc"
-import { useDebounce } from "@/shared/hooks/useDebounce"
 import { useViscosityStore, type ViscosityEntity } from "../model/storeViscosityCalculator"
 
 type ViscosityCalculatorEntityProps = {
@@ -51,11 +50,8 @@ const ViscosityCalculatorEntity = ({
   const groups100 = entity?.groups100 ?? []
   const groups40 = entity?.groups40 ?? []
 
-  const debouncedGroups100 = useDebounce(groups100, 500)
-  const debouncedGroups40 = useDebounce(groups40, 500)
-
-  const groupResults100 = useMemo(() => debouncedGroups100.map((group) => getGroupResult(group.time, group.constant)), [debouncedGroups100])
-  const groupResults40 = useMemo(() => debouncedGroups40.map((group) => getGroupResult(group.time, group.constant)), [debouncedGroups40])
+  const groupResults100 = useMemo(() => groups100.map((group) => getGroupResult(group.time, group.constant)), [groups100])
+  const groupResults40 = useMemo(() => groups40.map((group) => getGroupResult(group.time, group.constant)), [groups40])
 
   const result100 = useMemo(() => getAverageResult(groupResults100), [groupResults100])
   const result40 = useMemo(() => getAverageResult(groupResults40), [groupResults40])
