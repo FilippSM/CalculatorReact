@@ -14,7 +14,7 @@ export const Density = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Calculate GOST 3900</h1>
+        <h1>Calculation of density GOST 3900</h1>
         <SimplePopup description={description}/>
       </div>
 
