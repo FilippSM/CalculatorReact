@@ -16,7 +16,7 @@ export const IndexViscosity = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Viscosity index</h1>
+        <h1>Calculation of viscosity index GOST 25371</h1>
         <SimplePopup description={description} />
       </div>
 
