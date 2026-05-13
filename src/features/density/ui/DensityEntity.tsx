@@ -18,7 +18,7 @@ type DensityEntityComponentProps = {
 
 export const DensityEntity = ({ entity }: DensityEntityComponentProps) => {
   const theme = useThemeStore((state) => state.theme)
-  const { removeEntity, addGroup, removeGroup, updateDensity, updateTemperature, updateCorrection, updateUnit } =
+  const { removeEntity, clearEntity, addGroup, removeGroup, updateDensity, updateTemperature, updateCorrection, updateUnit } =
     useDensityStore()
 
   const entitiesCount = useDensityStore((state) => state.entities.length)
@@ -80,6 +80,9 @@ export const DensityEntity = ({ entity }: DensityEntityComponentProps) => {
         <div className={styles.delGroupButton}>
           <Button variant="outlined" className={styles.delButton} onClick={() => removeEntity(entity.id)}>
             X
+          </Button>
+          <Button variant="outlined" onClick={() => clearEntity(entity.id)}>
+            Clear
           </Button>
         </div>
       )}

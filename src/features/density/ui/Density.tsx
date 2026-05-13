@@ -7,14 +7,14 @@ import { DensityEntity } from "./DensityEntity"
 import styles from "./Density.module.scss"
 
 export const Density = () => {
-  const { entities, addEntity } = useDensityStore()
+  const { entities, addEntity, clearStore } = useDensityStore()
 
   const description = 'Расчет происходит автоматически, необходимо ввести данные в поле Density и Temperature'
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Calculate GOST 3900</h1>
+        <h1>Calculation of density GOST 3900</h1>
         <SimplePopup description={description}/>
       </div>
 
@@ -24,6 +24,9 @@ export const Density = () => {
 
       <Button variant="add" onClick={addEntity}>
         Add calc
+      </Button>
+      <Button variant="outlined" onClick={clearStore}>
+        Clear
       </Button>
     </div>
   )
