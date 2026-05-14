@@ -73,9 +73,9 @@ export const DensityEntity = ({ entity }: DensityEntityComponentProps) => {
 
       <DensityResult post={post} convertStatus={convertStatus} unit={entity.unit} />
 
-      <Button variant="primary" className={styles.buttonSave} onClick={handleSave}>
+      {/* <Button variant="primary" className={styles.buttonSave} onClick={handleSave}>
         Save
-      </Button>
+      </Button> */}
       {entitiesCount > 1 && (
         <div className={styles.delGroupButton}>
           <Button variant="outlined" className={styles.delButton} onClick={() => removeEntity(entity.id)}>
