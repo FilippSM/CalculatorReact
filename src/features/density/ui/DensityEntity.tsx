@@ -1,6 +1,5 @@
 import { Button } from "@/shared/components/Button"
 import { useDebounce } from "@/shared/hooks/useDebounce"
-import { useSaveDensityMutation } from "../api/densityApi"
 import { useDensityCalculations } from "../model/useDensityCalculations"
 
 import { DensitySelects } from "./DensitySelects"
@@ -25,27 +24,11 @@ export const DensityEntity = ({ entity }: DensityEntityComponentProps) => {
 
   const debouncedGroups = useDebounce(entity.groups, 300)
 
-  const { post, convertStatus, calcDensityForGroup, setPost, setConvertStatus } = useDensityCalculations(
+  const { post, convertStatus, calcDensityForGroup } = useDensityCalculations(
     debouncedGroups,
     entity.unit,
     entity.correction,
   )
-
-  const [saveDensity] = useSaveDensityMutation()
-
-  const handleSave = async () => {
-    if (!post) return
-
-    await saveDensity({ density: post })
-
-    entity.groups.forEach((group) => {
-      updateDensity(entity.id, group.id, "")
-      updateTemperature(entity.id, group.id, "")
-    })
-
-    setPost(null)
-    setConvertStatus("")
-  }
 
   return (
     <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
@@ -73,9 +56,6 @@ export const DensityEntity = ({ entity }: DensityEntityComponentProps) => {
 
       <DensityResult post={post} convertStatus={convertStatus} unit={entity.unit} />
 
-      {/* <Button variant="primary" className={styles.buttonSave} onClick={handleSave}>
-        Save
-      </Button> */}
       {entitiesCount > 1 && (
         <div className={styles.delGroupButton}>
           <Button variant="outlined" className={styles.delButton} onClick={() => removeEntity(entity.id)}>

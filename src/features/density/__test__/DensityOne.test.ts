@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest"
-import { cleanNumericInput } from "../ui/Density"
+import { cleanNumericInput } from "../lib"
 
 describe("cleanNumericInput", () => {
   test("removes all letters", () => {
