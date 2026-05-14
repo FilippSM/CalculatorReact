@@ -73,7 +73,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
       <div className={styles.viscositysBlock}>
         {groups100.map((group, index) => (
           <div key={group.id} className={styles.viscosityBlock}>
-            <Input label="Time 100°C" value={group.time} onValueChange={(value) => updateGroup100(entityId, group.id, "time", value)} />
+            <Input label="Flow time 100°C, s" value={group.time} onValueChange={(value) => updateGroup100(entityId, group.id, "time", value)} />
 
             {dataMode === "input" ? (
               <Input
@@ -124,7 +124,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
 
         {groups40.map((group, index) => (
           <div key={group.id} className={styles.viscosityBlock}>
-            <Input label="Time 40°C" value={group.time} onValueChange={(value) => updateGroup40(entityId, group.id, "time", value)} />
+            <Input label="Flow time 40°C, s" value={group.time} onValueChange={(value) => updateGroup40(entityId, group.id, "time", value)} />
 
             {dataMode === "input" ? (
               <Input

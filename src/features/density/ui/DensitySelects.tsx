@@ -1,15 +1,16 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
+import styles from "./Density.module.scss"
 
 type Props = {
-  correction: string;
-  unit: string;
-  onCorrectionChange: (value: string) => void;
-  onUnitChange: (value: string) => void;
+  correction: string
+  unit: string
+  onCorrectionChange: (value: string) => void
+  onUnitChange: (value: string) => void
 }
 
 export const DensitySelects = ({ correction, unit, onCorrectionChange, onUnitChange }: Props) => {
   return (
-    <>
+    <div className={styles.selectsRow}>
       <div>
         <Select value={correction} onValueChange={onCorrectionChange}>
           <SelectTrigger className="w-[180px]" label={"Correction"}>
@@ -33,6 +34,6 @@ export const DensitySelects = ({ correction, unit, onCorrectionChange, onUnitCha
           </SelectContent>
         </Select>
       </div>
-    </>
-  );
-};
+    </div>
+  )
+}
