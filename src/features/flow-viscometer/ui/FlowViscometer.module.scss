@@ -18,8 +18,18 @@
 .controls {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   max-width: 320px;
+}
+
+.selectBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  label {
+    margin-bottom: 4px;
+  }
 }
 
 .results {

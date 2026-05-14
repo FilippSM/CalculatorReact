@@ -27,28 +27,30 @@ export const FlowViscometerEntity = ({ entity }: Props) => {
   return (
     <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
       <div className={styles.controls}>
-        <Select
-          value={entity.calibrationFilter}
-          onValueChange={(v) => updateCalibrationFilter(entity.id, v as FlowViscometerCalibrationFilter)}
-        >
-          <SelectTrigger className="w-full max-w-[320px]" label="Viscometers">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="calibrated">Calibrated</SelectItem>
-            <SelectItem value="nonCalibrated">Uncalibrated</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className={styles.selectBlock}>
+          <Select
+            value={entity.calibrationFilter}
+            onValueChange={(v) => updateCalibrationFilter(entity.id, v as FlowViscometerCalibrationFilter)}
+          >
+            <SelectTrigger className="w-full max-w-[320px]" label="Viscometers">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="calibrated">Calibrated</SelectItem>
+              <SelectItem value="nonCalibrated">Uncalibrated</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         <Input
-          label="Minimum efflux time, s"
+          label="Flow time, s"
           type="text"
           value={entity.minFlowTimeSec}
           onChange={(e) => updateMinFlowTimeSec(entity.id, cleanNumericInput(e.currentTarget.value))}
         />
         <Input
-          label="Estimated viscosity, cP"
+          label="Estimated viscosity, mm²/s"
           type="text"
           value={entity.estimatedViscosity}
           onChange={(e) => updateEstimatedViscosity(entity.id, cleanNumericInput(e.currentTarget.value))}

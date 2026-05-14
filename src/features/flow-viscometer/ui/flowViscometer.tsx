@@ -17,7 +17,7 @@ export const FlowViscometer = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Viscometer selection by efflux</h1>
+        <h1>Selection of viscometers</h1>
         <SimplePopup description={description} />
       </div>
 
