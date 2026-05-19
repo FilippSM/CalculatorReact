@@ -1,0 +1,169 @@
+@use "../../../shared/styles/colors" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 1000px;
+  padding: 10px 0;
+}
+
+.document {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 28px;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #000;
+  background: #fff;
+  border-radius: 2px;
+}
+
+.docHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.docHeaderRight {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 14px;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th,
+  td {
+    padding: 4px 6px;
+    vertical-align: middle;
+    border: 1px solid #000;
+  }
+
+  th {
+    font-weight: 700;
+    text-align: center;
+  }
+}
+
+.labelCell {
+  width: 34%;
+  font-weight: 400;
+  text-align: left;
+}
+
+.valueCell {
+  text-align: left;
+}
+
+.nestedTable {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 4px 6px;
+    border: 1px solid #000;
+  }
+
+  th {
+    font-weight: 700;
+    text-align: center;
+  }
+}
+
+.paramsRow td {
+  text-align: center;
+}
+
+.sectionTitle {
+  margin: 10px 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.testBlock {
+  margin-bottom: 14px;
+}
+
+.testTitle {
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.equipment {
+  margin-bottom: 8px;
+
+  p {
+    margin: 0 0 4px;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 18px;
+    list-style: disc;
+  }
+
+  li {
+    margin-bottom: 2px;
+    list-style: disc;
+  }
+}
+
+.dataLabel {
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.dataTable {
+  font-size: 11px;
+
+  th,
+  td {
+    padding: 3px 4px;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .headerGroup th {
+    font-size: 12px;
+  }
+}
+
+.resultsIntro {
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.footnote {
+  margin-top: 6px;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.signatureTable {
+  width: 280px;
+  margin-top: 20px;
+
+  td {
+    height: 48px;
+    text-align: center;
+  }
+
+  .nameCell {
+    text-align: left;
+  }
+}
+
+.signaturePlaceholder {
+  min-height: 36px;
+}

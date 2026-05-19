@@ -4,9 +4,11 @@ import { Main } from "@/pages/main"
 import { Results } from "@/pages/results"
 import { NotFound } from "@/pages/notFound"
 import { Tests } from "@/pages/tests"
+import { Report } from "@/pages/report"
 
 export const Path = {
   Tests: "/",
+  Person: "/person",
   Login: "/LoginPage",
   Main: "/MainPage",
   Results: "/ResultsPage",
@@ -17,6 +19,7 @@ export const Routing = () => {
   return (
     <Routes>
       <Route path={Path.Tests} element={<Tests />} />
+      <Route path={Path.Person} element={<Report />} />
       <Route path={Path.Login} element={<Login />} />
       <Route path={Path.Main} element={<Main />} />
       <Route path={Path.Results} element={<Results />} />

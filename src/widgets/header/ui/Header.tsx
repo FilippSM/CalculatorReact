@@ -22,6 +22,9 @@ export const Header = () => {
             <Link to={Path.Tests}>Test</Link>
           </Button>
           <Button asChild variant="secondary">
+            <Link to={Path.Person}>Person</Link>
+          </Button>
+          <Button asChild variant="secondary">
             <Link to={Path.Login}>Login</Link>
           </Button>
           <Button asChild variant="secondary">
