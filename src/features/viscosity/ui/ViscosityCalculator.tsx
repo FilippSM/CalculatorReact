@@ -4,7 +4,14 @@ import { useMemo } from "react"
 import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
 
-import { calculateViscosity, calculateIV, convertToSeconds, normalizeNumber } from "../lib/viscosty"
+import {
+  VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS,
+  calculateIV,
+  calculateViscosity,
+  convertToSeconds,
+  normalizeNumber,
+  roundToSignificantFigures,
+} from "../lib/viscosty"
 import { useThemeStore } from "@/app/store"
 import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
@@ -25,7 +32,8 @@ const getGroupResult = (time: string, constant: string) => {
 const getAverageResult = (values: Array<number | null>) => {
   const validValues = values.filter((value): value is number => value !== null)
   if (validValues.length === 0) return null
-  return validValues.reduce((sum, value) => sum + value, 0) / validValues.length
+  const average = validValues.reduce((sum, value) => sum + value, 0) / validValues.length
+  return roundToSignificantFigures(average, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS)
 }
 
 const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps) => {
