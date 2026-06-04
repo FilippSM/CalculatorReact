@@ -30,6 +30,9 @@ export const Header = () => {
           <Button asChild variant="secondary">
             <Link to={Path.Results}>Results</Link>
           </Button>
+          <Button asChild variant="secondary">
+            <Link to={Path.Calc}>Calc</Link>
+          </Button>
         </nav>
 
         <Button onClick={toggleTheme} variant="theme" themeMode={theme}>
