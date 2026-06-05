@@ -24,16 +24,11 @@ export const convertToSeconds = (timeString: string): number => {
 
   const minutes = parseInt(parts[0])
   const seconds = parseInt(parts[1])
-  let milliseconds = parseFloat(parts[2] ?? "0")
+  const fraction = parts[2] ?? "0"
+  const milliseconds = Number(fraction) / Math.pow(10, fraction.length)
 
   if (isNaN(minutes) || isNaN(seconds) || isNaN(milliseconds)) {
     return NaN
-  }
-
-  if (milliseconds < 10) {
-    milliseconds = milliseconds / 10
-  } else {
-    milliseconds = milliseconds / 100
   }
 
   const result = minutes * 60 + seconds + milliseconds
