@@ -86,7 +86,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
     <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
       <div>
         <Select value={dataMode} onValueChange={(v) => setDataMode(entityId, v as ViscosityEntity["dataMode"])}>
-          <SelectTrigger className="w-[180px]" label={"Select data"}>
+          <SelectTrigger label={"Select data"}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -94,18 +94,20 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
             <SelectItem value={"select"}>select</SelectItem>
           </SelectContent>
         </Select>
-        <Select
-          value={flowTimeFormat}
-          onValueChange={(v) => setFlowTimeFormat(entityId, v as ViscosityEntity["flowTimeFormat"])}
-        >
-          <SelectTrigger className="w-[180px]" label={"Select format flow time"}>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={"sec"}>sec</SelectItem>
-            <SelectItem value={"timer"}>min:sec:millisec</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className={styles.flowTimeFormatSelect}>
+          <Select
+            value={flowTimeFormat}
+            onValueChange={(v) => setFlowTimeFormat(entityId, v as ViscosityEntity["flowTimeFormat"])}
+          >
+            <SelectTrigger className={styles.flowTimeFormatTrigger} label={"Select format flow time"}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={"sec"}>sec</SelectItem>
+              <SelectItem value={"timer"}>min:sec:millisec</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className={styles.viscositysBlock}>
@@ -127,7 +129,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
                   onValueChange={(value) => updateGroup100(entityId, group.id, "constant", value)}
                   value={group.constant || ""}
                 >
-                  <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
+                  <SelectTrigger className={styles.viscometerTrigger} label={"Viscometer 100°C"}>
                     <SelectValue placeholder="Select viscometer" />
                   </SelectTrigger>
                   <SelectContent>
@@ -178,7 +180,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
                   onValueChange={(value) => updateGroup40(entityId, group.id, "constant", value)}
                   value={group.constant || ""}
                 >
-                  <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
+                  <SelectTrigger className={styles.viscometerTrigger} label={"Viscometer 40°C"}>
                     <SelectValue placeholder="Select viscometer" />
                   </SelectTrigger>
                   <SelectContent>
