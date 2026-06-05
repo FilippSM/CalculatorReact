@@ -4,7 +4,14 @@ import { useMemo } from "react"
 import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
 
-import { calculateViscosity, calculateIV, convertToSeconds, normalizeNumber } from "../lib/viscosty"
+import {
+  VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS,
+  calculateIV,
+  calculateViscosity,
+  convertToSeconds,
+  normalizeNumber,
+  roundToSignificantFigures,
+} from "../lib/viscosty"
 import { useThemeStore } from "@/app/store"
 import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
@@ -15,8 +22,8 @@ type ViscosityCalculatorEntityProps = {
   entityId: string
 }
 
-const getGroupResult = (time: string, constant: string) => {
-  const t = convertToSeconds(time)
+const getGroupResult = (time: string, constant: string, flowTimeFormat: ViscosityEntity["flowTimeFormat"]) => {
+  const t = flowTimeFormat === "sec" ? normalizeNumber(time) : convertToSeconds(time)
   const c = normalizeNumber(constant)
   const result = calculateViscosity(t, c)
   return isNaN(result) ? null : result
@@ -25,7 +32,8 @@ const getGroupResult = (time: string, constant: string) => {
 const getAverageResult = (values: Array<number | null>) => {
   const validValues = values.filter((value): value is number => value !== null)
   if (validValues.length === 0) return null
-  return validValues.reduce((sum, value) => sum + value, 0) / validValues.length
+  const average = validValues.reduce((sum, value) => sum + value, 0) / validValues.length
+  return roundToSignificantFigures(average, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS)
 }
 
 const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps) => {
@@ -33,15 +41,32 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
 
   const entitiesCount = useViscosityStore((s) => s.entities.length)
   const entity = useViscosityStore((s) => s.entities.find((e) => e.id === entityId))
-  const { setDataMode, updateGroup100, updateGroup40, addGroup100, addGroup40, removeGroup100, removeGroup40, removeEntity, clearEntity } =
-    useViscosityStore()
+  const {
+    setDataMode,
+    setFlowTimeFormat,
+    updateGroup100,
+    updateGroup40,
+    addGroup100,
+    addGroup40,
+    removeGroup100,
+    removeGroup40,
+    removeEntity,
+    clearEntity,
+  } = useViscosityStore()
 
   const data = entity?.dataMode ?? "input"
+  const timeFormat = entity?.flowTimeFormat ?? "sec"
   const groups100 = entity?.groups100 ?? []
   const groups40 = entity?.groups40 ?? []
 
-  const groupResults100 = useMemo(() => groups100.map((group) => getGroupResult(group.time, group.constant)), [groups100])
-  const groupResults40 = useMemo(() => groups40.map((group) => getGroupResult(group.time, group.constant)), [groups40])
+  const groupResults100 = useMemo(
+    () => groups100.map((group) => getGroupResult(group.time, group.constant, timeFormat)),
+    [groups100, timeFormat],
+  )
+  const groupResults40 = useMemo(
+    () => groups40.map((group) => getGroupResult(group.time, group.constant, timeFormat)),
+    [groups40, timeFormat],
+  )
 
   const result100 = useMemo(() => getAverageResult(groupResults100), [groupResults100])
   const result40 = useMemo(() => getAverageResult(groupResults40), [groupResults40])
@@ -53,6 +78,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
   }, [result100, result40])
 
   const dataMode: ViscosityEntity["dataMode"] = data as ViscosityEntity["dataMode"]
+  const flowTimeFormat: ViscosityEntity["flowTimeFormat"] = timeFormat as ViscosityEntity["flowTimeFormat"]
 
   if (!entity) return null
 
@@ -60,7 +86,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
     <div className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
       <div>
         <Select value={dataMode} onValueChange={(v) => setDataMode(entityId, v as ViscosityEntity["dataMode"])}>
-          <SelectTrigger className="w-[180px]" label={"Select data"}>
+          <SelectTrigger label={"Select data"}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -68,6 +94,20 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
             <SelectItem value={"select"}>select</SelectItem>
           </SelectContent>
         </Select>
+        <div className={styles.flowTimeFormatSelect}>
+          <Select
+            value={flowTimeFormat}
+            onValueChange={(v) => setFlowTimeFormat(entityId, v as ViscosityEntity["flowTimeFormat"])}
+          >
+            <SelectTrigger className={styles.flowTimeFormatTrigger} label={"Select format flow time"}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={"sec"}>sec</SelectItem>
+              <SelectItem value={"timer"}>min:sec:millisec</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className={styles.viscositysBlock}>
@@ -89,7 +129,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
                   onValueChange={(value) => updateGroup100(entityId, group.id, "constant", value)}
                   value={group.constant || ""}
                 >
-                  <SelectTrigger className="w-[180px]" label={"Viscometer 100°C"}>
+                  <SelectTrigger className={styles.viscometerTrigger} label={"Viscometer 100°C"}>
                     <SelectValue placeholder="Select viscometer" />
                   </SelectTrigger>
                   <SelectContent>
@@ -140,7 +180,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
                   onValueChange={(value) => updateGroup40(entityId, group.id, "constant", value)}
                   value={group.constant || ""}
                 >
-                  <SelectTrigger className="w-[180px]" label={"Viscometer 40°C"}>
+                  <SelectTrigger className={styles.viscometerTrigger} label={"Viscometer 40°C"}>
                     <SelectValue placeholder="Select viscometer" />
                   </SelectTrigger>
                   <SelectContent>
@@ -197,8 +237,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
 }
 
 export const ViscosityCalculator = () => {
-  const description = `Расчет происходит автоматически, выбрать способ ввода константы в Select data,
-необходимо ввести данные в поле Time и Constant или выбрать вискозиметр в Viscometr`
+  const description = `Расчет выполняется автоматически: выберите способ ввода данных в поле Select data и формат времени истечения в поле Select format flow time. Для Flow time можно выбрать ввод в секундах, например 321.01, или формат секундомера min:sec:millisec, например 5:21:01. В режиме input введите Constant, а в режиме select выберите вискозиметр в поле Viscometer. Кнопка + добавляет расчет по нескольким параллельным измерениям, а кнопка Add calc добавляет независимый калькулятор для отдельного расчета.`
 
   const entities = useViscosityStore((s) => s.entities)
   const addEntity = useViscosityStore((s) => s.addEntity)

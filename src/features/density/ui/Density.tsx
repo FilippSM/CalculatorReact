@@ -9,7 +9,7 @@ import styles from "./Density.module.scss"
 export const Density = () => {
   const { entities, addEntity, clearStore } = useDensityStore()
 
-  const description = 'Расчет происходит автоматически, необходимо ввести данные в поле Density и Temperature'
+  const description = 'Расчет выполняется автоматически: введите значения в поля Density и Temperature. Кнопка + добавляет расчет по нескольким параллельным измерениям, а кнопка Add calc добавляет независимый калькулятор для отдельного расчета.'
 
   return (
     <div className={styles.container}>

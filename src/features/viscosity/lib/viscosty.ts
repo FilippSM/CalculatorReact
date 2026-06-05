@@ -24,16 +24,11 @@ export const convertToSeconds = (timeString: string): number => {
 
   const minutes = parseInt(parts[0])
   const seconds = parseInt(parts[1])
-  let milliseconds = parseFloat(parts[2] ?? "0")
+  const fraction = parts[2] ?? "0"
+  const milliseconds = Number(fraction) / Math.pow(10, fraction.length)
 
   if (isNaN(minutes) || isNaN(seconds) || isNaN(milliseconds)) {
     return NaN
-  }
-
-  if (milliseconds < 10) {
-    milliseconds = milliseconds / 10
-  } else {
-    milliseconds = milliseconds / 100
   }
 
   const result = minutes * 60 + seconds + milliseconds
@@ -184,6 +179,25 @@ export const calculateIV = (
   return NaN
 }
 
+export const VISCOSITY_RESULT_SIGNIFICANT_DIGITS = 6
+export const VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS = 4
+
+export const roundToSignificantFigures = (
+  value: number,
+  significantDigits: number
+): number => {
+  if (isNaN(value) || !isFinite(value)) return value
+  if (value === 0) return 0
+
+  const safeDigits = Math.max(1, Math.floor(significantDigits))
+  const log10 = Math.log10(Math.abs(value))
+  let digits = safeDigits - 1 - Math.floor(log10)
+
+  digits = Math.max(0, Math.min(100, digits))
+
+  return Number(value.toFixed(digits))
+}
+
 // расчет вязкости
 export const calculateViscosity = (
   time: number,
@@ -198,15 +212,8 @@ export const calculateViscosity = (
   // Проверка на валидность результата
   if (isNaN(raw) || !isFinite(raw)) return NaN
   if (raw === 0) return 0
-  
-  // Безопасное вычисление количества знаков после запятой
-  const log10 = Math.log10(Math.abs(raw))
-  let digits = 3 - Math.floor(log10)
-  
-  // Ограничиваем digits в диапазоне от 0 до 100
-  digits = Math.max(0, Math.min(100, digits))
-  
-  return Number(raw.toFixed(digits))
+
+  return roundToSignificantFigures(raw, VISCOSITY_RESULT_SIGNIFICANT_DIGITS)
 }
 
 /* // viscosity.ts

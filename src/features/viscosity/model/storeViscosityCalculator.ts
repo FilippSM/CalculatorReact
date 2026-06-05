@@ -11,6 +11,7 @@ export type ViscosityGroup = {
 export type ViscosityEntity = {
   id: string
   dataMode: "input" | "select"
+  flowTimeFormat: "sec" | "timer"
   groups100: ViscosityGroup[]
   groups40: ViscosityGroup[]
 }
@@ -25,6 +26,7 @@ type ViscosityStore = {
   clearEntity: (entityId: string) => void
 
   setDataMode: (entityId: string, mode: ViscosityEntity["dataMode"]) => void
+  setFlowTimeFormat: (entityId: string, format: ViscosityEntity["flowTimeFormat"]) => void
 
   addGroup100: (entityId: string) => void
   removeGroup100: (entityId: string, groupId: string) => void
@@ -44,6 +46,7 @@ const createViscosityGroup = (): ViscosityGroup => ({
 const createViscosityEntity = (): ViscosityEntity => ({
   id: `${Date.now()}-${Math.random()}`,
   dataMode: "input",
+  flowTimeFormat: "sec",
   groups100: [createViscosityGroup()],
   groups40: [createViscosityGroup()],
 })
@@ -83,6 +86,7 @@ export const useViscosityStore = create<ViscosityStore>()(
             if (!entity) return
 
             entity.dataMode = "input"
+            entity.flowTimeFormat = "sec"
             entity.groups100 = [createViscosityGroup()]
             entity.groups40 = [createViscosityGroup()]
           }),
@@ -103,6 +107,16 @@ export const useViscosityStore = create<ViscosityStore>()(
             entity.groups40.forEach((g) => {
               g.constant = ""
             })
+          }),
+        ),
+
+      setFlowTimeFormat: (entityId, format) =>
+        set(
+          produce((state: ViscosityStore) => {
+            const entity = state.entities.find((item) => item.id === entityId)
+            if (!entity) return
+
+            entity.flowTimeFormat = format
           }),
         ),
 
