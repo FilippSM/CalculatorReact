@@ -14,6 +14,21 @@ const initialTestData = {
   temperature: "22,9",
   pressure: "98,6",
   humidity: "33,8",
+  flashPointTestName: "Температура вспышки в открытом тигле, °C по ГОСТ 4333",
+  flashPointEquipmentDevice: "Аппарат для определения температуры вспышки в открытом тигле ТВО-ПХП № 1052",
+  flashPointEquipmentThermometer: "Термометр ASTM 11c № 30",
+  flashPointEquipmentStopwatch: "Секундомер электронный «Интеграл С-01» № 433939",
+  flashPointEquipmentThermohygrometer: "Термогигрометр ИВА-6Н-КП-Д № 22506",
+  firstMeasurementTemperature: "242",
+  firstMeasurementPressure: "98,6",
+  firstMeasurementCorrection: "1",
+  firstMeasurementCorrectedTemperature: "243",
+  secondMeasurementTemperature: "241",
+  secondMeasurementPressure: "98,6",
+  secondMeasurementCorrection: "1",
+  secondMeasurementCorrectedTemperature: "242",
+  repeatability: "1",
+  averageCorrectedTemperature: "243",
 }
 
 export const CalcX = () => {
@@ -36,7 +51,11 @@ export const CalcX = () => {
 
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
           <div className={styles.inputsGroup}>
-            <Input label="Дата испытаний" value={testData.testDate} onValueChange={(value) => updateTestData("testDate", value)} />
+            <Input
+              label="Дата испытаний"
+              value={testData.testDate}
+              onValueChange={(value) => updateTestData("testDate", value)}
+            />
             <Input
               label="Наименование заказчика"
               className={styles.wideInput}
@@ -69,9 +88,163 @@ export const CalcX = () => {
           <div className={styles.section}>
             <h2>Параметры</h2>
             <div className={styles.paramsRow}>
-              <Input label="t, °C" value={testData.temperature} onValueChange={(value) => updateTestData("temperature", value)} />
-              <Input label="p, кПа" value={testData.pressure} onValueChange={(value) => updateTestData("pressure", value)} />
-              <Input label="φ, %" value={testData.humidity} onValueChange={(value) => updateTestData("humidity", value)} />
+              <Input
+                label="t, °C"
+                value={testData.temperature}
+                onValueChange={(value) => updateTestData("temperature", value)}
+              />
+              <Input
+                label="p, кПа"
+                value={testData.pressure}
+                onValueChange={(value) => updateTestData("pressure", value)}
+              />
+              <Input
+                label="φ, %"
+                value={testData.humidity}
+                onValueChange={(value) => updateTestData("humidity", value)}
+              />
+            </div>
+          </div>
+        </section>
+        <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
+          <div className={styles.section}>
+            <h2>Испытания</h2>
+
+            <div className={styles.testItem}>
+              <div className={styles.testTitleRow}>
+                <span className={styles.testNumber}>1.</span>
+                <Input
+                  label="Наименование испытания"
+                  className={styles.testNameInput}
+                  value={testData.flashPointTestName}
+                  onValueChange={(value) => updateTestData("flashPointTestName", value)}
+                />
+              </div>
+
+              <div className={styles.equipmentBlock}>
+                <h3>Оборудование:</h3>
+                <Input
+                  className={styles.fullWidthInput}
+                  value={testData.flashPointEquipmentDevice}
+                  onValueChange={(value) => updateTestData("flashPointEquipmentDevice", value)}
+                />
+                <Input
+                  className={styles.wideInput}
+                  value={testData.flashPointEquipmentThermometer}
+                  onValueChange={(value) => updateTestData("flashPointEquipmentThermometer", value)}
+                />
+                <Input
+                  className={styles.wideInput}
+                  value={testData.flashPointEquipmentStopwatch}
+                  onValueChange={(value) => updateTestData("flashPointEquipmentStopwatch", value)}
+                />
+                <Input
+                  className={styles.wideInput}
+                  value={testData.flashPointEquipmentThermohygrometer}
+                  onValueChange={(value) => updateTestData("flashPointEquipmentThermohygrometer", value)}
+                />
+              </div>
+
+              <div className={styles.tableSection}>
+                <h3>Данные:</h3>
+                <div className={styles.tableScroll}>
+                  <table className={styles.testTable}>
+                    <thead>
+                      <tr>
+                        <th colSpan={4}>Первое измерение</th>
+                        <th colSpan={4}>Второе измерение</th>
+                        <th colSpan={2}>Результаты</th>
+                      </tr>
+                      <tr>
+                        <th>t₀, °C</th>
+                        <th>p, кПа</th>
+                        <th>Поправка, °C</th>
+                        <th>t₀ скорректированное, °C</th>
+                        <th>t₀, °C</th>
+                        <th>p, кПа</th>
+                        <th>Поправка, °C</th>
+                        <th>t₀ скорректированное, °C</th>
+                        <th>Повторяемость r, °C</th>
+                        <th>Среднее значение tср, °C</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.firstMeasurementTemperature}
+                            onValueChange={(value) => updateTestData("firstMeasurementTemperature", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.firstMeasurementPressure}
+                            onValueChange={(value) => updateTestData("firstMeasurementPressure", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.firstMeasurementCorrection}
+                            onValueChange={(value) => updateTestData("firstMeasurementCorrection", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.firstMeasurementCorrectedTemperature}
+                            onValueChange={(value) => updateTestData("firstMeasurementCorrectedTemperature", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.secondMeasurementTemperature}
+                            onValueChange={(value) => updateTestData("secondMeasurementTemperature", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.secondMeasurementPressure}
+                            onValueChange={(value) => updateTestData("secondMeasurementPressure", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.secondMeasurementCorrection}
+                            onValueChange={(value) => updateTestData("secondMeasurementCorrection", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.secondMeasurementCorrectedTemperature}
+                            onValueChange={(value) => updateTestData("secondMeasurementCorrectedTemperature", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.repeatability}
+                            onValueChange={(value) => updateTestData("repeatability", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={testData.averageCorrectedTemperature}
+                            onValueChange={(value) => updateTestData("averageCorrectedTemperature", value)}
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </section>
