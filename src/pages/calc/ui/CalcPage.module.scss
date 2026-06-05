@@ -1,0 +1,155 @@
+@use "../../../shared/styles/colors" as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.entityBlock {
+  padding: 10px;
+  border-radius: 2px;
+
+  &--light {
+    background-color: color(light, 500);
+  }
+
+  &--dark {
+    background-color: color(dark, 300);
+  }
+}
+
+.testInfoTable {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.3fr);
+  max-width: 880px;
+  overflow: hidden;
+  font-family: "Times New Roman", Times, serif;
+  font-size: var(--font-size-m);
+  color: color(dark, 900);
+  background-color: color(light, 100);
+  border: 1px solid color(dark, 900);
+}
+
+.labelCell,
+.valueCell,
+.sectionTitle,
+.parametersRow {
+  min-height: 22px;
+  border-right: 1px solid color(dark, 900);
+  border-bottom: 1px solid color(dark, 900);
+}
+
+.labelCell {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  font-weight: 700;
+}
+
+.valueCell {
+  display: flex;
+  align-items: stretch;
+  background-color: color(light, 700);
+  border-right: 0;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  font-weight: 700;
+  background-color: color(light, 100);
+  border-right: 0;
+}
+
+.conditionsLabel {
+  grid-row: span 4;
+  border-bottom: 0;
+}
+
+.equipmentCell {
+  min-height: 22px;
+}
+
+.parametersRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: color(light, 700);
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.parameterCell {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 4px;
+  border-right: 1px solid color(dark, 900);
+
+  &:last-child {
+    border-right: 0;
+  }
+}
+
+.cellInput,
+.parameterInput {
+  width: 100%;
+
+  input {
+    width: 100%;
+    height: 100%;
+    min-height: 22px;
+    padding: 0 4px;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.2;
+    color: color(dark, 900);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+
+    &:focus,
+    &:focus-visible {
+      box-shadow: inset 0 0 0 2px color(accent, 100);
+    }
+  }
+}
+
+.parameterInput {
+  flex: 1;
+  min-width: 40px;
+  max-width: 80px;
+}
+
+@media (width <= 768px) {
+  .testInfoTable {
+    grid-template-columns: 1fr;
+  }
+
+  .conditionsLabel {
+    grid-row: auto;
+  }
+
+  .parametersRow {
+    grid-template-columns: 1fr;
+  }
+
+  .parameterCell {
+    justify-content: flex-start;
+    border-right: 0;
+    border-bottom: 1px solid color(dark, 900);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  .testInfoTable > * {
+    border-right: 0;
+  }
+}
