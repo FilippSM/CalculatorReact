@@ -205,8 +205,7 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
 }
 
 export const ViscosityCalculator = () => {
-  const description = `Расчет происходит автоматически, выбрать способ ввода константы в Select data,
-необходимо ввести данные в поле Time и Constant или выбрать вискозиметр в Viscometr`
+  const description = `Расчет выполняется автоматически: выберите способ ввода данных в поле Select data. В режиме input введите значения в поля Flow time (время истечения) и Constant, а в режиме select введите Flow time (время истечения) и выберите вискозиметр в поле Viscometer. Кнопка + добавляет расчет по нескольким параллельным измерениям, а кнопка Add calc добавляет независимый калькулятор для отдельного расчета.`
 
   const entities = useViscosityStore((s) => s.entities)
   const addEntity = useViscosityStore((s) => s.addEntity)
