@@ -63,10 +63,15 @@
   }
 }
 
-.fullWidthInput,
-.testNameInput {
+.fullWidthInput {
   input {
     width: min(860px, 100%);
+  }
+}
+
+.testNameInput {
+  input {
+    width: 520px;
   }
 }
 
