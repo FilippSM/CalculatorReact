@@ -1,5 +1,9 @@
 @use "../../../shared//styles/colors" as *;
 
+.pageContainer {
+  max-width: 1220px;
+}
+
 .container {
   display: flex;
   flex-direction: column;
