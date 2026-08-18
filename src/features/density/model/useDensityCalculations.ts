@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { valuesDensity } from "../lib/bdDensity";
+import type { DensityGroup } from "./densityStore";
 
-export const useDensityCalculations = (groups: any[], unit: string, correction: string) => {
+export const useDensityCalculations = (groups: DensityGroup[], unit: string, correction: string) => {
   const [post, setPost] = useState<string | null>(null);
   const [convertStatus, setConvertStatus] = useState<string>("");
 
-  const calcDensityForGroup = (density: string, temperature: string): number | null => {
+  const calcDensityForGroup = useCallback((density: string, temperature: string): number | null => {
     if (!density || !temperature) return null;
 
     try {
@@ -44,7 +45,7 @@ export const useDensityCalculations = (groups: any[], unit: string, correction: 
       console.log("Error calculating density:", error);
       return null;
     }
-  };
+  }, [unit, correction]);
 
   useEffect(() => {
     const results = groups
@@ -72,7 +73,7 @@ export const useDensityCalculations = (groups: any[], unit: string, correction: 
     } else {
       setPost(null);
     }
-  }, [groups, correction, unit]);
+  }, [groups, correction, unit, calcDensityForGroup]);
 
   return {
     post,

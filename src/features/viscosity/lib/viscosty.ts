@@ -39,7 +39,7 @@ export const convertToSeconds = (timeString: string): number => {
 export const roundIV = (value: number): number => {
   if (isNaN(value) || !isFinite(value)) return 0
   
-  let rounded = Number(value.toFixed(1))
+  const rounded = Number(value.toFixed(1))
   const temp = rounded * 10
 
   if (temp % 5 === 0) {
