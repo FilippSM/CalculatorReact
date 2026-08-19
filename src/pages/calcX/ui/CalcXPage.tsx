@@ -1,4 +1,5 @@
 import { useThemeStore } from "@/app/store"
+import { Checkbox } from "@/shared/components/Checkbox"
 import { Container } from "@/shared/components/Container"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
@@ -163,9 +164,36 @@ const initialTestData = {
   autoIgnitionAverage: "351",
 }
 
+const testVisibilityConfig = [
+  { id: "flashPoint", label: initialTestData.flashPointTestName },
+  { id: "mechanicalImpurities", label: initialTestData.mechanicalImpuritiesTestName },
+  { id: "densityAt20", label: initialTestData.densityAt20TestName },
+  { id: "kinematicViscosity100", label: initialTestData.kinematicViscosity100TestName },
+  { id: "kinematicViscosity40", label: initialTestData.kinematicViscosity40TestName },
+  { id: "viscosityIndex", label: initialTestData.viscosityIndexTestName },
+  { id: "pourPoint", label: initialTestData.pourPointTestName },
+  { id: "freezingPoint", label: initialTestData.freezingPointTestName },
+  { id: "noackLoss", label: initialTestData.noackLossTestName },
+  { id: "dynamicViscosity30", label: initialTestData.dynamicViscosity30TestName },
+  { id: "colorCnt", label: initialTestData.colorCntTestName },
+  { id: "baseNumber", label: initialTestData.baseNumberTestName },
+  { id: "autoIgnition", label: initialTestData.autoIgnitionTestName },
+] as const
+
+type TestVisibilityKey = (typeof testVisibilityConfig)[number]["id"]
+
+const initialVisibleTests = testVisibilityConfig.reduce<Record<TestVisibilityKey, boolean>>(
+  (accumulator, { id }) => ({
+    ...accumulator,
+    [id]: true,
+  }),
+  {} as Record<TestVisibilityKey, boolean>,
+)
+
 export const CalcX = () => {
   const theme = useThemeStore((state) => state.theme)
   const [testData, setTestData] = useState(initialTestData)
+  const [visibleTests, setVisibleTests] = useState(initialVisibleTests)
   const formData = { ...initialTestData, ...testData }
 
   const updateTestData = (field: keyof typeof initialTestData, value: string) => {
@@ -176,6 +204,24 @@ export const CalcX = () => {
     }))
   }
 
+  const visibleTestNumbers = testVisibilityConfig.reduce<Partial<Record<TestVisibilityKey, number>>>(
+    (accumulator, { id }) => {
+      if (visibleTests[id]) {
+        accumulator[id] = Object.keys(accumulator).length + 1
+      }
+
+      return accumulator
+    },
+    {},
+  )
+
+  const updateVisibleTest = (testId: TestVisibilityKey, checked: boolean) => {
+    setVisibleTests((current) => ({
+      ...current,
+      [testId]: checked,
+    }))
+  }
+
   return (
     <Container className={styles.pageContainer}>
       <div className={styles.container}>
@@ -183,6 +229,22 @@ export const CalcX = () => {
           <h1>Calculation protocol data</h1>
         </div>
 
+        <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
+          <div className={styles.section}>
+            <h2>Показатели</h2>
+            <div className={styles.testFilters}>
+              {testVisibilityConfig.map(({ id, label }) => (
+                <Checkbox
+                  key={id}
+                  checked={visibleTests[id]}
+                  className={styles.testFilterItem}
+                  label={label}
+                  onValueChange={(checked) => updateVisibleTest(id, checked)}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
           <div className={styles.inputsGroup}>
             <Input
@@ -244,9 +306,10 @@ export const CalcX = () => {
           <div className={styles.section}>
             <h2>Испытания</h2>
 
+            {visibleTests.flashPoint && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>1.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.flashPoint}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -380,10 +443,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.mechanicalImpurities && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>2.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.mechanicalImpurities}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -526,10 +591,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.densityAt20 && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>3.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.densityAt20}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -666,10 +733,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.kinematicViscosity100 && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>4.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.kinematicViscosity100}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -866,10 +935,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.kinematicViscosity40 && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>5.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.kinematicViscosity40}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1066,10 +1137,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.viscosityIndex && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>6.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.viscosityIndex}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1122,10 +1195,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.pourPoint && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>7.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.pourPoint}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1202,10 +1277,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.freezingPoint && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>8.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.freezingPoint}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1282,10 +1359,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.noackLoss && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>9.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.noackLoss}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1422,10 +1501,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.dynamicViscosity30 && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>10.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.dynamicViscosity30}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1502,10 +1583,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.colorCnt && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>11.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.colorCnt}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1582,10 +1665,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.baseNumber && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>12.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.baseNumber}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1716,10 +1801,12 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
 
+            {visibleTests.autoIgnition && (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
-                <span className={styles.testNumber}>13.</span>
+                <span className={styles.testNumber}>{visibleTestNumbers.autoIgnition}.</span>
                 <Input
                   label="Наименование испытания"
                   className={styles.testNameInput}
@@ -1844,6 +1931,7 @@ export const CalcX = () => {
                 </div>
               </div>
             </div>
+            )}
           </div>
         </section>
       </div>

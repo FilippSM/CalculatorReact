@@ -79,10 +79,34 @@
   }
 }
 
+.testFilters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px 16px;
+}
+
+.testFilterItem {
+  align-items: flex-start;
+}
+
 .testItem {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 15px 0;
+  border-radius: 2px;
+}
+
+.section > .testItem + .testItem {
+  margin-top: 15px;
+}
+
+.entityBlock--light .testItem {
+  background-color: color(light, 400);
+}
+
+.entityBlock--dark .testItem {
+  background-color: color(dark, 200);
 }
 
 .testTitleRow {
