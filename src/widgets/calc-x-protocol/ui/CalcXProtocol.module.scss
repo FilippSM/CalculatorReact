@@ -1,0 +1,166 @@
+@use "../../../shared/styles/colors" as *;
+
+.entityBlock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 10px;
+  border-radius: 2px;
+
+  &--light {
+    background-color: color(light, 500);
+  }
+
+  &--dark {
+    background-color: color(dark, 300);
+  }
+}
+
+.inputsGroup {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 10px;
+}
+
+.paramsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-l);
+    font-weight: 500;
+  }
+}
+
+.wideInput {
+  input {
+    width: min(520px, 100%);
+  }
+}
+
+.fullWidthInput {
+  input {
+    width: min(860px, 100%);
+  }
+}
+
+.testNameInput {
+  input {
+    width: 520px;
+  }
+}
+
+.testFilters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px 16px;
+}
+
+.testFilterItem {
+  align-items: flex-start;
+}
+
+.testItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px 0;
+  border-radius: 2px;
+}
+
+.section > .testItem + .testItem {
+  margin-top: 15px;
+}
+
+.entityBlock--light .testItem {
+  background-color: color(light, 400);
+}
+
+.entityBlock--dark .testItem {
+  background-color: color(dark, 200);
+}
+
+.testTitleRow {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.testNumber {
+  padding-bottom: 7px;
+  font-weight: 500;
+}
+
+.equipmentBlock,
+.tableSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  h3 {
+    margin: 0;
+    font-size: var(--font-size-m);
+    font-weight: 500;
+  }
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.testTable {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 4px;
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid color(light, 900);
+  }
+
+  th {
+    font-size: var(--font-size-s);
+    font-weight: 500;
+  }
+}
+
+.tableInput {
+  input {
+    width: 100%;
+    min-width: 72px;
+    padding: 4px 6px;
+    text-align: center;
+  }
+}
+
+@media (width <= 768px) {
+  .inputsGroup,
+  .paramsRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wideInput,
+  .fullWidthInput,
+  .testNameInput,
+  .wideInput input {
+    width: 100%;
+  }
+
+  .testTitleRow {
+    align-items: flex-start;
+  }
+}
