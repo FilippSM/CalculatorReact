@@ -1,5 +1,16 @@
 @use "../../../shared/styles/colors" as *;
 
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.screenOnly {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .entityBlock {
   position: relative;
   display: flex;
@@ -162,5 +173,12 @@
 
   .testTitleRow {
     align-items: flex-start;
+  }
+}
+
+@media print {
+  .toolbar,
+  .screenOnly {
+    display: none !important;
   }
 }
