@@ -1,21 +1,21 @@
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
 
-export type PrintTableGroupHeader = {
+export type ProtocolTableGroupHeader = {
   label: string
   colSpan: number
 }
 
-export type CalcXPrintTestConfig = {
+export type CalcXTestConfig = {
   id: TestVisibilityKey
   nameField: keyof InitialTestData
   equipmentFields: (keyof InitialTestData)[]
-  groupHeaders?: PrintTableGroupHeader[]
+  groupHeaders?: ProtocolTableGroupHeader[]
   columnHeaders: string[]
   valueFields: (keyof InitialTestData)[]
 }
 
-export const calcXPrintTestConfig: CalcXPrintTestConfig[] = [
+export const calcXTestConfig: CalcXTestConfig[] = [
   {
     id: "flashPoint",
     nameField: "flashPointTestName",
@@ -395,3 +395,7 @@ export const calcXPrintTestConfig: CalcXPrintTestConfig[] = [
     ],
   },
 ]
+
+export const getVisibleProtocolTests = (visibleTests: Record<TestVisibilityKey, boolean>) =>
+  calcXTestConfig.filter(({ id }) => visibleTests[id])
+

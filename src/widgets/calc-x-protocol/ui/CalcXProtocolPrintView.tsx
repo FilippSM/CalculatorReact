@@ -1,4 +1,12 @@
-import { calcXPrintTestConfig } from "../model/calcXPrintTestConfig"
+import { Fragment } from "react"
+import {
+  protocolDataTitle,
+  protocolDocumentTitle,
+  protocolEquipmentTitle,
+  protocolMetaSections,
+  protocolTestsTitle,
+} from "../model/calcXProtocolConfig"
+import { getVisibleProtocolTests } from "../model/calcXTestConfig"
 import type { TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
 import type { InitialTestData } from "../model/initialTestData"
 import styles from "./CalcXProtocolPrintView.module.scss"
@@ -9,42 +17,49 @@ type Props = {
 }
 
 export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
-  const visiblePrintTests = calcXPrintTestConfig.filter(({ id }) => visibleTests[id])
+  const visibleProtocolTests = getVisibleProtocolTests(visibleTests)
 
   return (
     <div className={styles.printRoot}>
-      <h1 className={styles.documentTitle}>Протокол испытаний</h1>
+      <h1 className={styles.documentTitle}>{protocolDocumentTitle}</h1>
 
       <section className={styles.metaSection}>
-        <dl className={styles.metaGrid}>
-          <dt>Дата испытаний</dt>
-          <dd>{formData.testDate}</dd>
-          <dt>Наименование заказчика</dt>
-          <dd>{formData.customerName}</dd>
-          <dt>Наименование объекта испытаний</dt>
-          <dd>{formData.objectName}</dd>
-          <dt>Регистрационный номер объекта испытаний</dt>
-          <dd>{formData.registrationNumber}</dd>
-        </dl>
+        {protocolMetaSections.map((section, sectionIndex) => {
+          if (section.layout === "row") {
+            return (
+              <div key={section.title ?? `print-meta-${sectionIndex}`}>
+                {section.title && <h2 className={styles.sectionTitle}>{section.title}</h2>}
+                <div className={styles.paramsRow}>
+                  {section.fields.map((fieldConfig) => (
+                    <span key={fieldConfig.field}>
+                      {fieldConfig.label}: {formData[fieldConfig.field]}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )
+          }
 
-        <h2 className={styles.sectionTitle}>Условия проведения испытаний</h2>
-        <dl className={styles.metaGrid}>
-          <dt>Применяемое оборудование</dt>
-          <dd>{formData.equipment}</dd>
-        </dl>
-
-        <h2 className={styles.sectionTitle}>Параметры</h2>
-        <div className={styles.paramsRow}>
-          <span>t, °C: {formData.temperature}</span>
-          <span>p, кПа: {formData.pressure}</span>
-          <span>φ, %: {formData.humidity}</span>
-        </div>
+          return (
+            <div key={section.title ?? `print-meta-${sectionIndex}`}>
+              {section.title && <h2 className={styles.sectionTitle}>{section.title}</h2>}
+              <dl className={styles.metaGrid}>
+                {section.fields.map((fieldConfig) => (
+                  <Fragment key={fieldConfig.field}>
+                    <dt>{fieldConfig.label}</dt>
+                    <dd>{formData[fieldConfig.field]}</dd>
+                  </Fragment>
+                ))}
+              </dl>
+            </div>
+          )
+        })}
       </section>
 
       <section className={styles.testsSection}>
-        <h2 className={styles.sectionTitle}>Испытания</h2>
+        <h2 className={styles.sectionTitle}>{protocolTestsTitle}</h2>
 
-        {visiblePrintTests.map((test, index) => {
+        {visibleProtocolTests.map((test, index) => {
           const equipmentValues = test.equipmentFields
             .map((field) => formData[field])
             .filter((value) => value.trim().length > 0)
@@ -57,7 +72,7 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
 
               {equipmentValues.length > 0 && (
                 <>
-                  <p className={styles.dataTitle}>Оборудование:</p>
+                  <p className={styles.dataTitle}>{protocolEquipmentTitle}</p>
                   <ul className={styles.equipmentList}>
                     {equipmentValues.map((value, equipmentIndex) => (
                       <li key={`${test.id}-equipment-${equipmentIndex}`}>{value}</li>
@@ -66,7 +81,7 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                 </>
               )}
 
-              <p className={styles.dataTitle}>Данные:</p>
+              <p className={styles.dataTitle}>{protocolDataTitle}</p>
               <table className={styles.testTable}>
                 <thead>
                   {test.groupHeaders && (
