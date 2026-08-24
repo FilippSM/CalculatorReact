@@ -5,6 +5,7 @@ export const testVisibilityConfig = [
   { id: "kinematicViscosity100", label: "Кинематическая вязкость при 100°C, мм²/с по ГОСТ 33" },
   { id: "kinematicViscosity40", label: "Кинематическая вязкость при 40°С, мм²/с по ГОСТ 33" },
   { id: "viscosityIndex", label: "Индекс вязкости по ГОСТ 25371" },
+  { id: "waterContent", label: "Содержание воды, % по ГОСТ 2477" },
   { id: "pourPoint", label: "Температура текучести,°С по ГОСТ 20287 (Метод А)" },
   { id: "freezingPoint", label: "Температура застывания,°С по ГОСТ 20287 (Метод Б)" },
   { id: "noackLoss", label: "Потери от испарения методом Ноак, % по ГОСТ 32330" },
