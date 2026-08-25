@@ -1,6 +1,6 @@
 import { Input } from "@/shared/components/Input"
 import styles from "../CalcXProtocol.module.scss"
-import { initialTestData, type InitialTestData } from "../../model/initialTestData"
+import type { InitialTestData } from "../../model/initialTestData"
 
 type Props = {
   number: number
