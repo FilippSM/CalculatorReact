@@ -107,6 +107,10 @@
   align-items: flex-start;
 }
 
+.testFilterItem.testFilterItemInactive {
+  color: color(light, 900);
+}
+
 .testItem {
   display: flex;
   flex-direction: column;
