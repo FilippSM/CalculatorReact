@@ -397,11 +397,7 @@ export const calcXTestConfig: CalcXTestConfig[] = [
   {
     id: "autoIgnition",
     nameField: "autoIgnitionTestName",
-    equipmentFields: [
-      "autoIgnitionEquipmentDevice",
-      "autoIgnitionEquipmentStopwatch",
-      "autoIgnitionEquipmentBalance",
-    ],
+    equipmentFields: ["autoIgnitionEquipmentDevice", "autoIgnitionEquipmentStopwatch", "autoIgnitionEquipmentBalance"],
     groupHeaders: [
       { label: "Первое измерение", colSpan: 3 },
       { label: "Второе измерение", colSpan: 3 },
@@ -433,3 +429,46 @@ export const calcXTestConfig: CalcXTestConfig[] = [
 export const getVisibleProtocolTests = (visibleTests: Record<TestVisibilityKey, boolean>) =>
   calcXTestConfig.filter(({ id }) => visibleTests[id])
 
+export type ProtocolPrintTableSection = {
+  groupHeaders?: ProtocolTableGroupHeader[]
+  columnHeaders: string[]
+  valueFields: (keyof InitialTestData)[]
+}
+
+/** Splits trailing "Результаты" group onto its own table for wide kinematic viscosity tests. */
+export const getPrintTableSections = (test: CalcXTestConfig): ProtocolPrintTableSection[] => {
+  const shouldSplitResults = test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
+  const groupHeaders = test.groupHeaders
+  const lastGroup = groupHeaders?.at(-1)
+
+  if (
+    !shouldSplitResults ||
+    !groupHeaders ||
+    groupHeaders.length < 2 ||
+    lastGroup?.label !== "Результаты"
+  ) {
+    return [
+      {
+        groupHeaders,
+        columnHeaders: test.columnHeaders,
+        valueFields: test.valueFields,
+      },
+    ]
+  }
+
+  const measurementGroups = groupHeaders.slice(0, -1)
+  const measurementColumns = measurementGroups.reduce((sum, group) => sum + group.colSpan, 0)
+
+  return [
+    {
+      groupHeaders: measurementGroups,
+      columnHeaders: test.columnHeaders.slice(0, measurementColumns),
+      valueFields: test.valueFields.slice(0, measurementColumns),
+    },
+    {
+      groupHeaders: [lastGroup],
+      columnHeaders: test.columnHeaders.slice(measurementColumns),
+      valueFields: test.valueFields.slice(measurementColumns),
+    },
+  ]
+}

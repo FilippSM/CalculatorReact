@@ -1,4 +1,5 @@
 import { Fragment } from "react"
+import clsx from "clsx"
 import {
   protocolDataTitle,
   protocolDocumentTitle,
@@ -6,7 +7,7 @@ import {
   protocolMetaSections,
   protocolTestsTitle,
 } from "../model/calcXProtocolConfig"
-import { getVisibleProtocolTests } from "../model/calcXTestConfig"
+import { getPrintTableSections, getVisibleProtocolTests } from "../model/calcXTestConfig"
 import type { TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
 import type { InitialTestData } from "../model/initialTestData"
 import styles from "./CalcXProtocolPrintView.module.scss"
@@ -63,6 +64,7 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
           const equipmentValues = test.equipmentFields
             .map((field) => formData[field])
             .filter((value) => value.trim().length > 0)
+          const tableSections = getPrintTableSections(test)
 
           return (
             <article key={test.id} className={styles.testItem}>
@@ -82,31 +84,38 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
               )}
 
               <p className={styles.dataTitle}>{protocolDataTitle}</p>
-              <table className={styles.testTable}>
-                <thead>
-                  {test.groupHeaders && (
-                    <tr>
-                      {test.groupHeaders.map((group, groupIndex) => (
-                        <th key={`${test.id}-group-${groupIndex}`} colSpan={group.colSpan}>
-                          {group.label}
-                        </th>
-                      ))}
-                    </tr>
-                  )}
-                  <tr>
-                    {test.columnHeaders.map((header, headerIndex) => (
-                      <th key={`${test.id}-column-${headerIndex}`}>{header}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    {test.valueFields.map((field) => (
-                      <td key={field}>{formData[field]}</td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
+              <div className={styles.tableBlocks}>
+                {tableSections.map((section, sectionIndex) => (
+                  <table
+                    key={`${test.id}-table-${sectionIndex}`}
+                    className={clsx(styles.testTable, sectionIndex > 0 && styles.testTableResults)}
+                  >
+                    <thead>
+                      {section.groupHeaders && (
+                        <tr>
+                          {section.groupHeaders.map((group, groupIndex) => (
+                            <th key={`${test.id}-group-${sectionIndex}-${groupIndex}`} colSpan={group.colSpan}>
+                              {group.label}
+                            </th>
+                          ))}
+                        </tr>
+                      )}
+                      <tr>
+                        {section.columnHeaders.map((header, headerIndex) => (
+                          <th key={`${test.id}-column-${sectionIndex}-${headerIndex}`}>{header}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        {section.valueFields.map((field) => (
+                          <td key={field}>{formData[field]}</td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                ))}
+              </div>
             </article>
           )
         })}

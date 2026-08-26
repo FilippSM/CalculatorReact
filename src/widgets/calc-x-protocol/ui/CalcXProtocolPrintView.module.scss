@@ -82,10 +82,21 @@
     font-weight: 600;
   }
 
+  .tableBlocks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
   .testTable {
     width: 100%;
     border-collapse: collapse;
     font-size: 7.5pt;
+  }
+
+  .testTableResults {
+    width: auto;
+    max-width: 100%;
   }
 
   .testTable th,

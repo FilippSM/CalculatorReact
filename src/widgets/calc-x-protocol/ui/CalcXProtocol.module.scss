@@ -155,6 +155,26 @@
   overflow-x: auto;
 }
 
+.tableBlocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.tableBlock {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.tableBlockFull {
+  flex: 1 1 100%;
+}
+
+.testTableNarrow {
+  min-width: 0;
+}
+
 .testTable {
   width: 100%;
   min-width: 900px;
