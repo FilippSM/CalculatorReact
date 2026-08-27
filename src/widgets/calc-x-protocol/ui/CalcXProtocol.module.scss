@@ -207,6 +207,13 @@
   }
 }
 
+.tableInputError {
+  input {
+    color: #cc1439;
+    font-weight: 700;
+  }
+}
+
 @media (width <= 768px) {
   .inputsGroup,
   .paramsRow {

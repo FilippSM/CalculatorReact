@@ -1,4 +1,7 @@
-import { resolveFlashPointFieldValue } from "@/features/flash-point"
+import {
+  calculateFlashPointRepeatability,
+  resolveFlashPointFieldValue,
+} from "@/features/flash-point"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -109,13 +112,34 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                     </thead>
                     <tbody>
                       <tr>
-                        {section.valueFields.map((field) => (
-                          <td key={field}>
-                            {test.id === "flashPoint"
+                        {section.valueFields.map((field) => {
+                          const value =
+                            test.id === "flashPoint"
                               ? resolveFlashPointFieldValue(formData, field)
-                              : formData[field]}
-                          </td>
-                        ))}
+                              : formData[field]
+                          const isRepeatabilityError =
+                            test.id === "flashPoint" &&
+                            field === "repeatability" &&
+                            calculateFlashPointRepeatability(
+                              resolveFlashPointFieldValue(
+                                formData,
+                                "firstMeasurementCorrectedTemperature",
+                              ),
+                              resolveFlashPointFieldValue(
+                                formData,
+                                "secondMeasurementCorrectedTemperature",
+                              ),
+                            ).isError
+
+                          return (
+                            <td
+                              key={field}
+                              className={clsx(isRepeatabilityError && styles.errorValue)}
+                            >
+                              {value}
+                            </td>
+                          )
+                        })}
                       </tr>
                     </tbody>
                   </table>

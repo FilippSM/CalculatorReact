@@ -1,5 +1,6 @@
 import { useFlashPointCalculations } from "@/features/flash-point"
 import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
 import type { InitialTestData } from "../../model/initialTestData"
 
@@ -10,7 +11,16 @@ type Props = {
 }
 
 export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) => {
-  const { correction } = useFlashPointCalculations(formData.pressure)
+  const {
+    correction,
+    firstCorrectedTemperature,
+    secondCorrectedTemperature,
+    repeatability,
+  } = useFlashPointCalculations({
+    pressure: formData.pressure,
+    firstMeasurementTemperature: formData.firstMeasurementTemperature,
+    secondMeasurementTemperature: formData.secondMeasurementTemperature,
+  })
 
   return (
     <div className={styles.testItem}>
@@ -87,11 +97,7 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
                   <Input className={styles.tableInput} value={correction} readOnly />
                 </td>
                 <td>
-                  <Input
-                    className={styles.tableInput}
-                    value={formData.firstMeasurementCorrectedTemperature}
-                    onValueChange={(value) => updateTestData("firstMeasurementCorrectedTemperature", value)}
-                  />
+                  <Input className={styles.tableInput} value={firstCorrectedTemperature} readOnly />
                 </td>
                 <td>
                   <Input
@@ -107,17 +113,13 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
                   <Input className={styles.tableInput} value={correction} readOnly />
                 </td>
                 <td>
-                  <Input
-                    className={styles.tableInput}
-                    value={formData.secondMeasurementCorrectedTemperature}
-                    onValueChange={(value) => updateTestData("secondMeasurementCorrectedTemperature", value)}
-                  />
+                  <Input className={styles.tableInput} value={secondCorrectedTemperature} readOnly />
                 </td>
                 <td>
                   <Input
-                    className={styles.tableInput}
-                    value={formData.repeatability}
-                    onValueChange={(value) => updateTestData("repeatability", value)}
+                    className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                    value={repeatability.value}
+                    readOnly
                   />
                 </td>
                 <td>
@@ -125,6 +127,7 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
                     className={styles.tableInput}
                     value={formData.averageCorrectedTemperature}
                     onValueChange={(value) => updateTestData("averageCorrectedTemperature", value)}
+                    readOnly
                   />
                 </td>
               </tr>
