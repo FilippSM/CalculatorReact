@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) => {
-  useFlashPointCalculations(formData, updateTestData)
+  const { correction } = useFlashPointCalculations(formData.pressure)
 
   return (
     <div className={styles.testItem}>
@@ -84,11 +84,7 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
                   <Input className={styles.tableInput} value={formData.pressure} readOnly />
                 </td>
                 <td>
-                  <Input
-                    className={styles.tableInput}
-                    value={formData.firstMeasurementCorrection}
-                    readOnly
-                  />
+                  <Input className={styles.tableInput} value={correction} readOnly />
                 </td>
                 <td>
                   <Input
@@ -108,11 +104,7 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
                   <Input className={styles.tableInput} value={formData.pressure} readOnly />
                 </td>
                 <td>
-                  <Input
-                    className={styles.tableInput}
-                    value={formData.secondMeasurementCorrection}
-                    readOnly
-                  />
+                  <Input className={styles.tableInput} value={correction} readOnly />
                 </td>
                 <td>
                   <Input

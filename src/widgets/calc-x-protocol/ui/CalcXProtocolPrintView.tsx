@@ -1,3 +1,4 @@
+import { resolveFlashPointFieldValue } from "@/features/flash-point"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -109,7 +110,11 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                     <tbody>
                       <tr>
                         {section.valueFields.map((field) => (
-                          <td key={field}>{formData[field]}</td>
+                          <td key={field}>
+                            {test.id === "flashPoint"
+                              ? resolveFlashPointFieldValue(formData, field)
+                              : formData[field]}
+                          </td>
                         ))}
                       </tr>
                     </tbody>
