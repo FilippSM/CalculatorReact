@@ -1,3 +1,4 @@
+import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -130,7 +131,10 @@ export const buildProtocolDocument = (
       return {
         name,
         method,
-        result: formData[resultFields[test.id]],
+        result:
+          test.id === "mechanicalImpurities"
+            ? resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage")
+            : formData[resultFields[test.id]],
         uncertainty: "—",
       }
     }),

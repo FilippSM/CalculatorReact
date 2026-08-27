@@ -2,6 +2,10 @@ import {
   calculateFlashPointRepeatability,
   resolveFlashPointFieldValue,
 } from "@/features/flash-point"
+import {
+  calculateMechanicalImpuritiesRepeatability,
+  resolveMechanicalImpuritiesFieldValue,
+} from "@/features/mechanical-impurities"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -116,20 +120,38 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                           const value =
                             test.id === "flashPoint"
                               ? resolveFlashPointFieldValue(formData, field)
-                              : formData[field]
+                              : test.id === "mechanicalImpurities"
+                                ? resolveMechanicalImpuritiesFieldValue(formData, field)
+                                : formData[field]
                           const isRepeatabilityError =
-                            test.id === "flashPoint" &&
-                            field === "repeatability" &&
-                            calculateFlashPointRepeatability(
-                              resolveFlashPointFieldValue(
-                                formData,
-                                "firstMeasurementCorrectedTemperature",
-                              ),
-                              resolveFlashPointFieldValue(
-                                formData,
-                                "secondMeasurementCorrectedTemperature",
-                              ),
-                            ).isError
+                            (test.id === "flashPoint" &&
+                              field === "repeatability" &&
+                              calculateFlashPointRepeatability(
+                                resolveFlashPointFieldValue(
+                                  formData,
+                                  "firstMeasurementCorrectedTemperature",
+                                ),
+                                resolveFlashPointFieldValue(
+                                  formData,
+                                  "secondMeasurementCorrectedTemperature",
+                                ),
+                              ).isError) ||
+                            (test.id === "mechanicalImpurities" &&
+                              field === "mechanicalImpuritiesRepeatability" &&
+                              calculateMechanicalImpuritiesRepeatability(
+                                resolveMechanicalImpuritiesFieldValue(
+                                  formData,
+                                  "mechanicalImpuritiesFirstX1",
+                                ),
+                                resolveMechanicalImpuritiesFieldValue(
+                                  formData,
+                                  "mechanicalImpuritiesSecondX2",
+                                ),
+                                resolveMechanicalImpuritiesFieldValue(
+                                  formData,
+                                  "mechanicalImpuritiesAverage",
+                                ),
+                              ).isError)
 
                           return (
                             <td
