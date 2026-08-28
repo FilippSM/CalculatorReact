@@ -1,4 +1,11 @@
 import {
+  calculateDensity,
+  calculateDensityRepeatability,
+  DENSITY_AT20_CORRECTION,
+  DENSITY_AT20_UNIT,
+  resolveDensityAt20FieldValue,
+} from "@/features/density"
+import {
   calculateFlashPointRepeatability,
   resolveFlashPointFieldValue,
 } from "@/features/flash-point"
@@ -122,7 +129,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               ? resolveFlashPointFieldValue(formData, field)
                               : test.id === "mechanicalImpurities"
                                 ? resolveMechanicalImpuritiesFieldValue(formData, field)
-                                : formData[field]
+                                : test.id === "densityAt20"
+                                  ? resolveDensityAt20FieldValue(formData, field)
+                                  : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -150,6 +159,22 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                 resolveMechanicalImpuritiesFieldValue(
                                   formData,
                                   "mechanicalImpuritiesAverage",
+                                ),
+                              ).isError) ||
+                            (test.id === "densityAt20" &&
+                              field === "densityAt20Repeatability" &&
+                              calculateDensityRepeatability(
+                                calculateDensity(
+                                  formData.densityAt20FirstRho,
+                                  formData.densityAt20FirstT,
+                                  DENSITY_AT20_UNIT,
+                                  DENSITY_AT20_CORRECTION,
+                                ),
+                                calculateDensity(
+                                  formData.densityAt20SecondRho,
+                                  formData.densityAt20SecondT,
+                                  DENSITY_AT20_UNIT,
+                                  DENSITY_AT20_CORRECTION,
                                 ),
                               ).isError)
 

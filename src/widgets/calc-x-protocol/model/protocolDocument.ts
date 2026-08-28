@@ -1,3 +1,4 @@
+import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
@@ -134,7 +135,9 @@ export const buildProtocolDocument = (
         result:
           test.id === "mechanicalImpurities"
             ? resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage")
-            : formData[resultFields[test.id]],
+            : test.id === "densityAt20"
+              ? resolveDensityAt20FieldValue(formData, "densityAt20Average")
+              : formData[resultFields[test.id]],
         uncertainty: "—",
       }
     }),
