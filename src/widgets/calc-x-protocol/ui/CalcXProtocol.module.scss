@@ -91,6 +91,10 @@
   }
 }
 
+.fullWidthSelect {
+  width: min(860px, 100%);
+}
+
 .testNameInput {
   input {
     width: 520px;
@@ -223,6 +227,7 @@
 
   .wideInput,
   .fullWidthInput,
+  .fullWidthSelect,
   .testNameInput,
   .wideInput input {
     width: 100%;
