@@ -1,3 +1,4 @@
+import { useKinematicViscosity100Calculations } from "@/features/viscosity"
 import { Input } from "@/shared/components/Input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import { constansVisc } from "@/features/viscosity/constans/constans-visc"
@@ -27,6 +28,12 @@ const updateViscometerFields = (updateTestData: Props["updateTestData"], constan
 
 export const KinematicViscosity100TestItem = ({ number, formData, updateTestData }: Props) => {
   const [selectedViscometerConstant, setSelectedViscometerConstant] = useState("")
+  const { firstTAverage, secondTAverage } = useKinematicViscosity100Calculations({
+    firstT1: formData.kinematicViscosity100FirstT1,
+    firstT2: formData.kinematicViscosity100FirstT2,
+    secondT1: formData.kinematicViscosity100SecondT1,
+    secondT2: formData.kinematicViscosity100SecondT2,
+  })
 
   return (
     <div className={styles.testItem}>
@@ -148,9 +155,9 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <td>
                       <Input
                         className={styles.tableInput}
-                        value={formData.kinematicViscosity100FirstTAverage}
+                        value={firstTAverage}
                         placeholder={initialTestData.kinematicViscosity100FirstTAverage}
-                        onValueChange={(value) => updateTestData("kinematicViscosity100FirstTAverage", value)}
+                        readOnly
                       />
                     </td>
                     <td>
@@ -204,9 +211,9 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <td>
                       <Input
                         className={styles.tableInput}
-                        value={formData.kinematicViscosity100SecondTAverage}
+                        value={secondTAverage}
                         placeholder={initialTestData.kinematicViscosity100SecondTAverage}
-                        onValueChange={(value) => updateTestData("kinematicViscosity100SecondTAverage", value)}
+                        readOnly
                       />
                     </td>
                     <td>
