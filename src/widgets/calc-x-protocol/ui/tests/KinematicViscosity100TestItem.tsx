@@ -2,6 +2,7 @@ import { useKinematicViscosity100Calculations } from "@/features/viscosity"
 import { Input } from "@/shared/components/Input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import { constansVisc } from "@/features/viscosity/constans/constans-visc"
+import { viscosityPrecisionData } from "@/features/viscosity/constans/viscosityPrecisionData"
 import clsx from "clsx"
 import { useState } from "react"
 import styles from "../CalcXProtocol.module.scss"
@@ -28,12 +29,17 @@ const updateViscometerFields = (updateTestData: Props["updateTestData"], constan
 
 export const KinematicViscosity100TestItem = ({ number, formData, updateTestData }: Props) => {
   const [selectedViscometerConstant, setSelectedViscometerConstant] = useState("")
-  const { firstTAverage, secondTAverage } = useKinematicViscosity100Calculations({
-    firstT1: formData.kinematicViscosity100FirstT1,
-    firstT2: formData.kinematicViscosity100FirstT2,
-    secondT1: formData.kinematicViscosity100SecondT1,
-    secondT2: formData.kinematicViscosity100SecondT2,
-  })
+  const [selectedPrecisionName, setSelectedPrecisionName] = useState("Компаундированные масла при 40 °С и 100 °С")
+  const { firstTAverage, secondTAverage, firstDeterminability, secondDeterminability, repeatability } =
+    useKinematicViscosity100Calculations({
+      firstT1: formData.kinematicViscosity100FirstT1,
+      firstT2: formData.kinematicViscosity100FirstT2,
+      secondT1: formData.kinematicViscosity100SecondT1,
+      secondT2: formData.kinematicViscosity100SecondT2,
+      firstV1: formData.kinematicViscosity100FirstV1,
+      secondV2: formData.kinematicViscosity100SecondV2,
+      precisionName: selectedPrecisionName,
+    })
 
   return (
     <div className={styles.testItem}>
@@ -46,6 +52,22 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
           placeholder={initialTestData.kinematicViscosity100TestName}
           onValueChange={(value) => updateTestData("kinematicViscosity100TestName", value)}
         />
+      </div>
+
+      <div className={styles.precisionBlock}>
+        <h3>Прецизионность:</h3>
+        <Select value={selectedPrecisionName} onValueChange={setSelectedPrecisionName}>
+          <SelectTrigger className={styles.fullWidthSelect}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {viscosityPrecisionData.map((item) => (
+              <SelectItem key={item.name} value={item.name}>
+                {item.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className={styles.equipmentBlock}>
@@ -98,14 +120,14 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <th>Время истечения t₂, с</th>
                     <th>Номер вискозиметра</th>
                     <th>Постоянная вискозиметра</th>
-                    <th>Определяемость d, % (компаундированные масла)</th>
+                    <th>Определяемость d, % ({selectedPrecisionName})</th>
                     <th>Среднее значение tср, с</th>
                     <th>Кинематическая вязкость ν₁, мм²/с</th>
                     <th>Время истечения t₁, с</th>
                     <th>Время истечения t₂, с</th>
                     <th>Номер вискозиметра</th>
                     <th>Постоянная вискозиметра</th>
-                    <th>Определяемость d, % (компаундированные масла)</th>
+                    <th>Определяемость d, % ({selectedPrecisionName})</th>
                     <th>Среднее значение tср, с</th>
                     <th>Кинематическая вязкость ν₂, мм²/с</th>
                   </tr>
@@ -147,9 +169,9 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <td>
                       <Input
                         className={styles.tableInput}
-                        value={formData.kinematicViscosity100FirstDeterminability}
+                        value={firstDeterminability}
                         placeholder={initialTestData.kinematicViscosity100FirstDeterminability}
-                        onValueChange={(value) => updateTestData("kinematicViscosity100FirstDeterminability", value)}
+                        readOnly
                       />
                     </td>
                     <td>
@@ -203,9 +225,9 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <td>
                       <Input
                         className={styles.tableInput}
-                        value={formData.kinematicViscosity100SecondDeterminability}
+                        value={secondDeterminability}
                         placeholder={initialTestData.kinematicViscosity100SecondDeterminability}
-                        onValueChange={(value) => updateTestData("kinematicViscosity100SecondDeterminability", value)}
+                        readOnly
                       />
                     </td>
                     <td>
@@ -238,7 +260,7 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <th colSpan={2}>Результаты</th>
                   </tr>
                   <tr>
-                    <th>Повторяемость d, % (компаундированные масла)</th>
+                    <th>Повторяемость r, % ({selectedPrecisionName})</th>
                     <th>Среднее значение νср, мм²/с</th>
                   </tr>
                 </thead>
@@ -247,9 +269,9 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <td>
                       <Input
                         className={styles.tableInput}
-                        value={formData.kinematicViscosity100Repeatability}
+                        value={repeatability}
                         placeholder={initialTestData.kinematicViscosity100Repeatability}
-                        onValueChange={(value) => updateTestData("kinematicViscosity100Repeatability", value)}
+                        readOnly
                       />
                     </td>
                     <td>
