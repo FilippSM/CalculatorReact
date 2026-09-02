@@ -30,7 +30,7 @@ const updateViscometerFields = (updateTestData: Props["updateTestData"], constan
 export const KinematicViscosity100TestItem = ({ number, formData, updateTestData }: Props) => {
   const [selectedViscometerConstant, setSelectedViscometerConstant] = useState("")
   const [selectedPrecisionName, setSelectedPrecisionName] = useState("Компаундированные масла при 40 °С и 100 °С")
-  const { firstTAverage, secondTAverage, firstDeterminability, secondDeterminability, repeatability } =
+  const { firstTAverage, secondTAverage, firstDeterminability, secondDeterminability, average, repeatability } =
     useKinematicViscosity100Calculations({
       firstT1: formData.kinematicViscosity100FirstT1,
       firstT2: formData.kinematicViscosity100FirstT2,
@@ -120,14 +120,14 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <th>Время истечения t₂, с</th>
                     <th>Номер вискозиметра</th>
                     <th>Постоянная вискозиметра</th>
-                    <th>Определяемость d, % ({selectedPrecisionName})</th>
+                    <th>Определяемость d, с ({selectedPrecisionName})</th>
                     <th>Среднее значение tср, с</th>
                     <th>Кинематическая вязкость ν₁, мм²/с</th>
                     <th>Время истечения t₁, с</th>
                     <th>Время истечения t₂, с</th>
                     <th>Номер вискозиметра</th>
                     <th>Постоянная вискозиметра</th>
-                    <th>Определяемость d, % ({selectedPrecisionName})</th>
+                    <th>Определяемость d, с ({selectedPrecisionName})</th>
                     <th>Среднее значение tср, с</th>
                     <th>Кинематическая вязкость ν₂, мм²/с</th>
                   </tr>
@@ -168,8 +168,8 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     </td>
                     <td>
                       <Input
-                        className={styles.tableInput}
-                        value={firstDeterminability}
+                        className={clsx(styles.tableInput, firstDeterminability.isError && styles.tableInputError)}
+                        value={firstDeterminability.value}
                         placeholder={initialTestData.kinematicViscosity100FirstDeterminability}
                         readOnly
                       />
@@ -224,8 +224,8 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     </td>
                     <td>
                       <Input
-                        className={styles.tableInput}
-                        value={secondDeterminability}
+                        className={clsx(styles.tableInput, secondDeterminability.isError && styles.tableInputError)}
+                        value={secondDeterminability.value}
                         placeholder={initialTestData.kinematicViscosity100SecondDeterminability}
                         readOnly
                       />
@@ -260,7 +260,7 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <th colSpan={2}>Результаты</th>
                   </tr>
                   <tr>
-                    <th>Повторяемость r, % ({selectedPrecisionName})</th>
+                    <th>Повторяемость r, с ({selectedPrecisionName})</th>
                     <th>Среднее значение νср, мм²/с</th>
                   </tr>
                 </thead>
@@ -268,8 +268,8 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                   <tr>
                     <td>
                       <Input
-                        className={styles.tableInput}
-                        value={repeatability}
+                        className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                        value={repeatability.value}
                         placeholder={initialTestData.kinematicViscosity100Repeatability}
                         readOnly
                       />
@@ -277,9 +277,9 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <td>
                       <Input
                         className={styles.tableInput}
-                        value={formData.kinematicViscosity100Average}
+                        value={average}
                         placeholder={initialTestData.kinematicViscosity100Average}
-                        onValueChange={(value) => updateTestData("kinematicViscosity100Average", value)}
+                        readOnly
                       />
                     </td>
                   </tr>
