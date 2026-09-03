@@ -1,5 +1,12 @@
 import { normalizeNumber, roundToSignificantFigures, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS } from "./viscosty"
 
+const getDecimalPlaces = (value: string) => {
+  const [, fraction = ""] = value.replace(",", ".").split(".")
+  return fraction.length
+}
+
+const formatToDecimalPlaces = (value: number, decimalPlaces: number) => value.toFixed(decimalPlaces).replace(".", ",")
+
 export const calculateViscosityAverage = (firstViscosity: string, secondViscosity: string): string => {
   const first = normalizeNumber(firstViscosity)
   const second = normalizeNumber(secondViscosity)
@@ -7,7 +14,9 @@ export const calculateViscosityAverage = (firstViscosity: string, secondViscosit
   if (!Number.isFinite(first) || !Number.isFinite(second)) return ""
 
   const average = roundToSignificantFigures((first + second) / 2, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS)
-  return average.toString().replace(".", ",")
+  const decimalPlaces = Math.max(0, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS - 1 - Math.floor(Math.log10(Math.abs(average))))
+
+  return formatToDecimalPlaces(average, decimalPlaces)
 }
 
 export type RepeatabilityResult = {
@@ -19,9 +28,6 @@ const EMPTY_RESULT: RepeatabilityResult = {
   value: "",
   isError: false,
 }
-
-const formatToSignificantDigits = (value: number) =>
-  roundToSignificantFigures(value, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS).toString().replace(".", ",")
 
 export const calculateRepeatability = (
   firstViscosity: string,
@@ -41,14 +47,15 @@ export const calculateRepeatability = (
 
   if (!Number.isFinite(calculated)) return EMPTY_RESULT
 
-  const difference = roundToSignificantFigures(Math.abs(first - second), VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS)
-  const roundedCalculated = roundToSignificantFigures(calculated, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS)
+  const decimalPlaces = getDecimalPlaces(averageValue)
+  const difference = Number(Math.abs(first - second).toFixed(decimalPlaces))
+  const roundedCalculated = Number(calculated.toFixed(decimalPlaces))
   const isError = difference > roundedCalculated
-  const formattedDifference = formatToSignificantDigits(difference)
+  const formattedDifference = formatToDecimalPlaces(difference, decimalPlaces)
 
   return {
     value: isError
-      ? `${formattedDifference} > r=${formatToSignificantDigits(roundedCalculated)} (Error)`
+      ? `${formattedDifference} > r=${formatToDecimalPlaces(roundedCalculated, decimalPlaces)} (Error)`
       : formattedDifference,
     isError,
   }

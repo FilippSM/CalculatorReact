@@ -13,7 +13,7 @@ export const normalizeNumber = (value: string): number => {
 // перевод времени в секунды
 export const convertToSeconds = (timeString: string): number => {
   if (!timeString || timeString.trim() === "") return NaN
-  
+
   const normalized = timeString.replace(",", ".")
   const parts = normalized.split(":")
 
@@ -38,15 +38,13 @@ export const convertToSeconds = (timeString: string): number => {
 // округление IV
 export const roundIV = (value: number): number => {
   if (isNaN(value) || !isFinite(value)) return 0
-  
+
   const rounded = Number(value.toFixed(1))
   const temp = rounded * 10
 
   if (temp % 5 === 0) {
     const base = temp / 10
-    return Math.floor(base) % 2 === 0
-      ? Math.floor(base)
-      : Math.ceil(base)
+    return Math.floor(base) % 2 === 0 ? Math.floor(base) : Math.ceil(base)
   }
 
   return Math.round(rounded)
@@ -63,20 +61,20 @@ const calcIV = (L: number, H: number, U: number) => {
 const calcIVMore100 = (H: number, Y: number, U: number) => {
   if (isNaN(H) || isNaN(Y) || isNaN(U)) return 0
   if (Y <= 0 || H <= 0) return 0
-  
+
   const n = (Math.log10(H) - Math.log10(U)) / Math.log10(Y)
-  
+
   if (isNaN(n) || !isFinite(n)) return 0
-  
-  const iv = ((Math.pow(10, n) - 1) / 0.00715) + 100
-  
+
+  const iv = (Math.pow(10, n) - 1) / 0.00715 + 100
+
   return roundIV(iv)
 }
 
 // поиск в таблице
 const findTableValues = (Y: number) => {
   if (isNaN(Y)) return null
-  
+
   const key = Number(Y.toFixed(2))
 
   if (constansIV[key as keyof typeof constansIV]) {
@@ -88,12 +86,9 @@ const findTableValues = (Y: number) => {
 }
 
 // интерполяция
-const interpolate = (
-  Y: number,
-  getIndex: 0 | 1
-) => {
+const interpolate = (Y: number, getIndex: 0 | 1) => {
   if (isNaN(Y)) return 0
-  
+
   const keys = Object.keys(constansIV)
     .map(Number)
     .sort((a, b) => a - b)
@@ -114,22 +109,14 @@ const interpolate = (
 
   if (upper === lower) return lowerValue
 
-  return (
-    lowerValue +
-    (upperValue - lowerValue) *
-      (Y - lower) /
-      (upper - lower)
-  )
+  return lowerValue + ((upperValue - lowerValue) * (Y - lower)) / (upper - lower)
 }
 
 // главный расчет IV
-export const calculateIV = (
-  viscosity100: number,
-  viscosity40: number
-): number => {
+export const calculateIV = (viscosity100: number, viscosity40: number): number => {
   if (isNaN(viscosity100) || isNaN(viscosity40)) return NaN
   if (viscosity100 <= 0 || viscosity40 <= 0) return NaN
-  
+
   const Y = viscosity100
   const U = viscosity40
 
@@ -179,13 +166,11 @@ export const calculateIV = (
   return NaN
 }
 
-export const VISCOSITY_RESULT_SIGNIFICANT_DIGITS = 6
+export const VISCOSITY_RESULT_SIGNIFICANT_DIGITS = 5
 export const VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS = 4
+export const PROTOCOL_VISCOSITY_SIGNIFICANT_DIGITS = 6
 
-export const roundToSignificantFigures = (
-  value: number,
-  significantDigits: number
-): number => {
+export const roundToSignificantFigures = (value: number, significantDigits: number): number => {
   if (isNaN(value) || !isFinite(value)) return value
   if (value === 0) return 0
 
@@ -201,19 +186,20 @@ export const roundToSignificantFigures = (
 // расчет вязкости
 export const calculateViscosity = (
   time: number,
-  constant: number
+  constant: number,
+  significantDigits = VISCOSITY_RESULT_SIGNIFICANT_DIGITS,
 ): number => {
   // Валидация входных данных
   if (isNaN(time) || isNaN(constant)) return NaN
   if (time <= 0 || constant <= 0) return NaN
-  
+
   const raw = time * constant
-  
+
   // Проверка на валидность результата
   if (isNaN(raw) || !isFinite(raw)) return NaN
   if (raw === 0) return 0
 
-  return roundToSignificantFigures(raw, VISCOSITY_RESULT_SIGNIFICANT_DIGITS)
+  return roundToSignificantFigures(raw, significantDigits)
 }
 
 /* // viscosity.ts

@@ -1,6 +1,7 @@
 import { viscosityPrecisionData } from "../constans/viscosityPrecisionData"
 import { calculateDeterminability } from "../lib/calculateDeterminability"
 import { calculateFlowTimeAverage } from "../lib/calculateFlowTimeAverage"
+import { calculateProtocolViscosity } from "../lib/calculateProtocolViscosity"
 import { calculateRepeatability, calculateViscosityAverage } from "../lib/calculateRepeatability"
 
 type KinematicViscosity100CalculationInput = {
@@ -8,8 +9,8 @@ type KinematicViscosity100CalculationInput = {
   firstT2: string
   secondT1: string
   secondT2: string
-  firstV1: string
-  secondV2: string
+  firstConstant: string
+  secondConstant: string
   precisionName: string
 }
 
@@ -18,12 +19,14 @@ export const useKinematicViscosity100Calculations = ({
   firstT2,
   secondT1,
   secondT2,
-  firstV1,
-  secondV2,
+  firstConstant,
+  secondConstant,
   precisionName,
 }: KinematicViscosity100CalculationInput) => {
   const firstTAverage = calculateFlowTimeAverage(firstT1, firstT2)
   const secondTAverage = calculateFlowTimeAverage(secondT1, secondT2)
+  const firstV1 = calculateProtocolViscosity(firstTAverage, firstConstant)
+  const secondV2 = calculateProtocolViscosity(secondTAverage, secondConstant)
   const average = calculateViscosityAverage(firstV1, secondV2)
   const precision = viscosityPrecisionData.find((item) => item.name === precisionName)
   const emptyDeterminability = { value: "", isError: false }
@@ -32,6 +35,8 @@ export const useKinematicViscosity100Calculations = ({
   return {
     firstTAverage,
     secondTAverage,
+    firstV1,
+    secondV2,
     average,
     firstDeterminability: precision
       ? calculateDeterminability(firstT1, firstT2, firstTAverage, precision.d)

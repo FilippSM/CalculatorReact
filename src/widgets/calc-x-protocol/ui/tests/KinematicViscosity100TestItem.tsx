@@ -30,16 +30,24 @@ const updateViscometerFields = (updateTestData: Props["updateTestData"], constan
 export const KinematicViscosity100TestItem = ({ number, formData, updateTestData }: Props) => {
   const [selectedViscometerConstant, setSelectedViscometerConstant] = useState("")
   const [selectedPrecisionName, setSelectedPrecisionName] = useState("Компаундированные масла при 40 °С и 100 °С")
-  const { firstTAverage, secondTAverage, firstDeterminability, secondDeterminability, average, repeatability } =
-    useKinematicViscosity100Calculations({
-      firstT1: formData.kinematicViscosity100FirstT1,
-      firstT2: formData.kinematicViscosity100FirstT2,
-      secondT1: formData.kinematicViscosity100SecondT1,
-      secondT2: formData.kinematicViscosity100SecondT2,
-      firstV1: formData.kinematicViscosity100FirstV1,
-      secondV2: formData.kinematicViscosity100SecondV2,
-      precisionName: selectedPrecisionName,
-    })
+  const {
+    firstTAverage,
+    secondTAverage,
+    firstV1,
+    secondV2,
+    firstDeterminability,
+    secondDeterminability,
+    average,
+    repeatability,
+  } = useKinematicViscosity100Calculations({
+    firstT1: formData.kinematicViscosity100FirstT1,
+    firstT2: formData.kinematicViscosity100FirstT2,
+    secondT1: formData.kinematicViscosity100SecondT1,
+    secondT2: formData.kinematicViscosity100SecondT2,
+    firstConstant: formData.kinematicViscosity100FirstViscometerConstant,
+    secondConstant: formData.kinematicViscosity100SecondViscometerConstant,
+    precisionName: selectedPrecisionName,
+  })
 
   return (
     <div className={styles.testItem}>
@@ -185,9 +193,9 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <td>
                       <Input
                         className={styles.tableInput}
-                        value={formData.kinematicViscosity100FirstV1}
+                        value={firstV1}
                         placeholder={initialTestData.kinematicViscosity100FirstV1}
-                        onValueChange={(value) => updateTestData("kinematicViscosity100FirstV1", value)}
+                        readOnly
                       />
                     </td>
                     <td>
@@ -241,9 +249,9 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
                     <td>
                       <Input
                         className={styles.tableInput}
-                        value={formData.kinematicViscosity100SecondV2}
+                        value={secondV2}
                         placeholder={initialTestData.kinematicViscosity100SecondV2}
-                        onValueChange={(value) => updateTestData("kinematicViscosity100SecondV2", value)}
+                        readOnly
                       />
                     </td>
                   </tr>
