@@ -1,4 +1,4 @@
-import { useKinematicViscosity100Calculations } from "@/features/viscosity"
+import { useKinematicViscosityCalculations } from "@/features/viscosity"
 import { Input } from "@/shared/components/Input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import { constansVisc } from "@/features/viscosity/constans/constans-visc"
@@ -39,7 +39,7 @@ export const KinematicViscosity100TestItem = ({ number, formData, updateTestData
     secondDeterminability,
     average,
     repeatability,
-  } = useKinematicViscosity100Calculations({
+  } = useKinematicViscosityCalculations({
     firstT1: formData.kinematicViscosity100FirstT1,
     firstT2: formData.kinematicViscosity100FirstT2,
     secondT1: formData.kinematicViscosity100SecondT1,

@@ -4,7 +4,7 @@ import { calculateFlowTimeAverage } from "../lib/calculateFlowTimeAverage"
 import { calculateProtocolViscosity } from "../lib/calculateProtocolViscosity"
 import { calculateRepeatability, calculateViscosityAverage } from "../lib/calculateRepeatability"
 
-type KinematicViscosity100CalculationInput = {
+type KinematicViscosityCalculationInput = {
   firstT1: string
   firstT2: string
   secondT1: string
@@ -14,7 +14,7 @@ type KinematicViscosity100CalculationInput = {
   precisionName: string
 }
 
-export const useKinematicViscosity100Calculations = ({
+export const useKinematicViscosityCalculations = ({
   firstT1,
   firstT2,
   secondT1,
@@ -22,7 +22,7 @@ export const useKinematicViscosity100Calculations = ({
   firstConstant,
   secondConstant,
   precisionName,
-}: KinematicViscosity100CalculationInput) => {
+}: KinematicViscosityCalculationInput) => {
   const firstTAverage = calculateFlowTimeAverage(firstT1, firstT2)
   const secondTAverage = calculateFlowTimeAverage(secondT1, secondT2)
   const firstV1 = calculateProtocolViscosity(firstTAverage, firstConstant)
