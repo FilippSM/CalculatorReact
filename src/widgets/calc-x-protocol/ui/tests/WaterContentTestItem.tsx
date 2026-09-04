@@ -1,5 +1,7 @@
+import { useWaterContentCalculations } from "@/features/water-content"
 import { Input } from "@/shared/components/Input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
+import clsx from "clsx"
 import { useState } from "react"
 import styles from "../CalcXProtocol.module.scss"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
@@ -13,10 +15,22 @@ type Props = {
 const waterShareOptions = ["Объемная доля воды", "Массовая доля воды"] as const
 type WaterShareOption = (typeof waterShareOptions)[number]
 
+const receiverTrapOptions = ["Приемник-ловушка 5 см³", "Приемник-ловушка 10 см³"] as const
+type ReceiverTrapOption = (typeof receiverTrapOptions)[number]
+
 export const WaterContentTestItem = ({ number, formData, updateTestData }: Props) => {
   const [selectedWaterShare, setSelectedWaterShare] = useState<WaterShareOption>("Объемная доля воды")
+  const [selectedReceiverTrap, setSelectedReceiverTrap] =
+    useState<ReceiverTrapOption>("Приемник-ловушка 10 см³")
   const sampleColumnLabel =
     selectedWaterShare === "Массовая доля воды" ? "Масса образца m, г" : "Объем образца V, см³"
+  const { firstValue, secondValue, average, repeatability } = useWaterContentCalculations({
+    firstSample: formData.waterContentFirstSampleMass,
+    firstWaterVolume: formData.waterContentFirstWaterVolume,
+    secondSample: formData.waterContentSecondSampleMass,
+    secondWaterVolume: formData.waterContentSecondWaterVolume,
+    receiverTrap: selectedReceiverTrap,
+  })
 
   return (
     <div className={styles.testItem}>
@@ -42,6 +56,25 @@ export const WaterContentTestItem = ({ number, formData, updateTestData }: Props
           </SelectTrigger>
           <SelectContent>
             {waterShareOptions.map((option) => (
+              <SelectItem key={option} value={option}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className={styles.precisionBlock}>
+        <h3>Приемник-ловушка:</h3>
+        <Select
+          value={selectedReceiverTrap}
+          onValueChange={(value) => setSelectedReceiverTrap(value as ReceiverTrapOption)}
+        >
+          <SelectTrigger className={styles.fullWidthSelect}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {receiverTrapOptions.map((option) => (
               <SelectItem key={option} value={option}>
                 {option}
               </SelectItem>
@@ -91,7 +124,7 @@ export const WaterContentTestItem = ({ number, formData, updateTestData }: Props
                 <th>{sampleColumnLabel}</th>
                 <th>Объем воды в пр.-ловушке V₀, см³</th>
                 <th>Содержание воды, %</th>
-                <th>Повторяемость r, см³</th>
+                <th>Повторяемость r, %</th>
                 <th>Среднее значение Xср, %</th>
               </tr>
             </thead>
@@ -116,9 +149,9 @@ export const WaterContentTestItem = ({ number, formData, updateTestData }: Props
                 <td>
                   <Input
                     className={styles.tableInput}
-                    value={formData.waterContentFirstValue}
+                    value={firstValue}
                     placeholder={initialTestData.waterContentFirstValue}
-                    onValueChange={(value) => updateTestData("waterContentFirstValue", value)}
+                    readOnly
                   />
                 </td>
                 <td>
@@ -140,25 +173,25 @@ export const WaterContentTestItem = ({ number, formData, updateTestData }: Props
                 <td>
                   <Input
                     className={styles.tableInput}
-                    value={formData.waterContentSecondValue}
+                    value={secondValue}
                     placeholder={initialTestData.waterContentSecondValue}
-                    onValueChange={(value) => updateTestData("waterContentSecondValue", value)}
+                    readOnly
                   />
                 </td>
                 <td>
                   <Input
-                    className={styles.tableInput}
-                    value={formData.waterContentRepeatability}
+                    className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                    value={repeatability.value}
                     placeholder={initialTestData.waterContentRepeatability}
-                    onValueChange={(value) => updateTestData("waterContentRepeatability", value)}
+                    readOnly
                   />
                 </td>
                 <td>
                   <Input
                     className={styles.tableInput}
-                    value={formData.waterContentAverage}
+                    value={average}
                     placeholder={initialTestData.waterContentAverage}
-                    onValueChange={(value) => updateTestData("waterContentAverage", value)}
+                    readOnly
                   />
                 </td>
               </tr>
