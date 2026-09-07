@@ -13,6 +13,10 @@ import {
   calculateMechanicalImpuritiesRepeatability,
   resolveMechanicalImpuritiesFieldValue,
 } from "@/features/mechanical-impurities"
+import {
+  calculatePourPointRepeatability,
+  resolvePourPointFieldValue,
+} from "@/features/pour-point"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -131,7 +135,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                 ? resolveMechanicalImpuritiesFieldValue(formData, field)
                                 : test.id === "densityAt20"
                                   ? resolveDensityAt20FieldValue(formData, field)
-                                  : formData[field]
+                                  : test.id === "pourPoint"
+                                    ? resolvePourPointFieldValue(formData, field)
+                                    : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -176,6 +182,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                   DENSITY_AT20_UNIT,
                                   DENSITY_AT20_CORRECTION,
                                 ),
+                              ).isError) ||
+                            (test.id === "pourPoint" &&
+                              field === "pourPointRepeatability" &&
+                              calculatePourPointRepeatability(
+                                formData.pourPointFirstT1,
+                                formData.pourPointSecondT2,
                               ).isError)
 
                           return (
