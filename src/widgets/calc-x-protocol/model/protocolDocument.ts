@@ -1,6 +1,7 @@
 import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
+import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -140,7 +141,9 @@ export const buildProtocolDocument = (
               ? resolveDensityAt20FieldValue(formData, "densityAt20Average")
               : test.id === "pourPoint"
                 ? resolvePourPointFieldValue(formData, "pourPointAverage")
-                : formData[resultFields[test.id]],
+                : test.id === "freezingPoint"
+                  ? resolveFreezingPointFieldValue(formData, "freezingPointAverage")
+                  : formData[resultFields[test.id]],
         uncertainty: "—",
       }
     }),

@@ -5,18 +5,13 @@ import {
   DENSITY_AT20_UNIT,
   resolveDensityAt20FieldValue,
 } from "@/features/density"
-import {
-  calculateFlashPointRepeatability,
-  resolveFlashPointFieldValue,
-} from "@/features/flash-point"
+import { calculateFlashPointRepeatability, resolveFlashPointFieldValue } from "@/features/flash-point"
 import {
   calculateMechanicalImpuritiesRepeatability,
   resolveMechanicalImpuritiesFieldValue,
 } from "@/features/mechanical-impurities"
-import {
-  calculatePourPointRepeatability,
-  resolvePourPointFieldValue,
-} from "@/features/pour-point"
+import { calculatePourPointRepeatability, resolvePourPointFieldValue } from "@/features/pour-point"
+import { calculateFreezingPointRepeatability, resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -137,35 +132,22 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                   ? resolveDensityAt20FieldValue(formData, field)
                                   : test.id === "pourPoint"
                                     ? resolvePourPointFieldValue(formData, field)
-                                    : formData[field]
+                                    : test.id === "freezingPoint"
+                                      ? resolveFreezingPointFieldValue(formData, field)
+                                      : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
                               calculateFlashPointRepeatability(
-                                resolveFlashPointFieldValue(
-                                  formData,
-                                  "firstMeasurementCorrectedTemperature",
-                                ),
-                                resolveFlashPointFieldValue(
-                                  formData,
-                                  "secondMeasurementCorrectedTemperature",
-                                ),
+                                resolveFlashPointFieldValue(formData, "firstMeasurementCorrectedTemperature"),
+                                resolveFlashPointFieldValue(formData, "secondMeasurementCorrectedTemperature"),
                               ).isError) ||
                             (test.id === "mechanicalImpurities" &&
                               field === "mechanicalImpuritiesRepeatability" &&
                               calculateMechanicalImpuritiesRepeatability(
-                                resolveMechanicalImpuritiesFieldValue(
-                                  formData,
-                                  "mechanicalImpuritiesFirstX1",
-                                ),
-                                resolveMechanicalImpuritiesFieldValue(
-                                  formData,
-                                  "mechanicalImpuritiesSecondX2",
-                                ),
-                                resolveMechanicalImpuritiesFieldValue(
-                                  formData,
-                                  "mechanicalImpuritiesAverage",
-                                ),
+                                resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesFirstX1"),
+                                resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesSecondX2"),
+                                resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage"),
                               ).isError) ||
                             (test.id === "densityAt20" &&
                               field === "densityAt20Repeatability" &&
@@ -185,16 +167,17 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               ).isError) ||
                             (test.id === "pourPoint" &&
                               field === "pourPointRepeatability" &&
-                              calculatePourPointRepeatability(
-                                formData.pourPointFirstT1,
-                                formData.pourPointSecondT2,
+                              calculatePourPointRepeatability(formData.pourPointFirstT1, formData.pourPointSecondT2)
+                                .isError) ||
+                            (test.id === "freezingPoint" &&
+                              field === "freezingPointRepeatability" &&
+                              calculateFreezingPointRepeatability(
+                                formData.freezingPointFirstT1,
+                                formData.freezingPointSecondT2,
                               ).isError)
 
                           return (
-                            <td
-                              key={field}
-                              className={clsx(isRepeatabilityError && styles.errorValue)}
-                            >
+                            <td key={field} className={clsx(isRepeatabilityError && styles.errorValue)}>
                               {value}
                             </td>
                           )
