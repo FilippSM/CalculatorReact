@@ -12,6 +12,7 @@ import {
 } from "@/features/mechanical-impurities"
 import { calculatePourPointRepeatability, resolvePourPointFieldValue } from "@/features/pour-point"
 import { calculateFreezingPointRepeatability, resolveFreezingPointFieldValue } from "@/features/freezing-point"
+import { calculateNoackLossRepeatability, resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -134,7 +135,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                     ? resolvePourPointFieldValue(formData, field)
                                     : test.id === "freezingPoint"
                                       ? resolveFreezingPointFieldValue(formData, field)
-                                      : formData[field]
+                                      : test.id === "noackLoss"
+                                        ? resolveNoackLossFieldValue(formData, field)
+                                        : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -174,6 +177,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateFreezingPointRepeatability(
                                 formData.freezingPointFirstT1,
                                 formData.freezingPointSecondT2,
+                              ).isError) ||
+                            (test.id === "noackLoss" &&
+                              field === "noackLossRepeatability" &&
+                              calculateNoackLossRepeatability(
+                                resolveNoackLossFieldValue(formData, "noackLossFirstEvaporationLoss"),
+                                resolveNoackLossFieldValue(formData, "noackLossSecondEvaporationLoss"),
                               ).isError)
 
                           return (

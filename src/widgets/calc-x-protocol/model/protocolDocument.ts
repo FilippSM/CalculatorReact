@@ -2,6 +2,7 @@ import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
+import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -143,7 +144,9 @@ export const buildProtocolDocument = (
                 ? resolvePourPointFieldValue(formData, "pourPointAverage")
                 : test.id === "freezingPoint"
                   ? resolveFreezingPointFieldValue(formData, "freezingPointAverage")
-                  : formData[resultFields[test.id]],
+                  : test.id === "noackLoss"
+                    ? resolveNoackLossFieldValue(formData, "noackLossAverage")
+                    : formData[resultFields[test.id]],
         uncertainty: "—",
       }
     }),
