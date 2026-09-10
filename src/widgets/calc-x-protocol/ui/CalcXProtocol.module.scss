@@ -101,6 +101,18 @@
   }
 }
 
+.testNameSelectWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.testNameSelect {
+  width: 520px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .testFilters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -230,6 +242,8 @@
   .fullWidthInput,
   .fullWidthSelect,
   .testNameInput,
+  .testNameSelectWrapper,
+  .testNameSelect,
   .wideInput input {
     width: 100%;
   }
