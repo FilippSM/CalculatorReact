@@ -13,6 +13,10 @@ import {
 import { calculatePourPointRepeatability, resolvePourPointFieldValue } from "@/features/pour-point"
 import { calculateFreezingPointRepeatability, resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { calculateNoackLossRepeatability, resolveNoackLossFieldValue } from "@/features/noack-loss"
+import {
+  calculateDynamicViscosity30Repeatability,
+  resolveDynamicViscosity30FieldValue,
+} from "@/features/dynamic-viscosity-30"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -137,7 +141,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                       ? resolveFreezingPointFieldValue(formData, field)
                                       : test.id === "noackLoss"
                                         ? resolveNoackLossFieldValue(formData, field)
-                                        : formData[field]
+                                        : test.id === "dynamicViscosity30"
+                                          ? resolveDynamicViscosity30FieldValue(formData, field)
+                                          : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -183,6 +189,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateNoackLossRepeatability(
                                 resolveNoackLossFieldValue(formData, "noackLossFirstEvaporationLoss"),
                                 resolveNoackLossFieldValue(formData, "noackLossSecondEvaporationLoss"),
+                              ).isError) ||
+                            (test.id === "dynamicViscosity30" &&
+                              field === "dynamicViscosity30Repeatability" &&
+                              calculateDynamicViscosity30Repeatability(
+                                formData.dynamicViscosity30FirstEta1,
+                                formData.dynamicViscosity30SecondEta2,
                               ).isError)
 
                           return (

@@ -3,6 +3,7 @@ import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-imp
 import { resolvePourPointFieldValue } from "@/features/pour-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
+import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -146,7 +147,9 @@ export const buildProtocolDocument = (
                   ? resolveFreezingPointFieldValue(formData, "freezingPointAverage")
                   : test.id === "noackLoss"
                     ? resolveNoackLossFieldValue(formData, "noackLossAverage")
-                    : formData[resultFields[test.id]],
+                    : test.id === "dynamicViscosity30"
+                      ? resolveDynamicViscosity30FieldValue(formData, "dynamicViscosity30Average")
+                      : formData[resultFields[test.id]],
         uncertainty: "—",
       }
     }),
