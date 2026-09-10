@@ -107,10 +107,9 @@
 }
 
 .testNameSelect {
-  width: 520px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  width: fit-content;
+  min-width: 520px;
+  max-width: 100%;
 }
 
 .testFilters {
