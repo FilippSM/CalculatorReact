@@ -1,4 +1,6 @@
+import { useColorCntCalculations } from "@/features/color-cnt"
 import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
@@ -8,7 +10,13 @@ type Props = {
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
 
-export const ColorCntTestItem = ({ number, formData, updateTestData }: Props) => (
+export const ColorCntTestItem = ({ number, formData, updateTestData }: Props) => {
+  const { average, repeatability } = useColorCntCalculations({
+    firstX1: formData.colorCntFirstX1,
+    secondX2: formData.colorCntSecondX2,
+  })
+
+  return (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
                 <span className={styles.testNumber}>{number}.</span>
@@ -68,18 +76,18 @@ export const ColorCntTestItem = ({ number, formData, updateTestData }: Props) =>
                         </td>
                         <td>
                           <Input
-                            className={styles.tableInput}
-                            value={formData.colorCntRepeatability}
+                            className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                            value={repeatability.value}
                             placeholder={initialTestData.colorCntRepeatability}
-                            onValueChange={(value) => updateTestData("colorCntRepeatability", value)}
+                            readOnly
                           />
                         </td>
                         <td>
                           <Input
                             className={styles.tableInput}
-                            value={formData.colorCntAverage}
+                            value={average}
                             placeholder={initialTestData.colorCntAverage}
-                            onValueChange={(value) => updateTestData("colorCntAverage", value)}
+                            readOnly
                           />
                         </td>
                       </tr>
@@ -88,4 +96,5 @@ export const ColorCntTestItem = ({ number, formData, updateTestData }: Props) =>
                 </div>
               </div>
             </div>
-)
+  )
+}

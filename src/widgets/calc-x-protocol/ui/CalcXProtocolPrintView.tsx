@@ -17,6 +17,10 @@ import {
   calculateDynamicViscosity30Repeatability,
   resolveDynamicViscosity30FieldValue,
 } from "@/features/dynamic-viscosity-30"
+import {
+  calculateColorCntRepeatability,
+  resolveColorCntFieldValue,
+} from "@/features/color-cnt"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -143,7 +147,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                         ? resolveNoackLossFieldValue(formData, field)
                                         : test.id === "dynamicViscosity30"
                                           ? resolveDynamicViscosity30FieldValue(formData, field)
-                                          : formData[field]
+                                          : test.id === "colorCnt"
+                                            ? resolveColorCntFieldValue(formData, field)
+                                            : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -195,6 +201,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateDynamicViscosity30Repeatability(
                                 formData.dynamicViscosity30FirstEta1,
                                 formData.dynamicViscosity30SecondEta2,
+                              ).isError) ||
+                            (test.id === "colorCnt" &&
+                              field === "colorCntRepeatability" &&
+                              calculateColorCntRepeatability(
+                                formData.colorCntFirstX1,
+                                formData.colorCntSecondX2,
                               ).isError)
 
                           return (
