@@ -112,6 +112,15 @@
   max-width: 100%;
 }
 
+.groupFilters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px 16px;
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid color(light, 800);
+}
+
 .testFilters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

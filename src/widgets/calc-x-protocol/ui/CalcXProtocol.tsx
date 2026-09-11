@@ -2,12 +2,12 @@ import { useThemeStore } from "@/app/store"
 import { Button } from "@/shared/components/Button"
 import clsx from "clsx"
 import { useState } from "react"
-import { initialVisibleTests, type TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
+import { initialVisibleTests } from "../model/calcXTestVisibilityConfig"
 import { initialTestData } from "../model/initialTestData"
 import { buildProtocolDocument } from "../model/protocolDocument"
 import { CalcXProtocolMetaSection } from "./CalcXProtocolMetaSection"
 import { CalcXProtocolPrintView } from "./CalcXProtocolPrintView"
-import { CalcXTestFilters } from "./CalcXTestFilters"
+import { CalcXTestVisibilitySelector } from "./CalcXTestVisibilitySelector"
 import { CalcXTestsSection } from "./CalcXTestsSection"
 import styles from "./CalcXProtocol.module.scss"
 
@@ -23,13 +23,6 @@ export const CalcXProtocol = () => {
       ...initialTestData,
       ...current,
       [field]: value,
-    }))
-  }
-
-  const updateVisibleTest = (testId: TestVisibilityKey, checked: boolean) => {
-    setVisibleTests((current) => ({
-      ...current,
-      [testId]: checked,
     }))
   }
 
@@ -91,7 +84,7 @@ export const CalcXProtocol = () => {
 
       <div className={styles.screenOnly}>
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
-          <CalcXTestFilters visibleTests={visibleTests} onChangeVisibleTest={updateVisibleTest} />
+          <CalcXTestVisibilitySelector visibleTests={visibleTests} setVisibleTests={setVisibleTests} />
         </section>
 
         <CalcXProtocolMetaSection formData={formData} updateTestData={updateTestData} theme={theme} />
