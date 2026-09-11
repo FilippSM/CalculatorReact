@@ -19,11 +19,11 @@ const GROUPS = {
   deselectAll: { label: "Отменить все испытания", members: [] },
   trtsWithoutAdd: {
     label: "Испытания по ТР ТС 020/2012 для масел без присадок",
-    members: ["flashPoint", "mechanicalImpurities"],
+    members: ["flashPoint", "mechanicalImpurities", "autoIgnition"],
   },
   trtsWithAdd: {
     label: "Испытания по ТР ТС 020/2012 для масел с присадками",
-    members: ["flashPoint", "mechanicalImpurities", "waterContent"],
+    members: ["flashPoint", "mechanicalImpurities", "waterContent", "autoIgnition"],
   },
   accreditation: {
     label: "Испытания согласно области аккредитации для масел",
