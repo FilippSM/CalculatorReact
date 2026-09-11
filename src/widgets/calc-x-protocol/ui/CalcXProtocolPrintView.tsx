@@ -21,6 +21,10 @@ import {
   calculateColorCntRepeatability,
   resolveColorCntFieldValue,
 } from "@/features/color-cnt"
+import {
+  calculateBaseNumberRepeatability,
+  resolveBaseNumberFieldValue,
+} from "@/features/base-number"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -149,7 +153,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                           ? resolveDynamicViscosity30FieldValue(formData, field)
                                           : test.id === "colorCnt"
                                             ? resolveColorCntFieldValue(formData, field)
-                                            : formData[field]
+                                            : test.id === "baseNumber"
+                                              ? resolveBaseNumberFieldValue(formData, field)
+                                              : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -207,6 +213,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateColorCntRepeatability(
                                 formData.colorCntFirstX1,
                                 formData.colorCntSecondX2,
+                              ).isError) ||
+                            (test.id === "baseNumber" &&
+                              field === "baseNumberRepeatability" &&
+                              calculateBaseNumberRepeatability(
+                                formData.baseNumberFirstValue,
+                                formData.baseNumberSecondValue,
                               ).isError)
 
                           return (

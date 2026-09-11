@@ -5,6 +5,7 @@ import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
+import { resolveBaseNumberFieldValue } from "@/features/base-number"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -152,7 +153,9 @@ export const buildProtocolDocument = (
                       ? resolveDynamicViscosity30FieldValue(formData, "dynamicViscosity30Average")
                       : test.id === "colorCnt"
                         ? resolveColorCntFieldValue(formData, "colorCntAverage")
-                        : formData[resultFields[test.id]],
+                        : test.id === "baseNumber"
+                          ? resolveBaseNumberFieldValue(formData, "baseNumberAverage")
+                          : formData[resultFields[test.id]],
         uncertainty: "—",
       }
     }),

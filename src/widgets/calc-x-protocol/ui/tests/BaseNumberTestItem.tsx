@@ -1,4 +1,6 @@
+import { useBaseNumberCalculations } from "@/features/base-number"
 import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
@@ -8,7 +10,13 @@ type Props = {
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
 
-export const BaseNumberTestItem = ({ number, formData, updateTestData }: Props) => (
+export const BaseNumberTestItem = ({ number, formData, updateTestData }: Props) => {
+  const { average, repeatability } = useBaseNumberCalculations({
+    firstValue: formData.baseNumberFirstValue,
+    secondValue: formData.baseNumberSecondValue,
+  })
+
+  return (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
                 <span className={styles.testNumber}>{number}.</span>
@@ -122,18 +130,18 @@ export const BaseNumberTestItem = ({ number, formData, updateTestData }: Props) 
                         </td>
                         <td>
                           <Input
-                            className={styles.tableInput}
-                            value={formData.baseNumberRepeatability}
+                            className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                            value={repeatability.value}
                             placeholder={initialTestData.baseNumberRepeatability}
-                            onValueChange={(value) => updateTestData("baseNumberRepeatability", value)}
+                            readOnly
                           />
                         </td>
                         <td>
                           <Input
                             className={styles.tableInput}
-                            value={formData.baseNumberAverage}
+                            value={average}
                             placeholder={initialTestData.baseNumberAverage}
-                            onValueChange={(value) => updateTestData("baseNumberAverage", value)}
+                            readOnly
                           />
                         </td>
                       </tr>
@@ -142,4 +150,5 @@ export const BaseNumberTestItem = ({ number, formData, updateTestData }: Props) 
                 </div>
               </div>
             </div>
-)
+  )
+}
