@@ -25,6 +25,10 @@ import {
   calculateBaseNumberRepeatability,
   resolveBaseNumberFieldValue,
 } from "@/features/base-number"
+import {
+  calculateAutoIgnitionRepeatability,
+  resolveAutoIgnitionFieldValue,
+} from "@/features/auto-ignition"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -155,7 +159,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                             ? resolveColorCntFieldValue(formData, field)
                                             : test.id === "baseNumber"
                                               ? resolveBaseNumberFieldValue(formData, field)
-                                              : formData[field]
+                                              : test.id === "autoIgnition"
+                                                ? resolveAutoIgnitionFieldValue(formData, field)
+                                                : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -219,6 +225,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateBaseNumberRepeatability(
                                 formData.baseNumberFirstValue,
                                 formData.baseNumberSecondValue,
+                              ).isError) ||
+                            (test.id === "autoIgnition" &&
+                              field === "autoIgnitionRepeatability" &&
+                              calculateAutoIgnitionRepeatability(
+                                formData.autoIgnitionFirstT1,
+                                formData.autoIgnitionSecondT2,
                               ).isError)
 
                           return (

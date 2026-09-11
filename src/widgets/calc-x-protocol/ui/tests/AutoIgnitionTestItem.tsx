@@ -1,4 +1,6 @@
+import { useAutoIgnitionCalculations } from "@/features/auto-ignition"
 import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
@@ -8,7 +10,13 @@ type Props = {
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
 
-export const AutoIgnitionTestItem = ({ number, formData, updateTestData }: Props) => (
+export const AutoIgnitionTestItem = ({ number, formData, updateTestData }: Props) => {
+  const { average, repeatability } = useAutoIgnitionCalculations({
+    firstT1: formData.autoIgnitionFirstT1,
+    secondT2: formData.autoIgnitionSecondT2,
+  })
+
+  return (
             <div className={styles.testItem}>
               <div className={styles.testTitleRow}>
                 <span className={styles.testNumber}>{number}.</span>
@@ -116,18 +124,18 @@ export const AutoIgnitionTestItem = ({ number, formData, updateTestData }: Props
                         </td>
                         <td>
                           <Input
-                            className={styles.tableInput}
-                            value={formData.autoIgnitionRepeatability}
+                            className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                            value={repeatability.value}
                             placeholder={initialTestData.autoIgnitionRepeatability}
-                            onValueChange={(value) => updateTestData("autoIgnitionRepeatability", value)}
+                            readOnly
                           />
                         </td>
                         <td>
                           <Input
                             className={styles.tableInput}
-                            value={formData.autoIgnitionAverage}
+                            value={average}
                             placeholder={initialTestData.autoIgnitionAverage}
-                            onValueChange={(value) => updateTestData("autoIgnitionAverage", value)}
+                            readOnly
                           />
                         </td>
                       </tr>
@@ -136,4 +144,5 @@ export const AutoIgnitionTestItem = ({ number, formData, updateTestData }: Props
                 </div>
               </div>
             </div>
-)
+  )
+}
