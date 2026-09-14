@@ -1,4 +1,5 @@
 import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
 import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
@@ -17,6 +18,21 @@ if (!testConfig) {
 }
 
 export const DensityAt20Gost18995TestItem = ({ number, formData, updateTestData }: Props) => {
+  const calculateAverage = (): string => {
+    const first = formData.densityAt20Gost18995FirstRho.replace(",", ".")
+    const second = formData.densityAt20Gost18995SecondRho.replace(",", ".")
+
+    if (!first || !second) return ""
+
+    const firstNum = parseFloat(first)
+    const secondNum = parseFloat(second)
+
+    if (isNaN(firstNum) || isNaN(secondNum)) return ""
+
+    const average = (firstNum + secondNum) / 2
+    return average.toFixed(3).replace(".", ",")
+  }
+
   return (
     <div className={styles.testItem}>
       <div className={styles.testTitleRow}>
@@ -84,7 +100,7 @@ export const DensityAt20Gost18995TestItem = ({ number, formData, updateTestData 
                 </td>
                 <td>
                   <Input
-                    className={styles.tableInput}
+                    className={clsx(styles.tableInput, styles.tableInputCalculated)}
                     value=""
                     placeholder={initialTestData.densityAt20Gost18995Repeatability}
                     readOnly
@@ -92,8 +108,8 @@ export const DensityAt20Gost18995TestItem = ({ number, formData, updateTestData 
                 </td>
                 <td>
                   <Input
-                    className={styles.tableInput}
-                    value=""
+                    className={clsx(styles.tableInput, styles.tableInputCalculated)}
+                    value={calculateAverage()}
                     placeholder={initialTestData.densityAt20Gost18995Average}
                     readOnly
                   />
