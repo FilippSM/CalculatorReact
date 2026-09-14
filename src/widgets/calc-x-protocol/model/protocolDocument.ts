@@ -52,6 +52,7 @@ const resultFields: ResultFieldMap = {
   flashPoint: "averageCorrectedTemperature",
   mechanicalImpurities: "mechanicalImpuritiesAverage",
   densityAt20: "densityAt20Average",
+  densityAt20Gost18995: "densityAt20Gost18995Average",
   kinematicViscosity100: "kinematicViscosity100Average",
   kinematicViscosity40: "kinematicViscosity40Average",
   viscosityIndex: "viscosityIndexIV",

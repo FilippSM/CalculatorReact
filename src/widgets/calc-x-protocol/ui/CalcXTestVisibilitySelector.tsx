@@ -53,6 +53,10 @@ const GROUPS = {
       "freezingPoint",
     ],
   },
+  accreditationAntifreeze: {
+    label: "Испытания согласно области аккредитации для антифризов",
+    members: ["densityAt20Gost18995"],
+  },
 } as const
 
 type GroupId = keyof typeof GROUPS
@@ -64,6 +68,7 @@ const GROUP_ORDER: GroupId[] = [
   "trtsWithAdd",
   "accreditation",
   "accreditationVI",
+  "accreditationAntifreeze",
 ]
 
 const CONTENT_GROUPS: GroupId[] = [
@@ -71,6 +76,7 @@ const CONTENT_GROUPS: GroupId[] = [
   "trtsWithAdd",
   "accreditation",
   "accreditationVI",
+  "accreditationAntifreeze",
 ]
 
 const makeAllTrue = () =>
@@ -92,7 +98,7 @@ const resolveActiveGroup = (
   if (checkedIds.length === ALL_IDS.length) return "selectAll"
 
   for (const groupId of CONTENT_GROUPS) {
-    const members = GROUPS[groupId].members
+    const members = GROUPS[groupId].members as readonly string[]
     if (
       checkedIds.length === members.length &&
       checkedIds.every((id) => members.includes(id))

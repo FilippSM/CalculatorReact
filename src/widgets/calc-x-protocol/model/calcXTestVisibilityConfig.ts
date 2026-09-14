@@ -2,6 +2,7 @@ export const testVisibilityConfig = [
   { id: "flashPoint", label: "Температура вспышки в открытом тигле, °C по ГОСТ 4333" },
   { id: "mechanicalImpurities", label: "Содержание механических примесей, % по ГОСТ 6370" },
   { id: "densityAt20", label: "Плотность при 20°С, кг/м³ по ГОСТ 3900" },
+  { id: "densityAt20Gost18995", label: "Плотность при 20°C, г/см³ по ГОСТ 18995.1" },
   { id: "kinematicViscosity100", label: "Кинематическая вязкость при 100°C, мм²/с по ГОСТ 33" },
   { id: "kinematicViscosity40", label: "Кинематическая вязкость при 40°С, мм²/с по ГОСТ 33" },
   { id: "viscosityIndex", label: "Индекс вязкости по ГОСТ 25371" },

@@ -128,6 +128,31 @@ export const calcXTestConfig: CalcXTestConfig[] = [
     ],
   },
   {
+    id: "densityAt20Gost18995",
+    nameField: "densityAt20Gost18995TestName",
+    equipmentFields: [
+      "densityAt20Gost18995EquipmentThermometer",
+      "densityAt20Gost18995EquipmentHydrometer",
+    ],
+    groupHeaders: [
+      { label: "Первое измерение", colSpan: 1 },
+      { label: "Второе измерение", colSpan: 1 },
+      { label: "Результаты", colSpan: 2 },
+    ],
+    columnHeaders: [
+      "ρ₁ при 20°C, г/см³",
+      "ρ₂ при 20°C, г/см³",
+      "Повторяемость r, г/см³",
+      "Среднее значение ρ₂₀, г/см³",
+    ],
+    valueFields: [
+      "densityAt20Gost18995FirstRho",
+      "densityAt20Gost18995SecondRho",
+      "densityAt20Gost18995Repeatability",
+      "densityAt20Gost18995Average",
+    ],
+  },
+  {
     id: "kinematicViscosity100",
     nameField: "kinematicViscosity100TestName",
     equipmentFields: [

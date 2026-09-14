@@ -147,21 +147,23 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                 ? resolveMechanicalImpuritiesFieldValue(formData, field)
                                 : test.id === "densityAt20"
                                   ? resolveDensityAt20FieldValue(formData, field)
-                                  : test.id === "pourPoint"
-                                    ? resolvePourPointFieldValue(formData, field)
-                                    : test.id === "freezingPoint"
-                                      ? resolveFreezingPointFieldValue(formData, field)
-                                      : test.id === "noackLoss"
-                                        ? resolveNoackLossFieldValue(formData, field)
-                                        : test.id === "dynamicViscosity30"
-                                          ? resolveDynamicViscosity30FieldValue(formData, field)
-                                          : test.id === "colorCnt"
-                                            ? resolveColorCntFieldValue(formData, field)
-                                            : test.id === "baseNumber"
-                                              ? resolveBaseNumberFieldValue(formData, field)
-                                              : test.id === "autoIgnition"
-                                                ? resolveAutoIgnitionFieldValue(formData, field)
-                                                : formData[field]
+                                  : test.id === "densityAt20Gost18995"
+                                    ? formData[field]
+                                    : test.id === "pourPoint"
+                                      ? resolvePourPointFieldValue(formData, field)
+                                      : test.id === "freezingPoint"
+                                        ? resolveFreezingPointFieldValue(formData, field)
+                                        : test.id === "noackLoss"
+                                          ? resolveNoackLossFieldValue(formData, field)
+                                          : test.id === "dynamicViscosity30"
+                                            ? resolveDynamicViscosity30FieldValue(formData, field)
+                                            : test.id === "colorCnt"
+                                              ? resolveColorCntFieldValue(formData, field)
+                                              : test.id === "baseNumber"
+                                                ? resolveBaseNumberFieldValue(formData, field)
+                                                : test.id === "autoIgnition"
+                                                  ? resolveAutoIgnitionFieldValue(formData, field)
+                                                  : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&

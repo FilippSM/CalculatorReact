@@ -6,6 +6,7 @@ import { AutoIgnitionTestItem } from "./tests/AutoIgnitionTestItem"
 import { BaseNumberTestItem } from "./tests/BaseNumberTestItem"
 import { ColorCntTestItem } from "./tests/ColorCntTestItem"
 import { DensityAt20TestItem } from "./tests/DensityAt20TestItem"
+import { DensityAt20Gost18995TestItem } from "./tests/DensityAt20Gost18995TestItem"
 import { DynamicViscosity30TestItem } from "./tests/DynamicViscosity30TestItem"
 import { FlashPointTestItem } from "./tests/FlashPointTestItem"
 import { FreezingPointTestItem } from "./tests/FreezingPointTestItem"
@@ -58,6 +59,14 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
       {visibleTests.densityAt20 && visibleTestNumbers.densityAt20 !== undefined && (
         <DensityAt20TestItem
           number={visibleTestNumbers.densityAt20}
+          formData={formData}
+          updateTestData={updateTestData}
+        />
+      )}
+
+      {visibleTests.densityAt20Gost18995 && visibleTestNumbers.densityAt20Gost18995 !== undefined && (
+        <DensityAt20Gost18995TestItem
+          number={visibleTestNumbers.densityAt20Gost18995}
           formData={formData}
           updateTestData={updateTestData}
         />
