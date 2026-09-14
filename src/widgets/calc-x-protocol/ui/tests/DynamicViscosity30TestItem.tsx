@@ -22,7 +22,11 @@ type Props = {
 }
 
 const TEST_ID = "dynamicViscosity30"
-const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
 
 export const DynamicViscosity30TestItem = ({ number, formData, updateTestData }: Props) => {
   const { average, repeatability } = useDynamicViscosity30Calculations({

@@ -12,7 +12,11 @@ type Props = {
 }
 
 const TEST_ID = "autoIgnition"
-const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
 
 export const AutoIgnitionTestItem = ({ number, formData, updateTestData }: Props) => {
   const { average, repeatability } = useAutoIgnitionCalculations({

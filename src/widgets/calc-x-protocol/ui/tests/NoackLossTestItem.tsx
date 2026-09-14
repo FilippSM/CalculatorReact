@@ -12,7 +12,11 @@ type Props = {
 }
 
 const TEST_ID = "noackLoss"
-const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
 
 export const NoackLossTestItem = ({ number, formData, updateTestData }: Props) => {
   const { firstEvaporationLoss, secondEvaporationLoss, average, repeatability } = useNoackLossCalculations({

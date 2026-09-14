@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import clsx from "clsx"
 import { useState } from "react"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 type Props = {
@@ -11,6 +12,19 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "waterContent"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
+
+const replacePlaceholders = (header: string, replacements: Record<string, string>) =>
+  Object.entries(replacements).reduce(
+    (result, [placeholder, value]) => result.replace(`{${placeholder}}`, value),
+    header,
+  )
 
 const waterShareOptions = ["Объемная доля воды", "Массовая доля воды"] as const
 type WaterShareOption = (typeof waterShareOptions)[number]
@@ -113,19 +127,18 @@ export const WaterContentTestItem = ({ number, formData, updateTestData }: Props
           <table className={styles.testTable}>
             <thead>
               <tr>
-                <th colSpan={3}>Первое измерение</th>
-                <th colSpan={3}>Второе измерение</th>
-                <th colSpan={2}>Результаты</th>
+                {testConfig.groupHeaders?.map((group, index) => (
+                  <th key={index} colSpan={group.colSpan}>
+                    {group.label}
+                  </th>
+                ))}
               </tr>
               <tr>
-                <th>{sampleColumnLabel}</th>
-                <th>Объем воды в пр.-ловушке V₀, см³</th>
-                <th>Содержание воды, %</th>
-                <th>{sampleColumnLabel}</th>
-                <th>Объем воды в пр.-ловушке V₀, см³</th>
-                <th>Содержание воды, %</th>
-                <th>Повторяемость r, %</th>
-                <th>Среднее значение Xср, %</th>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>
+                    {replacePlaceholders(header, { sampleColumnLabel })}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>

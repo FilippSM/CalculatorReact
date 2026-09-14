@@ -7,6 +7,7 @@ import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosit
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
 import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
+import { resolveKinematicViscosityFieldValue } from "@/features/viscosity"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -145,21 +146,25 @@ export const buildProtocolDocument = (
             ? resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage")
             : test.id === "densityAt20"
               ? resolveDensityAt20FieldValue(formData, "densityAt20Average")
-              : test.id === "pourPoint"
-                ? resolvePourPointFieldValue(formData, "pourPointAverage")
-                : test.id === "freezingPoint"
-                  ? resolveFreezingPointFieldValue(formData, "freezingPointAverage")
-                  : test.id === "noackLoss"
-                    ? resolveNoackLossFieldValue(formData, "noackLossAverage")
-                    : test.id === "dynamicViscosity30"
-                      ? resolveDynamicViscosity30FieldValue(formData, "dynamicViscosity30Average")
-                      : test.id === "colorCnt"
-                        ? resolveColorCntFieldValue(formData, "colorCntAverage")
-                        : test.id === "baseNumber"
-                          ? resolveBaseNumberFieldValue(formData, "baseNumberAverage")
-                          : test.id === "autoIgnition"
-                            ? resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
-                            : formData[resultFields[test.id]],
+              : test.id === "kinematicViscosity100"
+                ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
+                : test.id === "kinematicViscosity40"
+                  ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
+                  : test.id === "pourPoint"
+                    ? resolvePourPointFieldValue(formData, "pourPointAverage")
+                    : test.id === "freezingPoint"
+                      ? resolveFreezingPointFieldValue(formData, "freezingPointAverage")
+                      : test.id === "noackLoss"
+                        ? resolveNoackLossFieldValue(formData, "noackLossAverage")
+                        : test.id === "dynamicViscosity30"
+                          ? resolveDynamicViscosity30FieldValue(formData, "dynamicViscosity30Average")
+                          : test.id === "colorCnt"
+                            ? resolveColorCntFieldValue(formData, "colorCntAverage")
+                            : test.id === "baseNumber"
+                              ? resolveBaseNumberFieldValue(formData, "baseNumberAverage")
+                              : test.id === "autoIgnition"
+                                ? resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
+                                : formData[resultFields[test.id]],
         uncertainty: "—",
       }
     }),

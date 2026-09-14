@@ -12,7 +12,11 @@ type Props = {
 }
 
 const TEST_ID = "viscosityIndex"
-const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
 
 const defaultPrecisionName = "Компаундированные масла при 40 °С и 100 °С"
 

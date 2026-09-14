@@ -12,7 +12,11 @@ type Props = {
 }
 
 const TEST_ID = "mechanicalImpurities"
-const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
 
 export const MechanicalImpuritiesTestItem = ({ number, formData, updateTestData }: Props) => {
   const { firstX1, secondX2, average, repeatability } = useMechanicalImpuritiesCalculations({

@@ -10,7 +10,11 @@ type Props = {
 }
 
 const TEST_ID = "densityAt20Gost18995"
-const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
 
 export const DensityAt20Gost18995TestItem = ({ number, formData, updateTestData }: Props) => {
   return (

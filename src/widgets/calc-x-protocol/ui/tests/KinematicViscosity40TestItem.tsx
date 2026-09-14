@@ -6,6 +6,7 @@ import { viscosityPrecisionData } from "@/features/viscosity/constans/viscosityP
 import clsx from "clsx"
 import { useState } from "react"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 type Props = {
@@ -13,6 +14,22 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "kinematicViscosity40"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
+
+const MEASUREMENT_GROUPS_COUNT = 2
+const FIRST_MEASUREMENT_COLUMNS = 7
+
+const replacePlaceholders = (header: string, replacements: Record<string, string>) =>
+  Object.entries(replacements).reduce(
+    (result, [placeholder, value]) => result.replace(`{${placeholder}}`, value),
+    header,
+  )
 
 const updateViscometerFields = (updateTestData: Props["updateTestData"], constant: string) => {
   const viscometer = constansVisc.find((item) => item.constant.toString() === constant)
@@ -120,24 +137,20 @@ export const KinematicViscosity40TestItem = ({ number, formData, updateTestData 
               <table className={styles.testTable}>
                 <thead>
                   <tr>
-                    <th colSpan={7}>Первое измерение</th>
-                    <th colSpan={7}>Второе измерение</th>
+                    {testConfig.groupHeaders?.slice(0, MEASUREMENT_GROUPS_COUNT).map((group, index) => (
+                      <th key={index} colSpan={group.colSpan}>
+                        {group.label}
+                      </th>
+                    ))}
                   </tr>
                   <tr>
-                    <th>Время истечения t₁, с</th>
-                    <th>Время истечения t₂, с</th>
-                    <th>Номер вискозиметра</th>
-                    <th>Постоянная вискозиметра</th>
-                    <th>Определяемость d, с ({selectedPrecisionName})</th>
-                    <th>Среднее значение tср, с</th>
-                    <th>Кинематическая вязкость ν₁, мм²/с</th>
-                    <th>Время истечения t₁, с</th>
-                    <th>Время истечения t₂, с</th>
-                    <th>Номер вискозиметра</th>
-                    <th>Постоянная вискозиметра</th>
-                    <th>Определяемость d, с ({selectedPrecisionName})</th>
-                    <th>Среднее значение tср, с</th>
-                    <th>Кинематическая вязкость ν₂, мм²/с</th>
+                    {testConfig.columnHeaders
+                      .slice(0, FIRST_MEASUREMENT_COLUMNS * MEASUREMENT_GROUPS_COUNT)
+                      .map((header, index) => (
+                        <th key={index}>
+                          {replacePlaceholders(header, { precisionName: selectedPrecisionName })}
+                        </th>
+                      ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -265,11 +278,20 @@ export const KinematicViscosity40TestItem = ({ number, formData, updateTestData 
               <table className={clsx(styles.testTable, styles.testTableNarrow)}>
                 <thead>
                   <tr>
-                    <th colSpan={2}>Результаты</th>
+                    {testConfig.groupHeaders?.slice(MEASUREMENT_GROUPS_COUNT).map((group, index) => (
+                      <th key={index} colSpan={group.colSpan}>
+                        {group.label}
+                      </th>
+                    ))}
                   </tr>
                   <tr>
-                    <th>Повторяемость r, с ({selectedPrecisionName})</th>
-                    <th>Среднее значение νср, мм²/с</th>
+                    {testConfig.columnHeaders
+                      .slice(FIRST_MEASUREMENT_COLUMNS * MEASUREMENT_GROUPS_COUNT)
+                      .map((header, index) => (
+                        <th key={index}>
+                          {replacePlaceholders(header, { precisionName: selectedPrecisionName })}
+                        </th>
+                      ))}
                   </tr>
                 </thead>
                 <tbody>

@@ -29,6 +29,10 @@ import {
   calculateAutoIgnitionRepeatability,
   resolveAutoIgnitionFieldValue,
 } from "@/features/auto-ignition"
+import {
+  resolveKinematicViscosityFieldValue,
+  calculateKinematicViscosityRepeatability,
+} from "@/features/viscosity"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -149,21 +153,23 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                   ? resolveDensityAt20FieldValue(formData, field)
                                   : test.id === "densityAt20Gost18995"
                                     ? formData[field]
-                                    : test.id === "pourPoint"
-                                      ? resolvePourPointFieldValue(formData, field)
-                                      : test.id === "freezingPoint"
-                                        ? resolveFreezingPointFieldValue(formData, field)
-                                        : test.id === "noackLoss"
-                                          ? resolveNoackLossFieldValue(formData, field)
-                                          : test.id === "dynamicViscosity30"
-                                            ? resolveDynamicViscosity30FieldValue(formData, field)
-                                            : test.id === "colorCnt"
-                                              ? resolveColorCntFieldValue(formData, field)
-                                              : test.id === "baseNumber"
-                                                ? resolveBaseNumberFieldValue(formData, field)
-                                                : test.id === "autoIgnition"
-                                                  ? resolveAutoIgnitionFieldValue(formData, field)
-                                                  : formData[field]
+                                    : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
+                                      ? resolveKinematicViscosityFieldValue(formData, field)
+                                      : test.id === "pourPoint"
+                                        ? resolvePourPointFieldValue(formData, field)
+                                        : test.id === "freezingPoint"
+                                          ? resolveFreezingPointFieldValue(formData, field)
+                                          : test.id === "noackLoss"
+                                            ? resolveNoackLossFieldValue(formData, field)
+                                            : test.id === "dynamicViscosity30"
+                                              ? resolveDynamicViscosity30FieldValue(formData, field)
+                                              : test.id === "colorCnt"
+                                                ? resolveColorCntFieldValue(formData, field)
+                                                : test.id === "baseNumber"
+                                                  ? resolveBaseNumberFieldValue(formData, field)
+                                                  : test.id === "autoIgnition"
+                                                    ? resolveAutoIgnitionFieldValue(formData, field)
+                                                    : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -233,6 +239,13 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateAutoIgnitionRepeatability(
                                 formData.autoIgnitionFirstT1,
                                 formData.autoIgnitionSecondT2,
+                              ).isError) ||
+                            ((test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40") &&
+                              field === `${test.id}Repeatability` &&
+                              calculateKinematicViscosityRepeatability(
+                                resolveKinematicViscosityFieldValue(formData, `${test.id}FirstV1` as keyof typeof formData),
+                                resolveKinematicViscosityFieldValue(formData, `${test.id}SecondV2` as keyof typeof formData),
+                                resolveKinematicViscosityFieldValue(formData, `${test.id}Average` as keyof typeof formData),
                               ).isError)
 
                           return (
