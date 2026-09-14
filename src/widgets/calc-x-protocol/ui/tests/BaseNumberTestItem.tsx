@@ -2,6 +2,7 @@ import { useBaseNumberCalculations } from "@/features/base-number"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 type Props = {
@@ -9,6 +10,9 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "baseNumber"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
 
 export const BaseNumberTestItem = ({ number, formData, updateTestData }: Props) => {
   const { average, repeatability } = useBaseNumberCalculations({
@@ -45,21 +49,16 @@ export const BaseNumberTestItem = ({ number, formData, updateTestData }: Props) 
                   <table className={styles.testTable}>
                     <thead>
                       <tr>
-                        <th colSpan={4}>Первое измерение</th>
-                        <th colSpan={4}>Второе измерение</th>
-                        <th colSpan={2}>Результаты</th>
+                        {testConfig.groupHeaders?.map((group, index) => (
+                          <th key={index} colSpan={group.colSpan}>
+                            {group.label}
+                          </th>
+                        ))}
                       </tr>
                       <tr>
-                        <th>Масса образца m, г</th>
-                        <th>Концентрация титранта C₀₁, моль/л</th>
-                        <th>Объем титранта V, мл</th>
-                        <th>Щелочное число, мг·KOH/г</th>
-                        <th>Масса образца m, г</th>
-                        <th>Концентрация титранта C₀₁, моль/л</th>
-                        <th>Объем титранта V, мл</th>
-                        <th>Щелочное число, мг·KOH/г</th>
-                        <th>Повторяемость r, мг·KOH/г</th>
-                        <th>Среднее значение X, мг·KOH/г</th>
+                        {testConfig.columnHeaders.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>

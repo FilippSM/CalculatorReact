@@ -2,6 +2,7 @@ import { calculateViscosityIndexForStrings } from "@/features/index-viscosity/li
 import { useKinematicViscosityCalculations } from "@/features/viscosity"
 import { Input } from "@/shared/components/Input"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 type Props = {
@@ -9,6 +10,9 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "viscosityIndex"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
 
 const defaultPrecisionName = "Компаундированные масла при 40 °С и 100 °С"
 
@@ -55,9 +59,9 @@ export const ViscosityIndexTestItem = ({ number, formData, updateTestData }: Pro
           <table className={styles.testTable}>
             <thead>
               <tr>
-                <th>ν₁₀₀</th>
-                <th>ν₄₀</th>
-                <th>ИВ</th>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
               </tr>
             </thead>
             <tbody>

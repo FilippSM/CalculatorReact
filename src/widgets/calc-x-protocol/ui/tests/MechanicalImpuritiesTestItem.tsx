@@ -2,6 +2,7 @@ import { useMechanicalImpuritiesCalculations } from "@/features/mechanical-impur
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 type Props = {
@@ -9,6 +10,9 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "mechanicalImpurities"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
 
 export const MechanicalImpuritiesTestItem = ({ number, formData, updateTestData }: Props) => {
   const { firstX1, secondX2, average, repeatability } = useMechanicalImpuritiesCalculations({
@@ -61,21 +65,16 @@ export const MechanicalImpuritiesTestItem = ({ number, formData, updateTestData 
           <table className={styles.testTable}>
             <thead>
               <tr>
-                <th colSpan={4}>Первое измерение</th>
-                <th colSpan={4}>Второе измерение</th>
-                <th colSpan={2}>Результаты</th>
+                {testConfig.groupHeaders?.map((group, index) => (
+                  <th key={index} colSpan={group.colSpan}>
+                    {group.label}
+                  </th>
+                ))}
               </tr>
               <tr>
-                <th>Масса стакана + ф-тр + мех. примеси m₁, г</th>
-                <th>Масса стакана + фильтр m₂, г</th>
-                <th>Масса пробы m₃, г</th>
-                <th>Содержание мех. примесей X₁, %</th>
-                <th>Масса стакана + ф-тр + мех. примеси m₁, г</th>
-                <th>Масса стакана + фильтр m₂, г</th>
-                <th>Масса пробы m₃, г</th>
-                <th>Содержание мех. примесей X₂, %</th>
-                <th>Повторяемость r, %</th>
-                <th>Среднее значение Xср, %</th>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
               </tr>
             </thead>
             <tbody>

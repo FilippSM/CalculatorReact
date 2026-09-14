@@ -4,6 +4,7 @@ import { Label } from "@/shared/components/Label/Label"
 import { useDynamicViscosity30Calculations } from "@/features/dynamic-viscosity-30"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 const dynamicViscosity30TestNameOptions = [
@@ -19,6 +20,9 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "dynamicViscosity30"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
 
 export const DynamicViscosity30TestItem = ({ number, formData, updateTestData }: Props) => {
   const { average, repeatability } = useDynamicViscosity30Calculations({
@@ -66,15 +70,16 @@ export const DynamicViscosity30TestItem = ({ number, formData, updateTestData }:
           <table className={styles.testTable}>
             <thead>
               <tr>
-                <th colSpan={1}>Первое измерение</th>
-                <th colSpan={1}>Второе измерение</th>
-                <th colSpan={2}>Результаты</th>
+                {testConfig.groupHeaders?.map((group, index) => (
+                  <th key={index} colSpan={group.colSpan}>
+                    {group.label}
+                  </th>
+                ))}
               </tr>
               <tr>
-                <th>η₁, °C</th>
-                <th>η₂, °C</th>
-                <th>Повторяемость r, °C</th>
-                <th>Среднее значение ηср</th>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
               </tr>
             </thead>
             <tbody>

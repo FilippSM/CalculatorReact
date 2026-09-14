@@ -2,6 +2,7 @@ import { useColorCntCalculations } from "@/features/color-cnt"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 type Props = {
@@ -9,6 +10,9 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "colorCnt"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
 
 export const ColorCntTestItem = ({ number, formData, updateTestData }: Props) => {
   const { average, repeatability } = useColorCntCalculations({
@@ -45,15 +49,16 @@ export const ColorCntTestItem = ({ number, formData, updateTestData }: Props) =>
                   <table className={styles.testTable}>
                     <thead>
                       <tr>
-                        <th colSpan={1}>Первое измерение</th>
-                        <th colSpan={1}>Второе измерение</th>
-                        <th colSpan={2}>Результаты</th>
+                        {testConfig.groupHeaders?.map((group, index) => (
+                          <th key={index} colSpan={group.colSpan}>
+                            {group.label}
+                          </th>
+                        ))}
                       </tr>
                       <tr>
-                        <th>X₁, ед. ЦНТ</th>
-                        <th>X₂, ед. ЦНТ</th>
-                        <th>Повторяемость X, ед. ЦНТ</th>
-                        <th>Среднее значение Xср</th>
+                        {testConfig.columnHeaders.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>

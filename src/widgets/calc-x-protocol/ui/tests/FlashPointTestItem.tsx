@@ -2,6 +2,7 @@ import { useFlashPointCalculations } from "@/features/flash-point"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import type { InitialTestData } from "../../model/initialTestData"
 
 type Props = {
@@ -9,6 +10,9 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "flashPoint"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
 
 export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) => {
   const {
@@ -64,21 +68,16 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
           <table className={styles.testTable}>
             <thead>
               <tr>
-                <th colSpan={4}>Первое измерение</th>
-                <th colSpan={4}>Второе измерение</th>
-                <th colSpan={2}>Результаты</th>
+                {testConfig.groupHeaders?.map((group, index) => (
+                  <th key={index} colSpan={group.colSpan}>
+                    {group.label}
+                  </th>
+                ))}
               </tr>
               <tr>
-                <th>t₀, °C</th>
-                <th>p, кПа</th>
-                <th>Поправка, °C</th>
-                <th>t₀ скорректированное, °C</th>
-                <th>t₀, °C</th>
-                <th>p, кПа</th>
-                <th>Поправка, °C</th>
-                <th>t₀ скорректированное, °C</th>
-                <th>Повторяемость r, °C</th>
-                <th>Среднее значение tср, °C</th>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
               </tr>
             </thead>
             <tbody>

@@ -2,6 +2,7 @@ import { useDensityAt20Calculations } from "@/features/density"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 type Props = {
@@ -9,6 +10,9 @@ type Props = {
   formData: InitialTestData
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
+
+const TEST_ID = "densityAt20"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)!
 
 export const DensityAt20TestItem = ({ number, formData, updateTestData }: Props) => {
   const { firstRhoAt20, secondRhoAt20, firstRhoAt20Corrected, secondRhoAt20Corrected, average, repeatability } =
@@ -54,21 +58,16 @@ export const DensityAt20TestItem = ({ number, formData, updateTestData }: Props)
           <table className={styles.testTable}>
             <thead>
               <tr>
-                <th colSpan={4}>Первое измерение</th>
-                <th colSpan={4}>Второе измерение</th>
-                <th colSpan={2}>Результаты</th>
+                {testConfig.groupHeaders?.map((group, index) => (
+                  <th key={index} colSpan={group.colSpan}>
+                    {group.label}
+                  </th>
+                ))}
               </tr>
               <tr>
-                <th>ρ₁, кг/м³</th>
-                <th>t₁, °С</th>
-                <th>ρ₁ при 20°С, кг/м³</th>
-                <th>ρ₁ при 20°С с поправкой, кг/м³</th>
-                <th>ρ₂, кг/м³</th>
-                <th>t₂, °С</th>
-                <th>ρ₂ при 20°С, кг/м³</th>
-                <th>ρ₂ при 20°С с поправкой, кг/м³</th>
-                <th>Повторяемость r, кг/м³</th>
-                <th>Среднее значение ρср, кг/м³</th>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
