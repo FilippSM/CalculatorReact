@@ -18,6 +18,8 @@ if (!testConfig) {
 }
 
 export const DensityAt20Gost18995TestItem = ({ number, formData, updateTestData }: Props) => {
+  const REPEATABILITY_LIMIT = 0.001
+
   const calculateAverage = (): string => {
     const first = formData.densityAt20Gost18995FirstRho.replace(",", ".")
     const second = formData.densityAt20Gost18995SecondRho.replace(",", ".")
@@ -32,6 +34,33 @@ export const DensityAt20Gost18995TestItem = ({ number, formData, updateTestData 
     const average = (firstNum + secondNum) / 2
     return average.toFixed(3).replace(".", ",")
   }
+
+  const calculateRepeatability = (): { value: string; isError: boolean } => {
+    const first = formData.densityAt20Gost18995FirstRho.replace(",", ".")
+    const second = formData.densityAt20Gost18995SecondRho.replace(",", ".")
+
+    if (!first || !second) return { value: "", isError: false }
+
+    const firstNum = parseFloat(first)
+    const secondNum = parseFloat(second)
+
+    if (isNaN(firstNum) || isNaN(secondNum)) return { value: "", isError: false }
+
+    const difference = Math.abs(firstNum - secondNum)
+    const roundedDifference = Math.round(difference * 1000) / 1000
+    const formattedDifference = roundedDifference.toFixed(3).replace(".", ",")
+
+    if (roundedDifference > REPEATABILITY_LIMIT) {
+      return {
+        value: `${formattedDifference} > r=0,001 (Error)`,
+        isError: true,
+      }
+    }
+
+    return { value: formattedDifference, isError: false }
+  }
+
+  const repeatability = calculateRepeatability()
 
   return (
     <div className={styles.testItem}>
@@ -100,8 +129,8 @@ export const DensityAt20Gost18995TestItem = ({ number, formData, updateTestData 
                 </td>
                 <td>
                   <Input
-                    className={clsx(styles.tableInput, styles.tableInputCalculated)}
-                    value=""
+                    className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                    value={repeatability.value}
                     placeholder={initialTestData.densityAt20Gost18995Repeatability}
                     readOnly
                   />
