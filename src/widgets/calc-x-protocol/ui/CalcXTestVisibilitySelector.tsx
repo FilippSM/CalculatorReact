@@ -17,13 +17,40 @@ const ALL_IDS = testVisibilityConfig.map(({ id }) => id)
 const GROUPS = {
   selectAll: { label: "Выбрать все испытания", members: [] },
   deselectAll: { label: "Отменить все испытания", members: [] },
+  selectAllOils: {
+    label: "Выбрать все испытания — масла",
+    members: [
+      "flashPoint",
+      "mechanicalImpurities",
+      "densityAt20",
+      "kinematicViscosity100",
+      "kinematicViscosity40",
+      "viscosityIndex",
+      "waterContent",
+      "pourPoint",
+      "freezingPoint",
+      "noackLoss",
+      "dynamicViscosity30",
+      "colorCnt",
+      "baseNumber",
+      "autoIgnition",
+    ],
+  },
+  selectAllAntifreeze: {
+    label: "Выбрать все испытания — антифризы",
+    members: ["densityAt20Gost18995", "ph"],
+  },
   trtsWithoutAdd: {
-    label: "Испытания по ТР ТС 020/2012 для масел без присадок",
+    label: "Испытания по ТР ТС 030/2012 для масел без присадок",
     members: ["flashPoint", "mechanicalImpurities", "autoIgnition"],
   },
   trtsWithAdd: {
-    label: "Испытания по ТР ТС 020/2012 для масел с присадками",
+    label: "Испытания по ТР ТС 030/2012 для масел с присадками",
     members: ["flashPoint", "mechanicalImpurities", "waterContent", "autoIgnition"],
+  },
+  trtsAntifreeze: {
+    label: "Испытания по ТР ТС 030/2012 для антифризов",
+    members: ["ph"],
   },
   accreditation: {
     label: "Испытания согласно области аккредитации для масел",
@@ -36,6 +63,7 @@ const GROUPS = {
       "waterContent",
       "pourPoint",
       "freezingPoint",
+      "ph",
     ],
   },
   accreditationVI: {
@@ -64,16 +92,22 @@ type GroupId = keyof typeof GROUPS
 const GROUP_ORDER: GroupId[] = [
   "selectAll",
   "deselectAll",
+  "selectAllOils",
+  "selectAllAntifreeze",
   "trtsWithoutAdd",
   "trtsWithAdd",
+  "trtsAntifreeze",
   "accreditation",
   "accreditationVI",
   "accreditationAntifreeze",
 ]
 
 const CONTENT_GROUPS: GroupId[] = [
+  "selectAllOils",
+  "selectAllAntifreeze",
   "trtsWithoutAdd",
   "trtsWithAdd",
+  "trtsAntifreeze",
   "accreditation",
   "accreditationVI",
   "accreditationAntifreeze",
