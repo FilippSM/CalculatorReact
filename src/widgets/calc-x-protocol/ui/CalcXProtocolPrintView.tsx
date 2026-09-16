@@ -5,6 +5,7 @@ import {
   DENSITY_AT20_UNIT,
   resolveDensityAt20FieldValue,
 } from "@/features/density"
+import { resolveDensityAt20Gost18995FieldValue, calculateDensityAt20Gost18995Repeatability } from "@/features/density-at-20-gost-18995"
 import { calculateFlashPointRepeatability, resolveFlashPointFieldValue } from "@/features/flash-point"
 import {
   calculateMechanicalImpuritiesRepeatability,
@@ -152,7 +153,7 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                 : test.id === "densityAt20"
                                   ? resolveDensityAt20FieldValue(formData, field)
                                   : test.id === "densityAt20Gost18995"
-                                    ? formData[field]
+                                    ? resolveDensityAt20Gost18995FieldValue(formData, field)
                                     : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
                                       ? resolveKinematicViscosityFieldValue(formData, field)
                                       : test.id === "pourPoint"
@@ -199,6 +200,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                   DENSITY_AT20_UNIT,
                                   DENSITY_AT20_CORRECTION,
                                 ),
+                              ).isError) ||
+                            (test.id === "densityAt20Gost18995" &&
+                              field === "densityAt20Gost18995Repeatability" &&
+                              calculateDensityAt20Gost18995Repeatability(
+                                formData.densityAt20Gost18995FirstRho,
+                                formData.densityAt20Gost18995SecondRho,
                               ).isError) ||
                             (test.id === "pourPoint" &&
                               field === "pourPointRepeatability" &&
