@@ -169,7 +169,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                         ? resolveCrystallizationStartFieldValue(formData, field)
                                         : test.id === "crystallization"
                                           ? resolveCrystallizationFieldValue(formData, field)
-                                          : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
+                                          : test.id === "corrosion"
+                                            ? formData[field]
+                                            : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
                                       ? resolveKinematicViscosityFieldValue(formData, field)
                                       : test.id === "pourPoint"
                                         ? resolvePourPointFieldValue(formData, field)
@@ -299,6 +301,85 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                   </table>
                 ))}
               </div>
+
+              {test.id === "corrosion" && (
+                <>
+                  {(["First", "Second", "Third"] as const).map((measurement) => (
+                    <div key={measurement} className={styles.tableBlocks}>
+                      <p className={styles.dataTitle}>
+                        {measurement === "First" ? "Первое измерение" : measurement === "Second" ? "Второе измерение" : "Третье измерение"}
+                      </p>
+                      <table className={styles.testTable}>
+                        <thead>
+                          <tr>
+                            <th>Образец металла</th>
+                            <th>Время испытания, ч</th>
+                            <th>Длина l, мм</th>
+                            <th>Ширина a, мм</th>
+                            <th>Толщина b, мм</th>
+                            <th>Масса до m₁, г</th>
+                            <th>Масса после m₂, г</th>
+                            <th>Δ, г</th>
+                            <th>Скорость коррозии I, г/м²·сут</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {([
+                            { key: "Copper", label: "Медь" },
+                            { key: "Solder", label: "Припой" },
+                            { key: "Brass", label: "Латунь" },
+                            { key: "Steel", label: "Сталь" },
+                            { key: "CastIron", label: "Чугун" },
+                            { key: "Aluminum", label: "Аллюминий" },
+                          ] as const).map((metal) => (
+                            <tr key={metal.key}>
+                              <td>{metal.label}</td>
+                              <td>{formData[`corrosion${measurement}${metal.key}Time` as keyof typeof formData] as string}</td>
+                              <td>{formData[`corrosion${measurement}${metal.key}Length` as keyof typeof formData] as string}</td>
+                              <td>{formData[`corrosion${measurement}${metal.key}Width` as keyof typeof formData] as string}</td>
+                              <td>{formData[`corrosion${measurement}${metal.key}Thickness` as keyof typeof formData] as string}</td>
+                              <td>{formData[`corrosion${measurement}${metal.key}MassBefore` as keyof typeof formData] as string}</td>
+                              <td>{formData[`corrosion${measurement}${metal.key}MassAfter` as keyof typeof formData] as string}</td>
+                              <td>{formData[`corrosion${measurement}${metal.key}Delta` as keyof typeof formData] as string}</td>
+                              <td>{formData[`corrosion${measurement}${metal.key}Rate` as keyof typeof formData] as string}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                  <div className={styles.tableBlocks}>
+                    <p className={styles.dataTitle}>Результаты</p>
+                    <table className={styles.testTable}>
+                      <thead>
+                        <tr>
+                          <th>Образец металла</th>
+                          <th>Время испытания, ч</th>
+                          <th>Повторяемость, г/м²·сут</th>
+                          <th>Среднее значение I, г/м²·сут</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {([
+                          { key: "Copper", label: "Медь" },
+                          { key: "Solder", label: "Припой" },
+                          { key: "Brass", label: "Латунь" },
+                          { key: "Steel", label: "Сталь" },
+                          { key: "CastIron", label: "Чугун" },
+                          { key: "Aluminum", label: "Аллюминий" },
+                        ] as const).map((metal) => (
+                          <tr key={metal.key}>
+                            <td>{metal.label}</td>
+                            <td>{formData[`corrosionFirst${metal.key}Time` as keyof typeof formData] as string}</td>
+                            <td>{formData[`corrosionResults${metal.key}Repeatability` as keyof typeof formData] as string}</td>
+                            <td>{formData[`corrosionResults${metal.key}Average` as keyof typeof formData] as string}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
             </article>
           )
         })}

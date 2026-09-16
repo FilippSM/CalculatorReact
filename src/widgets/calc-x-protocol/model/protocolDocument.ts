@@ -61,6 +61,7 @@ const resultFields: ResultFieldMap = {
   ph: "phAverage",
   crystallizationStart: "crystallizationStartAverage",
   crystallization: "crystallizationAverage",
+  corrosion: "corrosionResultsCopperAverage",
   kinematicViscosity100: "kinematicViscosity100Average",
   kinematicViscosity40: "kinematicViscosity40Average",
   viscosityIndex: "viscosityIndexIV",
@@ -161,7 +162,9 @@ export const buildProtocolDocument = (
                     ? resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
                     : test.id === "crystallization"
                       ? resolveCrystallizationFieldValue(formData, "crystallizationAverage")
-                    : test.id === "kinematicViscosity100"
+                      : test.id === "corrosion"
+                        ? formData["corrosionResultsCopperAverage"]
+                      : test.id === "kinematicViscosity100"
                 ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
                 : test.id === "kinematicViscosity40"
                   ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
