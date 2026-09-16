@@ -38,7 +38,7 @@ const GROUPS = {
   },
   selectAllAntifreeze: {
     label: "Выбрать все испытания — антифризы",
-    members: ["densityAt20Gost18995", "ph", "crystallizationStart"],
+    members: ["densityAt20Gost18995", "ph", "crystallizationStart", "mechanicalImpurities"],
   },
   trtsWithoutAdd: {
     label: "Испытания по ТР ТС 030/2012 для масел без присадок",
@@ -50,7 +50,7 @@ const GROUPS = {
   },
   trtsAntifreeze: {
     label: "Испытания по ТР ТС 030/2012 для антифризов",
-    members: ["ph", "crystallizationStart"],
+    members: ["ph", "crystallizationStart", "mechanicalImpurities"],
   },
   accreditation: {
     label: "Испытания согласно области аккредитации для масел",
@@ -83,7 +83,11 @@ const GROUPS = {
   },
   accreditationAntifreeze: {
     label: "Испытания согласно области аккредитации для антифризов",
-    members: ["densityAt20Gost18995", "ph", "crystallizationStart"],
+    members: ["densityAt20Gost18995", "ph", "crystallizationStart", "mechanicalImpurities"],
+  },
+  accreditationWindshield: {
+    label: "Испытания согласно области аккредитации для омываек",
+    members: ["densityAt20", "ph", "crystallization"],
   },
 } as const
 
@@ -100,6 +104,7 @@ const GROUP_ORDER: GroupId[] = [
   "accreditation",
   "accreditationVI",
   "accreditationAntifreeze",
+  "accreditationWindshield",
 ]
 
 const CONTENT_GROUPS: GroupId[] = [
@@ -111,6 +116,7 @@ const CONTENT_GROUPS: GroupId[] = [
   "accreditation",
   "accreditationVI",
   "accreditationAntifreeze",
+  "accreditationWindshield",
 ]
 
 const makeAllTrue = () =>

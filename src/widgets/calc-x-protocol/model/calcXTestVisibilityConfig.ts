@@ -5,6 +5,7 @@ export const testVisibilityConfig = [
   { id: "densityAt20Gost18995", label: "Плотность при 20°C, г/см³ по ГОСТ 18995.1" },
   { id: "ph", label: "Показатель концентрации водородных ионов (pH), ед. pH по ГОСТ 28084" },
   { id: "crystallizationStart", label: "Температура начала кристаллизации, °C по ГОСТ 28084" },
+  { id: "crystallization", label: "Температура кристаллизации, °C по ГОСТ 18995.5" },
   { id: "kinematicViscosity100", label: "Кинематическая вязкость при 100°C, мм²/с по ГОСТ 33" },
   { id: "kinematicViscosity40", label: "Кинематическая вязкость при 40°С, мм²/с по ГОСТ 33" },
   { id: "viscosityIndex", label: "Индекс вязкости по ГОСТ 25371" },

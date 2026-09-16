@@ -11,6 +11,10 @@ import {
   resolveCrystallizationStartFieldValue,
   calculateCrystallizationStartRepeatability,
 } from "@/features/crystallization-start"
+import {
+  resolveCrystallizationFieldValue,
+  calculateCrystallizationRepeatability,
+} from "@/features/crystallization"
 import { calculateFlashPointRepeatability, resolveFlashPointFieldValue } from "@/features/flash-point"
 import {
   calculateMechanicalImpuritiesRepeatability,
@@ -163,7 +167,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                       ? resolvePhFieldValue(formData, field)
                                       : test.id === "crystallizationStart"
                                         ? resolveCrystallizationStartFieldValue(formData, field)
-                                        : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
+                                        : test.id === "crystallization"
+                                          ? resolveCrystallizationFieldValue(formData, field)
+                                          : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
                                       ? resolveKinematicViscosityFieldValue(formData, field)
                                       : test.id === "pourPoint"
                                         ? resolvePourPointFieldValue(formData, field)
@@ -227,6 +233,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateCrystallizationStartRepeatability(
                                 formData.crystallizationStartFirstT,
                                 formData.crystallizationStartSecondT,
+                              ).isError) ||
+                            (test.id === "crystallization" &&
+                              field === "crystallizationRepeatability" &&
+                              calculateCrystallizationRepeatability(
+                                formData.crystallizationFirstT,
+                                formData.crystallizationSecondT,
                               ).isError) ||
                             (test.id === "pourPoint" &&
                               field === "pourPointRepeatability" &&

@@ -2,6 +2,7 @@ import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
 import { resolvePhFieldValue } from "@/features/ph"
 import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
+import { resolveCrystallizationFieldValue } from "@/features/crystallization"
 import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
@@ -59,6 +60,7 @@ const resultFields: ResultFieldMap = {
   densityAt20Gost18995: "densityAt20Gost18995Average",
   ph: "phAverage",
   crystallizationStart: "crystallizationStartAverage",
+  crystallization: "crystallizationAverage",
   kinematicViscosity100: "kinematicViscosity100Average",
   kinematicViscosity40: "kinematicViscosity40Average",
   viscosityIndex: "viscosityIndexIV",
@@ -157,7 +159,9 @@ export const buildProtocolDocument = (
                   ? resolvePhFieldValue(formData, "phAverage")
                   : test.id === "crystallizationStart"
                     ? resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
-                  : test.id === "kinematicViscosity100"
+                    : test.id === "crystallization"
+                      ? resolveCrystallizationFieldValue(formData, "crystallizationAverage")
+                    : test.id === "kinematicViscosity100"
                 ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
                 : test.id === "kinematicViscosity40"
                   ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
