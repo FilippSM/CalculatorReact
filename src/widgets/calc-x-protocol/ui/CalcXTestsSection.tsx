@@ -5,6 +5,7 @@ import styles from "./CalcXProtocol.module.scss"
 import { AutoIgnitionTestItem } from "./tests/AutoIgnitionTestItem"
 import { BaseNumberTestItem } from "./tests/BaseNumberTestItem"
 import { ColorCntTestItem } from "./tests/ColorCntTestItem"
+import { CrystallizationStartTestItem } from "./tests/CrystallizationStartTestItem"
 import { DensityAt20TestItem } from "./tests/DensityAt20TestItem"
 import { DensityAt20Gost18995TestItem } from "./tests/DensityAt20Gost18995TestItem"
 import { DynamicViscosity30TestItem } from "./tests/DynamicViscosity30TestItem"
@@ -76,6 +77,14 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
       {visibleTests.ph && visibleTestNumbers.ph !== undefined && (
         <PhTestItem
           number={visibleTestNumbers.ph}
+          formData={formData}
+          updateTestData={updateTestData}
+        />
+      )}
+
+      {visibleTests.crystallizationStart && visibleTestNumbers.crystallizationStart !== undefined && (
+        <CrystallizationStartTestItem
+          number={visibleTestNumbers.crystallizationStart}
           formData={formData}
           updateTestData={updateTestData}
         />

@@ -165,6 +165,32 @@ export const calcXTestConfig: CalcXTestConfig[] = [
     valueFields: ["phFirstPh", "phSecondPh", "phRepeatability", "phAverage"],
   },
   {
+    id: "crystallizationStart",
+    nameField: "crystallizationStartTestName",
+    equipmentFields: [
+      "crystallizationStartEquipmentCryostat",
+      "crystallizationStartEquipmentThermometer",
+      "crystallizationStartEquipmentStopwatch",
+    ],
+    groupHeaders: [
+      { label: "Первое измерение", colSpan: 1 },
+      { label: "Второе измерение", colSpan: 1 },
+      { label: "Результаты", colSpan: 2 },
+    ],
+    columnHeaders: [
+      "tн.к.1, °C",
+      "tн.к.2, °C",
+      "Повторяемость r, °C",
+      "Среднее значение tн.к., °C",
+    ],
+    valueFields: [
+      "crystallizationStartFirstT",
+      "crystallizationStartSecondT",
+      "crystallizationStartRepeatability",
+      "crystallizationStartAverage",
+    ],
+  },
+  {
     id: "kinematicViscosity100",
     nameField: "kinematicViscosity100TestName",
     equipmentFields: [
