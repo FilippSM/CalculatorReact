@@ -153,6 +153,18 @@ export const calcXTestConfig: CalcXTestConfig[] = [
     ],
   },
   {
+    id: "ph",
+    nameField: "phTestName",
+    equipmentFields: ["phEquipmentMeter", "phEquipmentThermometer"],
+    groupHeaders: [
+      { label: "Первое измерение", colSpan: 1 },
+      { label: "Второе измерение", colSpan: 1 },
+      { label: "Результаты", colSpan: 2 },
+    ],
+    columnHeaders: ["pH₁, ед. pH", "pH₂, ед. pH", "Повторяемость r, ед. pH", "Среднее значение pH, ед. pH"],
+    valueFields: ["phFirstPh", "phSecondPh", "phRepeatability", "phAverage"],
+  },
+  {
     id: "kinematicViscosity100",
     nameField: "kinematicViscosity100TestName",
     equipmentFields: [

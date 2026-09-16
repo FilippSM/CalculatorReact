@@ -14,6 +14,7 @@ import { KinematicViscosity100TestItem } from "./tests/KinematicViscosity100Test
 import { KinematicViscosity40TestItem } from "./tests/KinematicViscosity40TestItem"
 import { MechanicalImpuritiesTestItem } from "./tests/MechanicalImpuritiesTestItem"
 import { NoackLossTestItem } from "./tests/NoackLossTestItem"
+import { PhTestItem } from "./tests/PhTestItem"
 import { PourPointTestItem } from "./tests/PourPointTestItem"
 import { ViscosityIndexTestItem } from "./tests/ViscosityIndexTestItem"
 import { WaterContentTestItem } from "./tests/WaterContentTestItem"
@@ -67,6 +68,14 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
       {visibleTests.densityAt20Gost18995 && visibleTestNumbers.densityAt20Gost18995 !== undefined && (
         <DensityAt20Gost18995TestItem
           number={visibleTestNumbers.densityAt20Gost18995}
+          formData={formData}
+          updateTestData={updateTestData}
+        />
+      )}
+
+      {visibleTests.ph && visibleTestNumbers.ph !== undefined && (
+        <PhTestItem
+          number={visibleTestNumbers.ph}
           formData={formData}
           updateTestData={updateTestData}
         />

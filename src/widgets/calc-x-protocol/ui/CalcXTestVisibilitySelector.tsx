@@ -55,7 +55,7 @@ const GROUPS = {
   },
   accreditationAntifreeze: {
     label: "Испытания согласно области аккредитации для антифризов",
-    members: ["densityAt20Gost18995"],
+    members: ["densityAt20Gost18995", "ph"],
   },
 } as const
 

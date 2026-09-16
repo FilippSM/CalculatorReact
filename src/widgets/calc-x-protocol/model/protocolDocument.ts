@@ -1,5 +1,6 @@
 import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
+import { resolvePhFieldValue } from "@/features/ph"
 import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
@@ -55,6 +56,7 @@ const resultFields: ResultFieldMap = {
   mechanicalImpurities: "mechanicalImpuritiesAverage",
   densityAt20: "densityAt20Average",
   densityAt20Gost18995: "densityAt20Gost18995Average",
+  ph: "phAverage",
   kinematicViscosity100: "kinematicViscosity100Average",
   kinematicViscosity40: "kinematicViscosity40Average",
   viscosityIndex: "viscosityIndexIV",
@@ -149,7 +151,9 @@ export const buildProtocolDocument = (
               ? resolveDensityAt20FieldValue(formData, "densityAt20Average")
               : test.id === "densityAt20Gost18995"
                 ? resolveDensityAt20Gost18995FieldValue(formData, "densityAt20Gost18995Average")
-              : test.id === "kinematicViscosity100"
+                : test.id === "ph"
+                  ? resolvePhFieldValue(formData, "phAverage")
+                : test.id === "kinematicViscosity100"
                 ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
                 : test.id === "kinematicViscosity40"
                   ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")

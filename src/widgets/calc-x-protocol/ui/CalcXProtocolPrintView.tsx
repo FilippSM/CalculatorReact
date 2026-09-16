@@ -6,6 +6,7 @@ import {
   resolveDensityAt20FieldValue,
 } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue, calculateDensityAt20Gost18995Repeatability } from "@/features/density-at-20-gost-18995"
+import { resolvePhFieldValue, calculatePhRepeatability } from "@/features/ph"
 import { calculateFlashPointRepeatability, resolveFlashPointFieldValue } from "@/features/flash-point"
 import {
   calculateMechanicalImpuritiesRepeatability,
@@ -154,7 +155,9 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                   ? resolveDensityAt20FieldValue(formData, field)
                                   : test.id === "densityAt20Gost18995"
                                     ? resolveDensityAt20Gost18995FieldValue(formData, field)
-                                    : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
+                                    : test.id === "ph"
+                                      ? resolvePhFieldValue(formData, field)
+                                      : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
                                       ? resolveKinematicViscosityFieldValue(formData, field)
                                       : test.id === "pourPoint"
                                         ? resolvePourPointFieldValue(formData, field)
@@ -206,6 +209,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateDensityAt20Gost18995Repeatability(
                                 formData.densityAt20Gost18995FirstRho,
                                 formData.densityAt20Gost18995SecondRho,
+                              ).isError) ||
+                            (test.id === "ph" &&
+                              field === "phRepeatability" &&
+                              calculatePhRepeatability(
+                                formData.phFirstPh,
+                                formData.phSecondPh,
                               ).isError) ||
                             (test.id === "pourPoint" &&
                               field === "pourPointRepeatability" &&
