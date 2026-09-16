@@ -216,6 +216,13 @@ export const calcXTestConfig: CalcXTestConfig[] = [
     ],
   },
   {
+    id: "corrosion",
+    nameField: "corrosionTestName",
+    equipmentFields: ["corrosionEquipmentBalance", "corrosionEquipmentThermometer"],
+    columnHeaders: [],
+    valueFields: [],
+  },
+  {
     id: "kinematicViscosity100",
     nameField: "kinematicViscosity100TestName",
     equipmentFields: [

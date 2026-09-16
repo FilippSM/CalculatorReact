@@ -38,7 +38,7 @@ const GROUPS = {
   },
   selectAllAntifreeze: {
     label: "Выбрать все испытания — антифризы",
-    members: ["densityAt20Gost18995", "ph", "crystallizationStart", "mechanicalImpurities"],
+    members: ["densityAt20Gost18995", "ph", "crystallizationStart", "mechanicalImpurities", "corrosion"],
   },
   trtsWithoutAdd: {
     label: "Испытания по ТР ТС 030/2012 для масел без присадок",
