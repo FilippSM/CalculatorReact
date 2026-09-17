@@ -203,6 +203,10 @@ export const CalcXTestVisibilitySelector = ({
           <Checkbox
             key={groupId}
             checked={activeGroup === groupId}
+            className={clsx(
+              styles.testFilterItem,
+              activeGroup !== groupId && styles.testFilterItemInactive,
+            )}
             label={GROUPS[groupId].label}
             onValueChange={(checked) => handleGroupChange(groupId, checked)}
           />
