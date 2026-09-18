@@ -5,21 +5,25 @@ import {
   DENSITY_AT20_UNIT,
   resolveDensityAt20FieldValue,
 } from "@/features/density"
-import { resolveDensityAt20Gost18995FieldValue, calculateDensityAt20Gost18995Repeatability } from "@/features/density-at-20-gost-18995"
+import {
+  resolveDensityAt20Gost18995FieldValue,
+  calculateDensityAt20Gost18995Repeatability,
+} from "@/features/density-at-20-gost-18995"
 import { resolvePhFieldValue, calculatePhRepeatability } from "@/features/ph"
 import {
   resolveCrystallizationStartFieldValue,
   calculateCrystallizationStartRepeatability,
 } from "@/features/crystallization-start"
-import {
-  resolveCrystallizationFieldValue,
-  calculateCrystallizationRepeatability,
-} from "@/features/crystallization"
+import { resolveCrystallizationFieldValue, calculateCrystallizationRepeatability } from "@/features/crystallization"
 import { calculateFlashPointRepeatability, resolveFlashPointFieldValue } from "@/features/flash-point"
 import {
   calculateMechanicalImpuritiesRepeatability,
   resolveMechanicalImpuritiesFieldValue,
 } from "@/features/mechanical-impurities"
+import {
+  calculateMechanicalImpuritiesGost6479Repeatability,
+  resolveMechanicalImpuritiesGost6479FieldValue,
+} from "@/features/mechanical-impurities-gost-6479"
 import { calculatePourPointRepeatability, resolvePourPointFieldValue } from "@/features/pour-point"
 import { calculateFreezingPointRepeatability, resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { calculateNoackLossRepeatability, resolveNoackLossFieldValue } from "@/features/noack-loss"
@@ -27,22 +31,10 @@ import {
   calculateDynamicViscosity30Repeatability,
   resolveDynamicViscosity30FieldValue,
 } from "@/features/dynamic-viscosity-30"
-import {
-  calculateColorCntRepeatability,
-  resolveColorCntFieldValue,
-} from "@/features/color-cnt"
-import {
-  calculateBaseNumberRepeatability,
-  resolveBaseNumberFieldValue,
-} from "@/features/base-number"
-import {
-  calculateAutoIgnitionRepeatability,
-  resolveAutoIgnitionFieldValue,
-} from "@/features/auto-ignition"
-import {
-  resolveKinematicViscosityFieldValue,
-  calculateKinematicViscosityRepeatability,
-} from "@/features/viscosity"
+import { calculateColorCntRepeatability, resolveColorCntFieldValue } from "@/features/color-cnt"
+import { calculateBaseNumberRepeatability, resolveBaseNumberFieldValue } from "@/features/base-number"
+import { calculateAutoIgnitionRepeatability, resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
+import { resolveKinematicViscosityFieldValue, calculateKinematicViscosityRepeatability } from "@/features/viscosity"
 import { Fragment } from "react"
 import clsx from "clsx"
 import {
@@ -159,35 +151,38 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               ? resolveFlashPointFieldValue(formData, field)
                               : test.id === "mechanicalImpurities"
                                 ? resolveMechanicalImpuritiesFieldValue(formData, field)
-                                : test.id === "densityAt20"
-                                  ? resolveDensityAt20FieldValue(formData, field)
-                                  : test.id === "densityAt20Gost18995"
-                                    ? resolveDensityAt20Gost18995FieldValue(formData, field)
-                                    : test.id === "ph"
-                                      ? resolvePhFieldValue(formData, field)
-                                      : test.id === "crystallizationStart"
-                                        ? resolveCrystallizationStartFieldValue(formData, field)
-                                        : test.id === "crystallization"
-                                          ? resolveCrystallizationFieldValue(formData, field)
-                                          : test.id === "corrosion"
-                                            ? formData[field]
-                                            : test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
-                                      ? resolveKinematicViscosityFieldValue(formData, field)
-                                      : test.id === "pourPoint"
-                                        ? resolvePourPointFieldValue(formData, field)
-                                        : test.id === "freezingPoint"
-                                          ? resolveFreezingPointFieldValue(formData, field)
-                                          : test.id === "noackLoss"
-                                            ? resolveNoackLossFieldValue(formData, field)
-                                            : test.id === "dynamicViscosity30"
-                                              ? resolveDynamicViscosity30FieldValue(formData, field)
-                                              : test.id === "colorCnt"
-                                                ? resolveColorCntFieldValue(formData, field)
-                                                : test.id === "baseNumber"
-                                                  ? resolveBaseNumberFieldValue(formData, field)
-                                                  : test.id === "autoIgnition"
-                                                    ? resolveAutoIgnitionFieldValue(formData, field)
-                                                    : formData[field]
+                                : test.id === "mechanicalImpuritiesGost6479"
+                                  ? resolveMechanicalImpuritiesGost6479FieldValue(formData, field)
+                                  : test.id === "densityAt20"
+                                    ? resolveDensityAt20FieldValue(formData, field)
+                                    : test.id === "densityAt20Gost18995"
+                                      ? resolveDensityAt20Gost18995FieldValue(formData, field)
+                                      : test.id === "ph"
+                                        ? resolvePhFieldValue(formData, field)
+                                        : test.id === "crystallizationStart"
+                                          ? resolveCrystallizationStartFieldValue(formData, field)
+                                          : test.id === "crystallization"
+                                            ? resolveCrystallizationFieldValue(formData, field)
+                                            : test.id === "corrosion"
+                                              ? formData[field]
+                                              : test.id === "kinematicViscosity100" ||
+                                                  test.id === "kinematicViscosity40"
+                                                ? resolveKinematicViscosityFieldValue(formData, field)
+                                                : test.id === "pourPoint"
+                                                  ? resolvePourPointFieldValue(formData, field)
+                                                  : test.id === "freezingPoint"
+                                                    ? resolveFreezingPointFieldValue(formData, field)
+                                                    : test.id === "noackLoss"
+                                                      ? resolveNoackLossFieldValue(formData, field)
+                                                      : test.id === "dynamicViscosity30"
+                                                        ? resolveDynamicViscosity30FieldValue(formData, field)
+                                                        : test.id === "colorCnt"
+                                                          ? resolveColorCntFieldValue(formData, field)
+                                                          : test.id === "baseNumber"
+                                                            ? resolveBaseNumberFieldValue(formData, field)
+                                                            : test.id === "autoIgnition"
+                                                              ? resolveAutoIgnitionFieldValue(formData, field)
+                                                              : formData[field]
                           const isRepeatabilityError =
                             (test.id === "flashPoint" &&
                               field === "repeatability" &&
@@ -201,6 +196,18 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                 resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesFirstX1"),
                                 resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesSecondX2"),
                                 resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage"),
+                              ).isError) ||
+                            (test.id === "mechanicalImpuritiesGost6479" &&
+                              field === "mechanicalImpuritiesGost6479Repeatability" &&
+                              calculateMechanicalImpuritiesGost6479Repeatability(
+                                resolveMechanicalImpuritiesGost6479FieldValue(
+                                  formData,
+                                  "mechanicalImpuritiesGost6479FirstX1",
+                                ),
+                                resolveMechanicalImpuritiesGost6479FieldValue(
+                                  formData,
+                                  "mechanicalImpuritiesGost6479SecondX2",
+                                ),
                               ).isError) ||
                             (test.id === "densityAt20" &&
                               field === "densityAt20Repeatability" &&
@@ -226,10 +233,7 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               ).isError) ||
                             (test.id === "ph" &&
                               field === "phRepeatability" &&
-                              calculatePhRepeatability(
-                                formData.phFirstPh,
-                                formData.phSecondPh,
-                              ).isError) ||
+                              calculatePhRepeatability(formData.phFirstPh, formData.phSecondPh).isError) ||
                             (test.id === "crystallizationStart" &&
                               field === "crystallizationStartRepeatability" &&
                               calculateCrystallizationStartRepeatability(
@@ -266,10 +270,8 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               ).isError) ||
                             (test.id === "colorCnt" &&
                               field === "colorCntRepeatability" &&
-                              calculateColorCntRepeatability(
-                                formData.colorCntFirstX1,
-                                formData.colorCntSecondX2,
-                              ).isError) ||
+                              calculateColorCntRepeatability(formData.colorCntFirstX1, formData.colorCntSecondX2)
+                                .isError) ||
                             (test.id === "baseNumber" &&
                               field === "baseNumberRepeatability" &&
                               calculateBaseNumberRepeatability(
@@ -285,9 +287,18 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                             ((test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40") &&
                               field === `${test.id}Repeatability` &&
                               calculateKinematicViscosityRepeatability(
-                                resolveKinematicViscosityFieldValue(formData, `${test.id}FirstV1` as keyof typeof formData),
-                                resolveKinematicViscosityFieldValue(formData, `${test.id}SecondV2` as keyof typeof formData),
-                                resolveKinematicViscosityFieldValue(formData, `${test.id}Average` as keyof typeof formData),
+                                resolveKinematicViscosityFieldValue(
+                                  formData,
+                                  `${test.id}FirstV1` as keyof typeof formData,
+                                ),
+                                resolveKinematicViscosityFieldValue(
+                                  formData,
+                                  `${test.id}SecondV2` as keyof typeof formData,
+                                ),
+                                resolveKinematicViscosityFieldValue(
+                                  formData,
+                                  `${test.id}Average` as keyof typeof formData,
+                                ),
                               ).isError)
 
                           return (
@@ -307,7 +318,11 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                   {(["First", "Second", "Third"] as const).map((measurement) => (
                     <div key={measurement} className={styles.tableBlocks}>
                       <p className={styles.dataTitle}>
-                        {measurement === "First" ? "Первое измерение" : measurement === "Second" ? "Второе измерение" : "Третье измерение"}
+                        {measurement === "First"
+                          ? "Первое измерение"
+                          : measurement === "Second"
+                            ? "Второе измерение"
+                            : "Третье измерение"}
                       </p>
                       <table className={styles.testTable}>
                         <thead>
@@ -324,24 +339,66 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {([
-                            { key: "Copper", label: "Медь" },
-                            { key: "Solder", label: "Припой" },
-                            { key: "Brass", label: "Латунь" },
-                            { key: "Steel", label: "Сталь" },
-                            { key: "CastIron", label: "Чугун" },
-                            { key: "Aluminum", label: "Аллюминий" },
-                          ] as const).map((metal) => (
+                          {(
+                            [
+                              { key: "Copper", label: "Медь" },
+                              { key: "Solder", label: "Припой" },
+                              { key: "Brass", label: "Латунь" },
+                              { key: "Steel", label: "Сталь" },
+                              { key: "CastIron", label: "Чугун" },
+                              { key: "Aluminum", label: "Аллюминий" },
+                            ] as const
+                          ).map((metal) => (
                             <tr key={metal.key}>
                               <td>{metal.label}</td>
-                              <td>{formData[`corrosion${measurement}${metal.key}Time` as keyof typeof formData] as string}</td>
-                              <td>{formData[`corrosion${measurement}${metal.key}Length` as keyof typeof formData] as string}</td>
-                              <td>{formData[`corrosion${measurement}${metal.key}Width` as keyof typeof formData] as string}</td>
-                              <td>{formData[`corrosion${measurement}${metal.key}Thickness` as keyof typeof formData] as string}</td>
-                              <td>{formData[`corrosion${measurement}${metal.key}MassBefore` as keyof typeof formData] as string}</td>
-                              <td>{formData[`corrosion${measurement}${metal.key}MassAfter` as keyof typeof formData] as string}</td>
-                              <td>{formData[`corrosion${measurement}${metal.key}Delta` as keyof typeof formData] as string}</td>
-                              <td>{formData[`corrosion${measurement}${metal.key}Rate` as keyof typeof formData] as string}</td>
+                              <td>
+                                {formData[`corrosion${measurement}${metal.key}Time` as keyof typeof formData] as string}
+                              </td>
+                              <td>
+                                {
+                                  formData[
+                                    `corrosion${measurement}${metal.key}Length` as keyof typeof formData
+                                  ] as string
+                                }
+                              </td>
+                              <td>
+                                {
+                                  formData[
+                                    `corrosion${measurement}${metal.key}Width` as keyof typeof formData
+                                  ] as string
+                                }
+                              </td>
+                              <td>
+                                {
+                                  formData[
+                                    `corrosion${measurement}${metal.key}Thickness` as keyof typeof formData
+                                  ] as string
+                                }
+                              </td>
+                              <td>
+                                {
+                                  formData[
+                                    `corrosion${measurement}${metal.key}MassBefore` as keyof typeof formData
+                                  ] as string
+                                }
+                              </td>
+                              <td>
+                                {
+                                  formData[
+                                    `corrosion${measurement}${metal.key}MassAfter` as keyof typeof formData
+                                  ] as string
+                                }
+                              </td>
+                              <td>
+                                {
+                                  formData[
+                                    `corrosion${measurement}${metal.key}Delta` as keyof typeof formData
+                                  ] as string
+                                }
+                              </td>
+                              <td>
+                                {formData[`corrosion${measurement}${metal.key}Rate` as keyof typeof formData] as string}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -360,19 +417,25 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {([
-                          { key: "Copper", label: "Медь" },
-                          { key: "Solder", label: "Припой" },
-                          { key: "Brass", label: "Латунь" },
-                          { key: "Steel", label: "Сталь" },
-                          { key: "CastIron", label: "Чугун" },
-                          { key: "Aluminum", label: "Аллюминий" },
-                        ] as const).map((metal) => (
+                        {(
+                          [
+                            { key: "Copper", label: "Медь" },
+                            { key: "Solder", label: "Припой" },
+                            { key: "Brass", label: "Латунь" },
+                            { key: "Steel", label: "Сталь" },
+                            { key: "CastIron", label: "Чугун" },
+                            { key: "Aluminum", label: "Аллюминий" },
+                          ] as const
+                        ).map((metal) => (
                           <tr key={metal.key}>
                             <td>{metal.label}</td>
                             <td>{formData[`corrosionFirst${metal.key}Time` as keyof typeof formData] as string}</td>
-                            <td>{formData[`corrosionResults${metal.key}Repeatability` as keyof typeof formData] as string}</td>
-                            <td>{formData[`corrosionResults${metal.key}Average` as keyof typeof formData] as string}</td>
+                            <td>
+                              {formData[`corrosionResults${metal.key}Repeatability` as keyof typeof formData] as string}
+                            </td>
+                            <td>
+                              {formData[`corrosionResults${metal.key}Average` as keyof typeof formData] as string}
+                            </td>
                           </tr>
                         ))}
                       </tbody>

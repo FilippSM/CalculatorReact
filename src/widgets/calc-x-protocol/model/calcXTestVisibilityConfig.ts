@@ -1,6 +1,7 @@
 export const testVisibilityConfig = [
   { id: "flashPoint", label: "Температура вспышки в открытом тигле, °C по ГОСТ 4333" },
   { id: "mechanicalImpurities", label: "Содержание механических примесей, % по ГОСТ 6370" },
+  { id: "mechanicalImpuritiesGost6479", label: "Содержание механических примесей, % по ГОСТ 6479" },
   { id: "densityAt20", label: "Плотность при 20°С, кг/м³ по ГОСТ 3900" },
   { id: "densityAt20Gost18995", label: "Плотность при 20°C, г/см³ по ГОСТ 18995.1" },
   { id: "ph", label: "Показатель концентрации водородных ионов (pH), ед. pH по ГОСТ 28084" },

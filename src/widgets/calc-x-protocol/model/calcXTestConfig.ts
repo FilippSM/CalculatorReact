@@ -94,6 +94,44 @@ export const calcXTestConfig: CalcXTestConfig[] = [
     ],
   },
   {
+    id: "mechanicalImpuritiesGost6479",
+    nameField: "mechanicalImpuritiesGost6479TestName",
+    equipmentFields: [
+      "mechanicalImpuritiesGost6479EquipmentBalance1",
+      "mechanicalImpuritiesGost6479EquipmentBalance2",
+      "mechanicalImpuritiesGost6479EquipmentFurnace",
+    ],
+    groupHeaders: [
+      { label: "Первое измерение", colSpan: 4 },
+      { label: "Второе измерение", colSpan: 4 },
+      { label: "Результаты", colSpan: 2 },
+    ],
+    columnHeaders: [
+      "Масса стакана + фильтр + мех. примеси m₁, г",
+      "Масса стакана + фильтр m₂, г",
+      "Масса пробы m₃, г",
+      "Содержание мех. примесей X₁, %",
+      "Масса стакана + фильтр + мех. примеси m₁, г",
+      "Масса стакана + фильтр m₂, г",
+      "Масса пробы m₃, г",
+      "Содержание мех. примесей X₁, %",
+      "Повторяемость r, %",
+      "Среднее значение X, %",
+    ],
+    valueFields: [
+      "mechanicalImpuritiesGost6479FirstM1",
+      "mechanicalImpuritiesGost6479FirstM2",
+      "mechanicalImpuritiesGost6479FirstM3",
+      "mechanicalImpuritiesGost6479FirstX1",
+      "mechanicalImpuritiesGost6479SecondM1",
+      "mechanicalImpuritiesGost6479SecondM2",
+      "mechanicalImpuritiesGost6479SecondM3",
+      "mechanicalImpuritiesGost6479SecondX2",
+      "mechanicalImpuritiesGost6479Repeatability",
+      "mechanicalImpuritiesGost6479Average",
+    ],
+  },
+  {
     id: "densityAt20",
     nameField: "densityAt20TestName",
     equipmentFields: ["densityAt20EquipmentThermometer", "densityAt20EquipmentHydrometer"],
@@ -534,7 +572,7 @@ export type ProtocolPrintTableSection = {
 export const getPrintTableSections = (test: CalcXTestConfig): ProtocolPrintTableSection[] => {
   const shouldSplitResults = test.id === "kinematicViscosity100" || test.id === "kinematicViscosity40"
   const groupHeaders = test.groupHeaders
-  const lastGroup = groupHeaders?.at(-1)
+  const lastGroup = groupHeaders?.[groupHeaders.length - 1]
 
   if (
     !shouldSplitResults ||

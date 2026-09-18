@@ -16,6 +16,7 @@ import { FreezingPointTestItem } from "./tests/FreezingPointTestItem"
 import { KinematicViscosity100TestItem } from "./tests/KinematicViscosity100TestItem"
 import { KinematicViscosity40TestItem } from "./tests/KinematicViscosity40TestItem"
 import { MechanicalImpuritiesTestItem } from "./tests/MechanicalImpuritiesTestItem"
+import { MechanicalImpuritiesGost6479TestItem } from "./tests/MechanicalImpuritiesGost6479TestItem"
 import { NoackLossTestItem } from "./tests/NoackLossTestItem"
 import { PhTestItem } from "./tests/PhTestItem"
 import { PourPointTestItem } from "./tests/PourPointTestItem"
@@ -60,6 +61,14 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
         />
       )}
 
+      {visibleTests.mechanicalImpuritiesGost6479 && visibleTestNumbers.mechanicalImpuritiesGost6479 !== undefined && (
+        <MechanicalImpuritiesGost6479TestItem
+          number={visibleTestNumbers.mechanicalImpuritiesGost6479}
+          formData={formData}
+          updateTestData={updateTestData}
+        />
+      )}
+
       {visibleTests.densityAt20 && visibleTestNumbers.densityAt20 !== undefined && (
         <DensityAt20TestItem
           number={visibleTestNumbers.densityAt20}
@@ -77,11 +86,7 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
       )}
 
       {visibleTests.ph && visibleTestNumbers.ph !== undefined && (
-        <PhTestItem
-          number={visibleTestNumbers.ph}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
+        <PhTestItem number={visibleTestNumbers.ph} formData={formData} updateTestData={updateTestData} />
       )}
 
       {visibleTests.crystallizationStart && visibleTestNumbers.crystallizationStart !== undefined && (
@@ -101,11 +106,7 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
       )}
 
       {visibleTests.corrosion && visibleTestNumbers.corrosion !== undefined && (
-        <CorrosionTestItem
-          number={visibleTestNumbers.corrosion}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
+        <CorrosionTestItem number={visibleTestNumbers.corrosion} formData={formData} updateTestData={updateTestData} />
       )}
 
       {visibleTests.kinematicViscosity100 && visibleTestNumbers.kinematicViscosity100 !== undefined && (
@@ -141,11 +142,7 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
       )}
 
       {visibleTests.pourPoint && visibleTestNumbers.pourPoint !== undefined && (
-        <PourPointTestItem
-          number={visibleTestNumbers.pourPoint}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
+        <PourPointTestItem number={visibleTestNumbers.pourPoint} formData={formData} updateTestData={updateTestData} />
       )}
 
       {visibleTests.freezingPoint && visibleTestNumbers.freezingPoint !== undefined && (
@@ -157,11 +154,7 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
       )}
 
       {visibleTests.noackLoss && visibleTestNumbers.noackLoss !== undefined && (
-        <NoackLossTestItem
-          number={visibleTestNumbers.noackLoss}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
+        <NoackLossTestItem number={visibleTestNumbers.noackLoss} formData={formData} updateTestData={updateTestData} />
       )}
 
       {visibleTests.dynamicViscosity30 && visibleTestNumbers.dynamicViscosity30 !== undefined && (
@@ -173,11 +166,7 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
       )}
 
       {visibleTests.colorCnt && visibleTestNumbers.colorCnt !== undefined && (
-        <ColorCntTestItem
-          number={visibleTestNumbers.colorCnt}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
+        <ColorCntTestItem number={visibleTestNumbers.colorCnt} formData={formData} updateTestData={updateTestData} />
       )}
 
       {visibleTests.baseNumber && visibleTestNumbers.baseNumber !== undefined && (

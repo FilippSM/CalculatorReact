@@ -4,6 +4,7 @@ import { resolvePhFieldValue } from "@/features/ph"
 import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
 import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
+import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
@@ -56,6 +57,7 @@ type ResultFieldMap = Record<TestVisibilityKey, keyof InitialTestData>
 const resultFields: ResultFieldMap = {
   flashPoint: "averageCorrectedTemperature",
   mechanicalImpurities: "mechanicalImpuritiesAverage",
+  mechanicalImpuritiesGost6479: "mechanicalImpuritiesGost6479Average",
   densityAt20: "densityAt20Average",
   densityAt20Gost18995: "densityAt20Gost18995Average",
   ph: "phAverage",
@@ -152,7 +154,12 @@ export const buildProtocolDocument = (
         result:
           test.id === "mechanicalImpurities"
             ? resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage")
-            : test.id === "densityAt20"
+            : test.id === "mechanicalImpuritiesGost6479"
+              ? resolveMechanicalImpuritiesGost6479FieldValue(
+                  formData,
+                  "mechanicalImpuritiesGost6479Average",
+                )
+              : test.id === "densityAt20"
               ? resolveDensityAt20FieldValue(formData, "densityAt20Average")
               : test.id === "densityAt20Gost18995"
                 ? resolveDensityAt20Gost18995FieldValue(formData, "densityAt20Gost18995Average")

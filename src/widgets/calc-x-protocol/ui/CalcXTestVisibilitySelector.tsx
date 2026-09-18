@@ -1,10 +1,7 @@
 import { useCallback, useState } from "react"
 import { Checkbox } from "@/shared/components/Checkbox"
 import clsx from "clsx"
-import {
-  testVisibilityConfig,
-  type TestVisibilityKey,
-} from "../model/calcXTestVisibilityConfig"
+import { testVisibilityConfig, type TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
 import styles from "./CalcXProtocol.module.scss"
 
 type Props = {
@@ -52,6 +49,10 @@ const GROUPS = {
     label: "Испытания по ТР ТС 030/2012 для антифризов",
     members: ["ph", "crystallizationStart", "mechanicalImpurities"],
   },
+  trtsAdditives: {
+    label: "Испытания по ТР ТС 030/2012 для присадок",
+    members: ["mechanicalImpuritiesGost6479", "waterContent"],
+  },
   accreditation: {
     label: "Испытания согласно области аккредитации для масел",
     members: [
@@ -67,8 +68,7 @@ const GROUPS = {
     ],
   },
   accreditationVI: {
-    label:
-      "Испытания согласно области аккредитации + индекс вязкости для масел",
+    label: "Испытания согласно области аккредитации + индекс вязкости для масел",
     members: [
       "flashPoint",
       "mechanicalImpurities",
@@ -101,6 +101,7 @@ const GROUP_ORDER: GroupId[] = [
   "trtsWithoutAdd",
   "trtsWithAdd",
   "trtsAntifreeze",
+  "trtsAdditives",
   "accreditation",
   "accreditationVI",
   "accreditationAntifreeze",
@@ -113,36 +114,26 @@ const CONTENT_GROUPS: GroupId[] = [
   "trtsWithoutAdd",
   "trtsWithAdd",
   "trtsAntifreeze",
+  "trtsAdditives",
   "accreditation",
   "accreditationVI",
   "accreditationAntifreeze",
   "accreditationWindshield",
 ]
 
-const makeAllTrue = () =>
-  Object.fromEntries(ALL_IDS.map((id) => [id, true])) as Record<
-    TestVisibilityKey,
-    boolean
-  >
+const makeAllTrue = () => Object.fromEntries(ALL_IDS.map((id) => [id, true])) as Record<TestVisibilityKey, boolean>
 
 const makeFromMembers = (members: readonly string[]) =>
-  Object.fromEntries(
-    ALL_IDS.map((id) => [id, members.includes(id)]),
-  ) as Record<TestVisibilityKey, boolean>
+  Object.fromEntries(ALL_IDS.map((id) => [id, members.includes(id)])) as Record<TestVisibilityKey, boolean>
 
-const resolveActiveGroup = (
-  visibleTests: Record<TestVisibilityKey, boolean>,
-): GroupId | null => {
+const resolveActiveGroup = (visibleTests: Record<TestVisibilityKey, boolean>): GroupId | null => {
   const checkedIds = ALL_IDS.filter((id) => visibleTests[id])
 
   if (checkedIds.length === ALL_IDS.length) return "selectAll"
 
   for (const groupId of CONTENT_GROUPS) {
     const members = GROUPS[groupId].members as readonly string[]
-    if (
-      checkedIds.length === members.length &&
-      checkedIds.every((id) => members.includes(id))
-    ) {
+    if (checkedIds.length === members.length && checkedIds.every((id) => members.includes(id))) {
       return groupId
     }
   }
@@ -150,10 +141,7 @@ const resolveActiveGroup = (
   return null
 }
 
-export const CalcXTestVisibilitySelector = ({
-  visibleTests,
-  setVisibleTests,
-}: Props) => {
+export const CalcXTestVisibilitySelector = ({ visibleTests, setVisibleTests }: Props) => {
   const [activeGroup, setActiveGroup] = useState<GroupId | null>(null)
 
   let activeIndex = 0
@@ -172,12 +160,7 @@ export const CalcXTestVisibilitySelector = ({
           setVisibleTests(makeAllTrue())
           break
         case "deselectAll":
-          setVisibleTests(
-            Object.fromEntries(ALL_IDS.map((id) => [id, false])) as Record<
-              TestVisibilityKey,
-              boolean
-            >,
-          )
+          setVisibleTests(Object.fromEntries(ALL_IDS.map((id) => [id, false])) as Record<TestVisibilityKey, boolean>)
           break
         default:
           setVisibleTests(makeFromMembers(GROUPS[groupId].members))
@@ -203,10 +186,7 @@ export const CalcXTestVisibilitySelector = ({
           <Checkbox
             key={groupId}
             checked={activeGroup === groupId}
-            className={clsx(
-              styles.testFilterItem,
-              activeGroup !== groupId && styles.testFilterItemInactive,
-            )}
+            className={clsx(styles.testFilterItem, activeGroup !== groupId && styles.testFilterItemInactive)}
             label={GROUPS[groupId].label}
             onValueChange={(checked) => handleGroupChange(groupId, checked)}
           />
@@ -221,10 +201,7 @@ export const CalcXTestVisibilitySelector = ({
             <Checkbox
               key={id}
               checked={isActive}
-              className={clsx(
-                styles.testFilterItem,
-                !isActive && styles.testFilterItemInactive,
-              )}
+              className={clsx(styles.testFilterItem, !isActive && styles.testFilterItemInactive)}
               label={number !== null ? `${number}. ${label}` : label}
               onValueChange={(checked) => handleIndicatorChange(id, checked)}
             />
