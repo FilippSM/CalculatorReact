@@ -50,7 +50,7 @@ const GROUPS = {
     members: ["ph", "crystallizationStart", "mechanicalImpurities"],
   },
   trtsAdditives: {
-    label: "Испытания по ТР ТС 030/2012 для присадок",
+    label: "Испытания по ТР ТС 030/2012 для смазок",
     members: ["mechanicalImpuritiesGost6479", "waterContent"],
   },
   accreditation: {
