@@ -3,6 +3,7 @@ import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-
 import { resolvePhFieldValue } from "@/features/ph"
 import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
+import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
 import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
 import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
@@ -63,6 +64,7 @@ const resultFields: ResultFieldMap = {
   ph: "phAverage",
   crystallizationStart: "crystallizationStartAverage",
   crystallization: "crystallizationAverage",
+  boilingPoint: "boilingPointAverage",
   corrosion: "corrosionResultsCopperAverage",
   kinematicViscosity100: "kinematicViscosity100Average",
   kinematicViscosity40: "kinematicViscosity40Average",
@@ -169,8 +171,10 @@ export const buildProtocolDocument = (
                     ? resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
                     : test.id === "crystallization"
                       ? resolveCrystallizationFieldValue(formData, "crystallizationAverage")
-                      : test.id === "corrosion"
-                        ? formData["corrosionResultsCopperAverage"]
+                      : test.id === "boilingPoint"
+                        ? resolveBoilingPointFieldValue(formData, "boilingPointAverage")
+                        : test.id === "corrosion"
+                          ? formData["corrosionResultsCopperAverage"]
                       : test.id === "kinematicViscosity100"
                 ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
                 : test.id === "kinematicViscosity40"

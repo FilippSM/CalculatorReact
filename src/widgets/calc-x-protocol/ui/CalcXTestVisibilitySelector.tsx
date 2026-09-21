@@ -49,6 +49,10 @@ const GROUPS = {
     label: "Испытания по ТР ТС 030/2012 для антифризов",
     members: ["ph", "crystallizationStart", "mechanicalImpurities"],
   },
+  trtsBrakeFluids: {
+    label: "Испытания по ТР ТС 030/2012 для тормозных жидкостей",
+    members: ["boilingPoint", "ph", "mechanicalImpurities"],
+  },
   trtsAdditives: {
     label: "Испытания по ТР ТС 030/2012 для смазок",
     members: ["mechanicalImpuritiesGost6479", "waterContent"],
@@ -101,6 +105,7 @@ const GROUP_ORDER: GroupId[] = [
   "trtsWithoutAdd",
   "trtsWithAdd",
   "trtsAntifreeze",
+  "trtsBrakeFluids",
   "trtsAdditives",
   "accreditation",
   "accreditationVI",
@@ -114,6 +119,7 @@ const CONTENT_GROUPS: GroupId[] = [
   "trtsWithoutAdd",
   "trtsWithAdd",
   "trtsAntifreeze",
+  "trtsBrakeFluids",
   "trtsAdditives",
   "accreditation",
   "accreditationVI",

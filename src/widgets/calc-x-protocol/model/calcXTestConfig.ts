@@ -254,6 +254,23 @@ export const calcXTestConfig: CalcXTestConfig[] = [
     ],
   },
   {
+    id: "boilingPoint",
+    nameField: "boilingPointTestName",
+    equipmentFields: ["boilingPointEquipmentThermometer", "boilingPointEquipmentStopwatch"],
+    groupHeaders: [
+      { label: "Первое измерение", colSpan: 1 },
+      { label: "Второе измерение", colSpan: 1 },
+      { label: "Результаты", colSpan: 2 },
+    ],
+    columnHeaders: ["X₀, °C", "X₀, °C", "Повторяемость r, °C", "Среднее значение tср, °C"],
+    valueFields: [
+      "boilingPointFirstX0",
+      "boilingPointSecondX0",
+      "boilingPointRepeatability",
+      "boilingPointAverage",
+    ],
+  },
+  {
     id: "corrosion",
     nameField: "corrosionTestName",
     equipmentFields: ["corrosionEquipmentBalance", "corrosionEquipmentThermometer"],

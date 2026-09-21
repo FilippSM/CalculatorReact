@@ -15,6 +15,10 @@ import {
   calculateCrystallizationStartRepeatability,
 } from "@/features/crystallization-start"
 import { resolveCrystallizationFieldValue, calculateCrystallizationRepeatability } from "@/features/crystallization"
+import {
+  resolveBoilingPointFieldValue,
+  calculateBoilingPointRepeatability,
+} from "@/features/boiling-point"
 import { calculateFlashPointRepeatability, resolveFlashPointFieldValue } from "@/features/flash-point"
 import {
   calculateMechanicalImpuritiesRepeatability,
@@ -163,8 +167,10 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                                           ? resolveCrystallizationStartFieldValue(formData, field)
                                           : test.id === "crystallization"
                                             ? resolveCrystallizationFieldValue(formData, field)
-                                            : test.id === "corrosion"
-                                              ? formData[field]
+                                            : test.id === "boilingPoint"
+                                              ? resolveBoilingPointFieldValue(formData, field)
+                                              : test.id === "corrosion"
+                                                ? formData[field]
                                               : test.id === "kinematicViscosity100" ||
                                                   test.id === "kinematicViscosity40"
                                                 ? resolveKinematicViscosityFieldValue(formData, field)
@@ -245,6 +251,12 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
                               calculateCrystallizationRepeatability(
                                 formData.crystallizationFirstT,
                                 formData.crystallizationSecondT,
+                              ).isError) ||
+                            (test.id === "boilingPoint" &&
+                              field === "boilingPointRepeatability" &&
+                              calculateBoilingPointRepeatability(
+                                formData.boilingPointFirstX0,
+                                formData.boilingPointSecondX0,
                               ).isError) ||
                             (test.id === "pourPoint" &&
                               field === "pourPointRepeatability" &&
