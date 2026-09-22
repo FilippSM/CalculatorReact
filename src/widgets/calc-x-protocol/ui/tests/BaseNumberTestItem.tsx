@@ -1,0 +1,157 @@
+import { useBaseNumberCalculations } from "@/features/base-number"
+import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
+import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
+import { initialTestData, type InitialTestData } from "../../model/initialTestData"
+
+type Props = {
+  number: number
+  formData: InitialTestData
+  updateTestData: (field: keyof InitialTestData, value: string) => void
+}
+
+const TEST_ID = "baseNumber"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
+
+export const BaseNumberTestItem = ({ number, formData, updateTestData }: Props) => {
+  const { average, repeatability } = useBaseNumberCalculations({
+    firstValue: formData.baseNumberFirstValue,
+    secondValue: formData.baseNumberSecondValue,
+  })
+
+  return (
+            <div className={styles.testItem}>
+              <div className={styles.testTitleRow}>
+                <span className={styles.testNumber}>{number}.</span>
+                <Input
+                  label="Наименование испытания"
+                  className={styles.testNameInput}
+                  value={formData.baseNumberTestName}
+                  placeholder={initialTestData.baseNumberTestName}
+                  onValueChange={(value) => updateTestData("baseNumberTestName", value)}
+                />
+              </div>
+
+              <div className={styles.equipmentBlock}>
+                <h3>Оборудование:</h3>
+                <Input
+                  className={styles.fullWidthInput}
+                  value={formData.baseNumberEquipment}
+                  placeholder={initialTestData.baseNumberEquipment}
+                  onValueChange={(value) => updateTestData("baseNumberEquipment", value)}
+                />
+              </div>
+
+              <div className={styles.tableSection}>
+                <h3>Данные:</h3>
+                <div className={styles.tableScroll}>
+                  <table className={styles.testTable}>
+                    <thead>
+                      <tr>
+                        {testConfig.groupHeaders?.map((group, index) => (
+                          <th key={index} colSpan={group.colSpan}>
+                            {group.label}
+                          </th>
+                        ))}
+                      </tr>
+                      <tr>
+                        {testConfig.columnHeaders.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.baseNumberFirstSampleMass}
+                            placeholder={initialTestData.baseNumberFirstSampleMass}
+                            onValueChange={(value) => updateTestData("baseNumberFirstSampleMass", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.baseNumberFirstTitrantConcentration}
+                            placeholder={initialTestData.baseNumberFirstTitrantConcentration}
+                            onValueChange={(value) => updateTestData("baseNumberFirstTitrantConcentration", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.baseNumberFirstTitrantVolume}
+                            placeholder={initialTestData.baseNumberFirstTitrantVolume}
+                            onValueChange={(value) => updateTestData("baseNumberFirstTitrantVolume", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.baseNumberFirstValue}
+                            placeholder={initialTestData.baseNumberFirstValue}
+                            onValueChange={(value) => updateTestData("baseNumberFirstValue", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.baseNumberSecondSampleMass}
+                            placeholder={initialTestData.baseNumberSecondSampleMass}
+                            onValueChange={(value) => updateTestData("baseNumberSecondSampleMass", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.baseNumberSecondTitrantConcentration}
+                            placeholder={initialTestData.baseNumberSecondTitrantConcentration}
+                            onValueChange={(value) => updateTestData("baseNumberSecondTitrantConcentration", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.baseNumberSecondTitrantVolume}
+                            placeholder={initialTestData.baseNumberSecondTitrantVolume}
+                            onValueChange={(value) => updateTestData("baseNumberSecondTitrantVolume", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.baseNumberSecondValue}
+                            placeholder={initialTestData.baseNumberSecondValue}
+                            onValueChange={(value) => updateTestData("baseNumberSecondValue", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                            value={repeatability.value}
+                            placeholder={initialTestData.baseNumberRepeatability}
+                            readOnly
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={average}
+                            placeholder={initialTestData.baseNumberAverage}
+                            readOnly
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+  )
+}

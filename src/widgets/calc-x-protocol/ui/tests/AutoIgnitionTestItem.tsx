@@ -1,0 +1,153 @@
+import { useAutoIgnitionCalculations } from "@/features/auto-ignition"
+import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
+import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
+import { initialTestData, type InitialTestData } from "../../model/initialTestData"
+
+type Props = {
+  number: number
+  formData: InitialTestData
+  updateTestData: (field: keyof InitialTestData, value: string) => void
+}
+
+const TEST_ID = "autoIgnition"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
+
+export const AutoIgnitionTestItem = ({ number, formData, updateTestData }: Props) => {
+  const { average, repeatability } = useAutoIgnitionCalculations({
+    firstT1: formData.autoIgnitionFirstT1,
+    secondT2: formData.autoIgnitionSecondT2,
+  })
+
+  return (
+            <div className={styles.testItem}>
+              <div className={styles.testTitleRow}>
+                <span className={styles.testNumber}>{number}.</span>
+                <Input
+                  label="Наименование испытания"
+                  className={styles.testNameInput}
+                  value={formData.autoIgnitionTestName}
+                  placeholder={initialTestData.autoIgnitionTestName}
+                  onValueChange={(value) => updateTestData("autoIgnitionTestName", value)}
+                />
+              </div>
+
+              <div className={styles.equipmentBlock}>
+                <h3>Оборудование:</h3>
+                <Input
+                  className={styles.fullWidthInput}
+                  value={formData.autoIgnitionEquipmentDevice}
+                  placeholder={initialTestData.autoIgnitionEquipmentDevice}
+                  onValueChange={(value) => updateTestData("autoIgnitionEquipmentDevice", value)}
+                />
+                <Input
+                  className={styles.fullWidthInput}
+                  value={formData.autoIgnitionEquipmentStopwatch}
+                  placeholder={initialTestData.autoIgnitionEquipmentStopwatch}
+                  onValueChange={(value) => updateTestData("autoIgnitionEquipmentStopwatch", value)}
+                />
+                <Input
+                  className={styles.fullWidthInput}
+                  value={formData.autoIgnitionEquipmentBalance}
+                  placeholder={initialTestData.autoIgnitionEquipmentBalance}
+                  onValueChange={(value) => updateTestData("autoIgnitionEquipmentBalance", value)}
+                />
+              </div>
+
+              <div className={styles.tableSection}>
+                <h3>Данные:</h3>
+                <div className={styles.tableScroll}>
+                  <table className={styles.testTable}>
+                    <thead>
+                      <tr>
+                        {testConfig.groupHeaders?.map((group, index) => (
+                          <th key={index} colSpan={group.colSpan}>
+                            {group.label}
+                          </th>
+                        ))}
+                      </tr>
+                      <tr>
+                        {testConfig.columnHeaders.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.autoIgnitionFirstT1}
+                            placeholder={initialTestData.autoIgnitionFirstT1}
+                            onValueChange={(value) => updateTestData("autoIgnitionFirstT1", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.autoIgnitionFirstM1}
+                            placeholder={initialTestData.autoIgnitionFirstM1}
+                            onValueChange={(value) => updateTestData("autoIgnitionFirstM1", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.autoIgnitionFirstInductionT1}
+                            placeholder={initialTestData.autoIgnitionFirstInductionT1}
+                            onValueChange={(value) => updateTestData("autoIgnitionFirstInductionT1", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.autoIgnitionSecondT2}
+                            placeholder={initialTestData.autoIgnitionSecondT2}
+                            onValueChange={(value) => updateTestData("autoIgnitionSecondT2", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.autoIgnitionSecondM2}
+                            placeholder={initialTestData.autoIgnitionSecondM2}
+                            onValueChange={(value) => updateTestData("autoIgnitionSecondM2", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={formData.autoIgnitionSecondInductionT2}
+                            placeholder={initialTestData.autoIgnitionSecondInductionT2}
+                            onValueChange={(value) => updateTestData("autoIgnitionSecondInductionT2", value)}
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                            value={repeatability.value}
+                            placeholder={initialTestData.autoIgnitionRepeatability}
+                            readOnly
+                          />
+                        </td>
+                        <td>
+                          <Input
+                            className={styles.tableInput}
+                            value={average}
+                            placeholder={initialTestData.autoIgnitionAverage}
+                            readOnly
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+  )
+}

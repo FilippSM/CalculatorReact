@@ -1,0 +1,166 @@
+import { useDensityAt20Calculations } from "@/features/density"
+import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
+import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
+import { initialTestData, type InitialTestData } from "../../model/initialTestData"
+
+type Props = {
+  number: number
+  formData: InitialTestData
+  updateTestData: (field: keyof InitialTestData, value: string) => void
+}
+
+const TEST_ID = "densityAt20"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
+
+export const DensityAt20TestItem = ({ number, formData, updateTestData }: Props) => {
+  const { firstRhoAt20, secondRhoAt20, firstRhoAt20Corrected, secondRhoAt20Corrected, average, repeatability } =
+    useDensityAt20Calculations({
+    firstRho: formData.densityAt20FirstRho,
+    firstT: formData.densityAt20FirstT,
+    secondRho: formData.densityAt20SecondRho,
+    secondT: formData.densityAt20SecondT,
+  })
+
+  return (
+    <div className={styles.testItem}>
+      <div className={styles.testTitleRow}>
+        <span className={styles.testNumber}>{number}.</span>
+        <Input
+          label="Наименование испытания"
+          className={styles.testNameInput}
+          value={formData.densityAt20TestName}
+          placeholder={initialTestData.densityAt20TestName}
+          onValueChange={(value) => updateTestData("densityAt20TestName", value)}
+        />
+      </div>
+
+      <div className={styles.equipmentBlock}>
+        <h3>Оборудование:</h3>
+        <Input
+          className={styles.fullWidthInput}
+          value={formData.densityAt20EquipmentThermometer}
+          placeholder={initialTestData.densityAt20EquipmentThermometer}
+          onValueChange={(value) => updateTestData("densityAt20EquipmentThermometer", value)}
+        />
+        <Input
+          className={styles.fullWidthInput}
+          value={formData.densityAt20EquipmentHydrometer}
+          placeholder={initialTestData.densityAt20EquipmentHydrometer}
+          onValueChange={(value) => updateTestData("densityAt20EquipmentHydrometer", value)}
+        />
+      </div>
+
+      <div className={styles.tableSection}>
+        <h3>Данные:</h3>
+        <div className={styles.tableScroll}>
+          <table className={styles.testTable}>
+            <thead>
+              <tr>
+                {testConfig.groupHeaders?.map((group, index) => (
+                  <th key={index} colSpan={group.colSpan}>
+                    {group.label}
+                  </th>
+                ))}
+              </tr>
+              <tr>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.densityAt20FirstRho}
+                    placeholder={initialTestData.densityAt20FirstRho}
+                    onValueChange={(value) => updateTestData("densityAt20FirstRho", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.densityAt20FirstT}
+                    placeholder={initialTestData.densityAt20FirstT}
+                    onValueChange={(value) => updateTestData("densityAt20FirstT", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={firstRhoAt20}
+                    placeholder={initialTestData.densityAt20FirstRhoAt20}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={firstRhoAt20Corrected}
+                    placeholder={initialTestData.densityAt20FirstRhoAt20Corrected}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.densityAt20SecondRho}
+                    placeholder={initialTestData.densityAt20SecondRho}
+                    onValueChange={(value) => updateTestData("densityAt20SecondRho", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.densityAt20SecondT}
+                    placeholder={initialTestData.densityAt20SecondT}
+                    onValueChange={(value) => updateTestData("densityAt20SecondT", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={secondRhoAt20}
+                    placeholder={initialTestData.densityAt20SecondRhoAt20}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={secondRhoAt20Corrected}
+                    placeholder={initialTestData.densityAt20SecondRhoAt20Corrected}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                    value={repeatability.value}
+                    placeholder={initialTestData.densityAt20Repeatability}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={average}
+                    placeholder={initialTestData.densityAt20Average}
+                    readOnly
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
