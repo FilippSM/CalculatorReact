@@ -31,3 +31,9 @@
   align-items: center;
   justify-content: space-between;
 }
+
+@media print {
+  .container {
+    display: none !important;
+  }
+}

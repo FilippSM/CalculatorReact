@@ -1,0 +1,167 @@
+import { useNoackLossCalculations } from "@/features/noack-loss"
+import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
+import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
+import { initialTestData, type InitialTestData } from "../../model/initialTestData"
+
+type Props = {
+  number: number
+  formData: InitialTestData
+  updateTestData: (field: keyof InitialTestData, value: string) => void
+}
+
+const TEST_ID = "noackLoss"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
+
+export const NoackLossTestItem = ({ number, formData, updateTestData }: Props) => {
+  const { firstEvaporationLoss, secondEvaporationLoss, average, repeatability } = useNoackLossCalculations({
+    firstA: formData.noackLossFirstCrucibleA,
+    firstB: formData.noackLossFirstCrucibleB,
+    firstC: formData.noackLossFirstCrucibleC,
+    secondA: formData.noackLossSecondCrucibleA,
+    secondB: formData.noackLossSecondCrucibleB,
+    secondC: formData.noackLossSecondCrucibleC,
+  })
+
+  return (
+    <div className={styles.testItem}>
+      <div className={styles.testTitleRow}>
+        <span className={styles.testNumber}>{number}.</span>
+        <Input
+          label="Наименование испытания"
+          className={styles.testNameInput}
+          value={formData.noackLossTestName}
+          placeholder={initialTestData.noackLossTestName}
+          onValueChange={(value) => updateTestData("noackLossTestName", value)}
+        />
+      </div>
+
+      <div className={styles.equipmentBlock}>
+        <h3>Оборудование:</h3>
+        <Input
+          className={styles.fullWidthInput}
+          value={formData.noackLossEquipmentBalance}
+          placeholder={initialTestData.noackLossEquipmentBalance}
+          onValueChange={(value) => updateTestData("noackLossEquipmentBalance", value)}
+        />
+        <Input
+          className={styles.fullWidthInput}
+          value={formData.noackLossEquipmentApparatus}
+          placeholder={initialTestData.noackLossEquipmentApparatus}
+          onValueChange={(value) => updateTestData("noackLossEquipmentApparatus", value)}
+        />
+      </div>
+
+      <div className={styles.tableSection}>
+        <h3>Данные:</h3>
+        <div className={styles.tableScroll}>
+          <table className={styles.testTable}>
+            <thead>
+              <tr>
+                {testConfig.groupHeaders?.map((group, index) => (
+                  <th key={index} colSpan={group.colSpan}>
+                    {group.label}
+                  </th>
+                ))}
+              </tr>
+              <tr>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.noackLossFirstCrucibleA}
+                    placeholder={initialTestData.noackLossFirstCrucibleA}
+                    onValueChange={(value) => updateTestData("noackLossFirstCrucibleA", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.noackLossFirstCrucibleB}
+                    placeholder={initialTestData.noackLossFirstCrucibleB}
+                    onValueChange={(value) => updateTestData("noackLossFirstCrucibleB", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.noackLossFirstCrucibleC}
+                    placeholder={initialTestData.noackLossFirstCrucibleC}
+                    onValueChange={(value) => updateTestData("noackLossFirstCrucibleC", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={firstEvaporationLoss}
+                    placeholder={initialTestData.noackLossFirstEvaporationLoss}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.noackLossSecondCrucibleA}
+                    placeholder={initialTestData.noackLossSecondCrucibleA}
+                    onValueChange={(value) => updateTestData("noackLossSecondCrucibleA", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.noackLossSecondCrucibleB}
+                    placeholder={initialTestData.noackLossSecondCrucibleB}
+                    onValueChange={(value) => updateTestData("noackLossSecondCrucibleB", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.noackLossSecondCrucibleC}
+                    placeholder={initialTestData.noackLossSecondCrucibleC}
+                    onValueChange={(value) => updateTestData("noackLossSecondCrucibleC", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={secondEvaporationLoss}
+                    placeholder={initialTestData.noackLossSecondEvaporationLoss}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                    value={repeatability.value}
+                    placeholder={initialTestData.noackLossRepeatability}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={average}
+                    placeholder={initialTestData.noackLossAverage}
+                    readOnly
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}

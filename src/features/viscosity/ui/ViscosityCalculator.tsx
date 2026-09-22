@@ -16,7 +16,9 @@ import { useThemeStore } from "@/app/store"
 import clsx from "clsx"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import { constansVisc } from "../constans/constans-visc"
-import { useViscosityStore, type ViscosityEntity } from "../model/storeViscosityCalculator"
+import { useViscosityStore, type ViscosityEntity, type ViscosityGroup } from "../model/storeViscosityCalculator"
+
+const EMPTY_VISCOSITY_GROUPS: ViscosityGroup[] = []
 
 type ViscosityCalculatorEntityProps = {
   entityId: string
@@ -56,8 +58,8 @@ const ViscosityCalculatorEntity = ({ entityId }: ViscosityCalculatorEntityProps)
 
   const data = entity?.dataMode ?? "input"
   const timeFormat = entity?.flowTimeFormat ?? "sec"
-  const groups100 = entity?.groups100 ?? []
-  const groups40 = entity?.groups40 ?? []
+  const groups100 = entity?.groups100 ?? EMPTY_VISCOSITY_GROUPS
+  const groups40 = entity?.groups40 ?? EMPTY_VISCOSITY_GROUPS
 
   const groupResults100 = useMemo(
     () => groups100.map((group) => getGroupResult(group.time, group.constant, timeFormat)),

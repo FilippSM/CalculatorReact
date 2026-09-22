@@ -1,0 +1,219 @@
+import { useCallback, useState } from "react"
+import { Checkbox } from "@/shared/components/Checkbox"
+import clsx from "clsx"
+import { testVisibilityConfig, type TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
+import styles from "./CalcXProtocol.module.scss"
+
+type Props = {
+  visibleTests: Record<TestVisibilityKey, boolean>
+  setVisibleTests: (update: Record<TestVisibilityKey, boolean>) => void
+}
+
+const ALL_IDS = testVisibilityConfig.map(({ id }) => id)
+
+const GROUPS = {
+  selectAll: { label: "Выбрать все испытания", members: [] },
+  deselectAll: { label: "Отменить все испытания", members: [] },
+  selectAllOils: {
+    label: "Выбрать все испытания — масла",
+    members: [
+      "flashPoint",
+      "mechanicalImpurities",
+      "densityAt20",
+      "kinematicViscosity100",
+      "kinematicViscosity40",
+      "viscosityIndex",
+      "waterContent",
+      "pourPoint",
+      "freezingPoint",
+      "noackLoss",
+      "dynamicViscosity30",
+      "colorCnt",
+      "baseNumber",
+      "autoIgnition",
+    ],
+  },
+  selectAllAntifreeze: {
+    label: "Выбрать все испытания — антифризы",
+    members: ["densityAt20Gost18995", "ph", "crystallizationStart", "mechanicalImpurities", "corrosion"],
+  },
+  trtsWithoutAdd: {
+    label: "Испытания по ТР ТС 030/2012 для масел без присадок",
+    members: ["flashPoint", "mechanicalImpurities", "autoIgnition"],
+  },
+  trtsWithAdd: {
+    label: "Испытания по ТР ТС 030/2012 для масел с присадками",
+    members: ["flashPoint", "mechanicalImpurities", "waterContent", "autoIgnition"],
+  },
+  trtsAntifreeze: {
+    label: "Испытания по ТР ТС 030/2012 для антифризов",
+    members: ["ph", "crystallizationStart", "mechanicalImpurities"],
+  },
+  trtsBrakeFluids: {
+    label: "Испытания по ТР ТС 030/2012 для тормозных жидкостей",
+    members: ["boilingPoint", "ph", "mechanicalImpurities"],
+  },
+  trtsAdditives: {
+    label: "Испытания по ТР ТС 030/2012 для смазок",
+    members: ["mechanicalImpuritiesGost6479", "waterContent"],
+  },
+  accreditation: {
+    label: "Испытания согласно области аккредитации для масел",
+    members: [
+      "flashPoint",
+      "mechanicalImpurities",
+      "densityAt20",
+      "kinematicViscosity100",
+      "kinematicViscosity40",
+      "waterContent",
+      "pourPoint",
+      "freezingPoint",
+      "ph",
+    ],
+  },
+  accreditationVI: {
+    label: "Испытания согласно области аккредитации + индекс вязкости для масел",
+    members: [
+      "flashPoint",
+      "mechanicalImpurities",
+      "densityAt20",
+      "kinematicViscosity100",
+      "kinematicViscosity40",
+      "viscosityIndex",
+      "waterContent",
+      "pourPoint",
+      "freezingPoint",
+    ],
+  },
+  accreditationAntifreeze: {
+    label: "Испытания согласно области аккредитации для антифризов",
+    members: ["densityAt20Gost18995", "ph", "crystallizationStart", "mechanicalImpurities"],
+  },
+  accreditationWindshield: {
+    label: "Испытания согласно области аккредитации для омываек",
+    members: ["densityAt20", "ph", "crystallization"],
+  },
+} as const
+
+type GroupId = keyof typeof GROUPS
+
+const GROUP_ORDER: GroupId[] = [
+  "selectAll",
+  "deselectAll",
+  "selectAllOils",
+  "selectAllAntifreeze",
+  "trtsWithoutAdd",
+  "trtsWithAdd",
+  "trtsAntifreeze",
+  "trtsBrakeFluids",
+  "trtsAdditives",
+  "accreditation",
+  "accreditationVI",
+  "accreditationAntifreeze",
+  "accreditationWindshield",
+]
+
+const CONTENT_GROUPS: GroupId[] = [
+  "selectAllOils",
+  "selectAllAntifreeze",
+  "trtsWithoutAdd",
+  "trtsWithAdd",
+  "trtsAntifreeze",
+  "trtsBrakeFluids",
+  "trtsAdditives",
+  "accreditation",
+  "accreditationVI",
+  "accreditationAntifreeze",
+  "accreditationWindshield",
+]
+
+const makeAllTrue = () => Object.fromEntries(ALL_IDS.map((id) => [id, true])) as Record<TestVisibilityKey, boolean>
+
+const makeFromMembers = (members: readonly string[]) =>
+  Object.fromEntries(ALL_IDS.map((id) => [id, members.includes(id)])) as Record<TestVisibilityKey, boolean>
+
+const resolveActiveGroup = (visibleTests: Record<TestVisibilityKey, boolean>): GroupId | null => {
+  const checkedIds = ALL_IDS.filter((id) => visibleTests[id])
+
+  if (checkedIds.length === ALL_IDS.length) return "selectAll"
+
+  for (const groupId of CONTENT_GROUPS) {
+    const members = GROUPS[groupId].members as readonly string[]
+    if (checkedIds.length === members.length && checkedIds.every((id) => members.includes(id))) {
+      return groupId
+    }
+  }
+
+  return null
+}
+
+export const CalcXTestVisibilitySelector = ({ visibleTests, setVisibleTests }: Props) => {
+  const [activeGroup, setActiveGroup] = useState<GroupId | null>(null)
+
+  let activeIndex = 0
+
+  const handleGroupChange = useCallback(
+    (groupId: GroupId, checked: boolean) => {
+      if (!checked) {
+        setActiveGroup(null)
+        return
+      }
+
+      setActiveGroup(groupId)
+
+      switch (groupId) {
+        case "selectAll":
+          setVisibleTests(makeAllTrue())
+          break
+        case "deselectAll":
+          setVisibleTests(Object.fromEntries(ALL_IDS.map((id) => [id, false])) as Record<TestVisibilityKey, boolean>)
+          break
+        default:
+          setVisibleTests(makeFromMembers(GROUPS[groupId].members))
+      }
+    },
+    [setVisibleTests],
+  )
+
+  const handleIndicatorChange = useCallback(
+    (indicatorId: TestVisibilityKey, checked: boolean) => {
+      const next = { ...visibleTests, [indicatorId]: checked }
+      setVisibleTests(next)
+      setActiveGroup(resolveActiveGroup(next))
+    },
+    [visibleTests, setVisibleTests],
+  )
+
+  return (
+    <div className={styles.section}>
+      <h2>Показатели</h2>
+      <div className={styles.groupFilters}>
+        {GROUP_ORDER.map((groupId) => (
+          <Checkbox
+            key={groupId}
+            checked={activeGroup === groupId}
+            className={clsx(styles.testFilterItem, activeGroup !== groupId && styles.testFilterItemInactive)}
+            label={GROUPS[groupId].label}
+            onValueChange={(checked) => handleGroupChange(groupId, checked)}
+          />
+        ))}
+      </div>
+      <div className={styles.testFilters}>
+        {testVisibilityConfig.map(({ id, label }) => {
+          const isActive = visibleTests[id]
+          const number = isActive ? ++activeIndex : null
+
+          return (
+            <Checkbox
+              key={id}
+              checked={isActive}
+              className={clsx(styles.testFilterItem, !isActive && styles.testFilterItemInactive)}
+              label={number !== null ? `${number}. ${label}` : label}
+              onValueChange={(checked) => handleIndicatorChange(id, checked)}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+}

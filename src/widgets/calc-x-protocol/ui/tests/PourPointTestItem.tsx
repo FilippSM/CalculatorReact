@@ -1,0 +1,109 @@
+import { usePourPointCalculations } from "@/features/pour-point"
+import { Input } from "@/shared/components/Input"
+import clsx from "clsx"
+import styles from "../CalcXProtocol.module.scss"
+import { calcXTestConfig } from "../../model/calcXTestConfig"
+import { initialTestData, type InitialTestData } from "../../model/initialTestData"
+
+type Props = {
+  number: number
+  formData: InitialTestData
+  updateTestData: (field: keyof InitialTestData, value: string) => void
+}
+
+const TEST_ID = "pourPoint"
+const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
+
+if (!testConfig) {
+  throw new Error(`Test config not found for id: ${TEST_ID}`)
+}
+
+export const PourPointTestItem = ({ number, formData, updateTestData }: Props) => {
+  const { average, repeatability } = usePourPointCalculations({
+    firstT1: formData.pourPointFirstT1,
+    secondT2: formData.pourPointSecondT2,
+  })
+
+  return (
+    <div className={styles.testItem}>
+      <div className={styles.testTitleRow}>
+        <span className={styles.testNumber}>{number}.</span>
+        <Input
+          label="Наименование испытания"
+          className={styles.testNameInput}
+          value={formData.pourPointTestName}
+          placeholder={initialTestData.pourPointTestName}
+          onValueChange={(value) => updateTestData("pourPointTestName", value)}
+        />
+      </div>
+
+      <div className={styles.equipmentBlock}>
+        <h3>Оборудование:</h3>
+        <Input
+          className={styles.fullWidthInput}
+          value={formData.pourPointEquipment}
+          placeholder={initialTestData.pourPointEquipment}
+          onValueChange={(value) => updateTestData("pourPointEquipment", value)}
+        />
+      </div>
+
+      <div className={styles.tableSection}>
+        <h3>Данные:</h3>
+        <div className={styles.tableScroll}>
+          <table className={styles.testTable}>
+            <thead>
+              <tr>
+                {testConfig.groupHeaders?.map((group, index) => (
+                  <th key={index} colSpan={group.colSpan}>
+                    {group.label}
+                  </th>
+                ))}
+              </tr>
+              <tr>
+                {testConfig.columnHeaders.map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.pourPointFirstT1}
+                    placeholder={initialTestData.pourPointFirstT1}
+                    onValueChange={(value) => updateTestData("pourPointFirstT1", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={formData.pourPointSecondT2}
+                    placeholder={initialTestData.pourPointSecondT2}
+                    onValueChange={(value) => updateTestData("pourPointSecondT2", value)}
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
+                    value={repeatability.value}
+                    placeholder={initialTestData.pourPointRepeatability}
+                    readOnly
+                  />
+                </td>
+                <td>
+                  <Input
+                    className={styles.tableInput}
+                    value={average}
+                    placeholder={initialTestData.pourPointAverage}
+                    readOnly
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
