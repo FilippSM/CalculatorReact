@@ -7,6 +7,8 @@ import styles from "./CalcXProtocol.module.scss"
 type Props = {
   visibleTests: Record<TestVisibilityKey, boolean>
   setVisibleTests: (update: Record<TestVisibilityKey, boolean>) => void
+  showUncertainty: boolean
+  setShowUncertainty: (show: boolean) => void
 }
 
 const ALL_IDS = testVisibilityConfig.map(({ id }) => id)
@@ -147,7 +149,12 @@ const resolveActiveGroup = (visibleTests: Record<TestVisibilityKey, boolean>): G
   return null
 }
 
-export const CalcXTestVisibilitySelector = ({ visibleTests, setVisibleTests }: Props) => {
+export const CalcXTestVisibilitySelector = ({
+  visibleTests,
+  setVisibleTests,
+  showUncertainty,
+  setShowUncertainty,
+}: Props) => {
   const [activeGroup, setActiveGroup] = useState<GroupId | null>(null)
 
   let activeIndex = 0
@@ -213,6 +220,15 @@ export const CalcXTestVisibilitySelector = ({ visibleTests, setVisibleTests }: P
             />
           )
         })}
+      </div>
+      <div className={styles.uncertaintySelector}>
+        <h2>Результаты испытаний</h2>
+        <Checkbox
+          checked={showUncertainty}
+          className={clsx(styles.testFilterItem, !showUncertainty && styles.testFilterItemInactive)}
+          label="Значение показателя + расширенная неопределенность"
+          onValueChange={setShowUncertainty}
+        />
       </div>
     </div>
   )

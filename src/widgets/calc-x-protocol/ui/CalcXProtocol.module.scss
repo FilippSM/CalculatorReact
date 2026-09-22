@@ -127,6 +127,15 @@
   gap: 10px 16px;
 }
 
+.uncertaintySelector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 14px;
+  margin-top: 4px;
+  border-top: 1px solid color(light, 100);
+}
+
 .testFilterItem {
   align-items: flex-start;
 }
@@ -220,6 +229,44 @@
   th {
     font-size: var(--font-size-s);
     font-weight: 500;
+  }
+}
+
+.uncertaintyObjectName {
+  margin: 0;
+}
+
+.uncertaintyTable {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 7px 8px;
+    vertical-align: middle;
+    border: 1px solid color(light, 900);
+  }
+
+  th {
+    font-size: var(--font-size-s);
+    font-weight: 500;
+    text-align: center;
+  }
+
+  td:first-child,
+  td:nth-child(3),
+  td:nth-child(4) {
+    text-align: center;
+  }
+
+  th:first-child {
+    width: 72px;
+  }
+
+  th:nth-child(3),
+  th:nth-child(4) {
+    width: 170px;
   }
 }
 

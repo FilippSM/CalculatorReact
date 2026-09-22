@@ -9,12 +9,14 @@ import { CalcXProtocolMetaSection } from "./CalcXProtocolMetaSection"
 import { CalcXProtocolPrintView } from "./CalcXProtocolPrintView"
 import { CalcXTestVisibilitySelector } from "./CalcXTestVisibilitySelector"
 import { CalcXTestsSection } from "./CalcXTestsSection"
+import { CalcXUncertaintySection } from "./CalcXUncertaintySection"
 import styles from "./CalcXProtocol.module.scss"
 
 export const CalcXProtocol = () => {
   const theme = useThemeStore((state) => state.theme)
   const [testData, setTestData] = useState(initialTestData)
   const [visibleTests, setVisibleTests] = useState(initialVisibleTests)
+  const [showUncertainty, setShowUncertainty] = useState(false)
   const [exporting, setExporting] = useState<"pdf" | "docx" | null>(null)
   const formData = { ...initialTestData, ...testData }
 
@@ -84,7 +86,12 @@ export const CalcXProtocol = () => {
 
       <div className={styles.screenOnly}>
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
-          <CalcXTestVisibilitySelector visibleTests={visibleTests} setVisibleTests={setVisibleTests} />
+          <CalcXTestVisibilitySelector
+            visibleTests={visibleTests}
+            setVisibleTests={setVisibleTests}
+            showUncertainty={showUncertainty}
+            setShowUncertainty={setShowUncertainty}
+          />
         </section>
 
         <CalcXProtocolMetaSection formData={formData} updateTestData={updateTestData} theme={theme} />
@@ -92,6 +99,12 @@ export const CalcXProtocol = () => {
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
           <CalcXTestsSection formData={formData} visibleTests={visibleTests} updateTestData={updateTestData} />
         </section>
+
+        {showUncertainty && (
+          <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
+            <CalcXUncertaintySection formData={formData} visibleTests={visibleTests} />
+          </section>
+        )}
       </div>
 
       <CalcXProtocolPrintView formData={formData} visibleTests={visibleTests} />
