@@ -1,5 +1,6 @@
 import { useDensityAt20Calculations } from "@/features/density"
 import { Input } from "@/shared/components/Input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
 import { calcXTestConfig } from "../../model/calcXTestConfig"
@@ -18,6 +19,16 @@ if (!testConfig) {
   throw new Error(`Test config not found for id: ${TEST_ID}`)
 }
 
+const thermometerOptions = [
+  { value: "ЛТ-300", label: "Термометр ЛТ-300 № 302322" },
+  { value: "другой", label: "Термометр другой" },
+] as const
+
+const hydrometerOptions = [
+  { value: "АНТ-2", label: "Ареометр АНТ-2 № 42335" },
+  { value: "АНТ-1", label: "Ареометр АНТ-1 № 1278" },
+] as const
+
 export const DensityAt20TestItem = ({ number, formData, updateTestData }: Props) => {
   const { firstRhoAt20, secondRhoAt20, firstRhoAt20Corrected, secondRhoAt20Corrected, average, repeatability } =
     useDensityAt20Calculations({
@@ -26,6 +37,14 @@ export const DensityAt20TestItem = ({ number, formData, updateTestData }: Props)
     secondRho: formData.densityAt20SecondRho,
     secondT: formData.densityAt20SecondT,
   })
+
+  const selectedThermometer =
+    thermometerOptions.find((option) => option.label === formData.densityAt20EquipmentThermometer)?.value ??
+    thermometerOptions[0].value
+
+  const selectedHydrometer =
+    hydrometerOptions.find((option) => option.label === formData.densityAt20EquipmentHydrometer)?.value ??
+    hydrometerOptions[0].value
 
   return (
     <div className={styles.testItem}>
@@ -42,18 +61,46 @@ export const DensityAt20TestItem = ({ number, formData, updateTestData }: Props)
 
       <div className={styles.equipmentBlock}>
         <h3>Оборудование:</h3>
-        <Input
-          className={styles.fullWidthInput}
-          value={formData.densityAt20EquipmentThermometer}
-          placeholder={initialTestData.densityAt20EquipmentThermometer}
-          onValueChange={(value) => updateTestData("densityAt20EquipmentThermometer", value)}
-        />
-        <Input
-          className={styles.fullWidthInput}
-          value={formData.densityAt20EquipmentHydrometer}
-          placeholder={initialTestData.densityAt20EquipmentHydrometer}
-          onValueChange={(value) => updateTestData("densityAt20EquipmentHydrometer", value)}
-        />
+        <Select
+          value={selectedThermometer}
+          onValueChange={(value) => {
+            const option = thermometerOptions.find((item) => item.value === value)
+            if (option) {
+              updateTestData("densityAt20EquipmentThermometer", option.label)
+            }
+          }}
+        >
+          <SelectTrigger className={styles.fullWidthSelect}>
+            <SelectValue placeholder={initialTestData.densityAt20EquipmentThermometer} />
+          </SelectTrigger>
+          <SelectContent>
+            {thermometerOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={selectedHydrometer}
+          onValueChange={(value) => {
+            const option = hydrometerOptions.find((item) => item.value === value)
+            if (option) {
+              updateTestData("densityAt20EquipmentHydrometer", option.label)
+            }
+          }}
+        >
+          <SelectTrigger className={styles.fullWidthSelect}>
+            <SelectValue placeholder={initialTestData.densityAt20EquipmentHydrometer} />
+          </SelectTrigger>
+          <SelectContent>
+            {hydrometerOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className={styles.tableSection}>
