@@ -4,7 +4,7 @@ import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
 import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
-import { resolveDensityAt20FieldValue } from "@/features/density"
+import { calculateGost3900Uncertainty, resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
 import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
@@ -48,6 +48,19 @@ const resolveViscosityIndex = (formData: InitialTestData) => {
   const result = calculateViscosityIndexForStrings(viscosity100, viscosity40)
 
   return result === null ? "" : String(result)
+}
+
+const resolveDensityAt20Uncertainty = (formData: InitialTestData): string => {
+  const meanDensityAt20 = resolveDensityAt20FieldValue(formData, "densityAt20Average")
+  const result = calculateGost3900Uncertainty({
+    densityAtTestTemperature: formData.densityAt20FirstRho,
+    sampleTemperature: formData.densityAt20FirstT,
+    meanDensityAt20,
+    hydrometer: formData.densityAt20EquipmentHydrometer.includes("АНТ-1") ? "ANT-1" : "ANT-2",
+    thermometer: formData.densityAt20EquipmentThermometer.includes("ЛТ-300") ? "LT-300" : "other",
+  })
+
+  return result === null ? "" : result.expandedUncertainty.toFixed(1).replace(".", ",")
 }
 
 const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): string => {
@@ -97,6 +110,14 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
   }
 }
 
+const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData): string => {
+  if (id === "densityAt20") {
+    return resolveDensityAt20Uncertainty(formData)
+  }
+
+  return "0"
+}
+
 export const buildCalcXUncertaintyRows = (
   formData: InitialTestData,
   visibleTests: Record<TestVisibilityKey, boolean>,
@@ -105,5 +126,5 @@ export const buildCalcXUncertaintyRows = (
     id: test.id,
     name: formData[test.nameField],
     result: resolveTestResult(test.id, formData),
-    uncertainty: "0",
+    uncertainty: resolveTestUncertainty(test.id, formData),
   }))

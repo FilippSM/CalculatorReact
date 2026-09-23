@@ -14,6 +14,7 @@ import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
 import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
 import { resolveKinematicViscosityFieldValue } from "@/features/viscosity"
+import { buildCalcXUncertaintyRows } from "./calcXUncertaintyRows"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -119,6 +120,9 @@ export const buildProtocolDocument = (
   visibleTests: Record<TestVisibilityKey, boolean>,
 ): ProtocolDocument => {
   const tests = getVisibleProtocolTests(visibleTests)
+  const uncertaintyByTestId = new Map(
+    buildCalcXUncertaintyRows(formData, visibleTests).map((row) => [row.id, row.uncertainty]),
+  )
   const equipmentNames = [
     formData.equipment,
     ...tests.flatMap((test) => test.equipmentFields.map((field) => formData[field])),
@@ -194,7 +198,7 @@ export const buildProtocolDocument = (
                               : test.id === "autoIgnition"
                                 ? resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
                                 : formData[resultFields[test.id]],
-        uncertainty: "—",
+        uncertainty: uncertaintyByTestId.get(test.id) || "—",
       }
     }),
   }
