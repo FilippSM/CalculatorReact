@@ -21,6 +21,23 @@ describe("calculateGost3900Uncertainty", () => {
     )
   })
 
+  test("calculates percentage contributions F23-F27", () => {
+    const result = calculateGost3900Uncertainty(baseInput)
+
+    expect(result).not.toBeNull()
+    expect(result?.temperatureContribution).toBeGreaterThan(0)
+    expect(result?.densityContribution).toBeGreaterThan(0)
+    expect(result?.repeatabilityContribution).toBeGreaterThan(0)
+    expect(result?.samplingContribution).toBeGreaterThan(0)
+    expect(result?.totalContribution).toBeCloseTo(100)
+    expect(result?.totalContribution).toBeCloseTo(
+      result!.temperatureContribution +
+        result!.densityContribution +
+        result!.repeatabilityContribution +
+        result!.samplingContribution,
+    )
+  })
+
   test("uses the selected measuring instruments", () => {
     const ant2Result = calculateGost3900Uncertainty(baseInput)
     const ant1Result = calculateGost3900Uncertainty({
