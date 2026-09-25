@@ -60,7 +60,7 @@ const resolveDensityAt20Uncertainty = (formData: InitialTestData): string => {
     thermometer: formData.densityAt20EquipmentThermometer.includes("ЛТ-300") ? "LT-300" : "other",
   })
 
-  return result === null ? "" : result.expandedUncertainty.toFixed(1).replace(".", ",")
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
 }
 
 const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): string => {

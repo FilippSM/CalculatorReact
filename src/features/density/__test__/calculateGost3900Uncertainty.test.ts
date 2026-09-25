@@ -14,10 +14,10 @@ describe("calculateGost3900Uncertainty", () => {
     const result = calculateGost3900Uncertainty(baseInput)
 
     expect(result).not.toBeNull()
-    expect(result?.sensitivityTemperature).toBeCloseTo(8.4)
-    expect(result?.expandedUncertainty).toBe(2.5)
-    expect(result?.expandedUncertainty).toBe(
-      Math.round(result!.combinedStandardUncertainty * 2 * 10) / 10,
+    expect(result?.SensitivityTemperature).toBeCloseTo(8.4)
+    expect(result?.ExpandedUncertainty).toBe(2.5)
+    expect(result?.ExpandedUncertainty).toBe(
+      Math.round(result!.CombinedStandardUncertainty * 2 * 10) / 10,
     )
   })
 
@@ -25,16 +25,16 @@ describe("calculateGost3900Uncertainty", () => {
     const result = calculateGost3900Uncertainty(baseInput)
 
     expect(result).not.toBeNull()
-    expect(result?.temperatureContribution).toBeGreaterThan(0)
-    expect(result?.densityContribution).toBeGreaterThan(0)
-    expect(result?.repeatabilityContribution).toBeGreaterThan(0)
-    expect(result?.samplingContribution).toBeGreaterThan(0)
-    expect(result?.totalContribution).toBeCloseTo(100)
-    expect(result?.totalContribution).toBeCloseTo(
-      result!.temperatureContribution +
-        result!.densityContribution +
-        result!.repeatabilityContribution +
-        result!.samplingContribution,
+    expect(result?.TemperatureContribution).toBeGreaterThan(0)
+    expect(result?.DensityContribution).toBeGreaterThan(0)
+    expect(result?.RepeatabilityContribution).toBeGreaterThan(0)
+    expect(result?.SamplingContribution).toBeGreaterThan(0)
+    expect(result?.TotalContribution).toBeCloseTo(100)
+    expect(result?.TotalContribution).toBeCloseTo(
+      result!.TemperatureContribution +
+        result!.DensityContribution +
+        result!.RepeatabilityContribution +
+        result!.SamplingContribution,
     )
   })
 
@@ -48,11 +48,11 @@ describe("calculateGost3900Uncertainty", () => {
 
     expect(ant1Result).not.toBeNull()
     expect(ant2Result).not.toBeNull()
-    expect(ant1Result?.densityStandardUncertainty).toBeLessThan(
-      ant2Result!.densityStandardUncertainty,
+    expect(ant1Result?.DensityStandardUncertainty).toBeLessThan(
+      ant2Result!.DensityStandardUncertainty,
     )
-    expect(ant1Result?.temperatureStandardUncertainty).toBeGreaterThan(
-      ant2Result!.temperatureStandardUncertainty,
+    expect(ant1Result?.TemperatureStandardUncertainty).toBeGreaterThan(
+      ant2Result!.TemperatureStandardUncertainty,
     )
   })
 
