@@ -38,45 +38,49 @@
 /** Тип термометра, определяющий B7 и B8. */
 export type Gost18995ThermometerType = "LT-300" | "other"
 
-/** Входные данные для расчёта неопределённости по ГОСТ 18995.1. */
+/**
+ * Входные данные для расчёта неопределённости по ГОСТ 18995.1.
+ * @property meanDensity G14 — плотность (средняя), г/см³.
+ * @property thermometer Тип термометра для выбора B7 и B8.
+ */
 export type Gost18995UncertaintyInput = {
-  /** G14 — плотность (средняя), г/см³. */
   meanDensity: string | number
-  /** Тип термометра для выбора B7 и B8. */
   thermometer: Gost18995ThermometerType
 }
 
-/** Бюджет и итоговый результат расчёта неопределённости по ГОСТ 18995.1. */
+/**
+ * Бюджет и итоговый результат расчёта неопределённости по ГОСТ 18995.1.
+ * @property DensityStandardUncertainty D21 — стандартная неопределённость плотности, измеренной ареометром, г/см³.
+ * @property TemperatureStandardUncertainty D22 — стандартная неопределённость температуры, измеренной термометром, °C.
+ * @property RepeatabilityStandardUncertainty D23 — стандартная неопределённость повторяемости метода, г/см³.
+ * @property SamplingStandardUncertainty D24 — стандартная неопределённость отбора проб, г/см³.
+ * @property RelativeDensityStandardUncertainty E21 — относительная стандартная неопределённость плотности.
+ * @property RelativeTemperatureStandardUncertainty E22 — относительная стандартная неопределённость температуры.
+ * @property RelativeRepeatabilityStandardUncertainty E23 — относительная стандартная неопределённость повторяемости метода.
+ * @property RelativeSamplingStandardUncertainty E24 — относительная стандартная неопределённость отбора проб.
+ * @property CombinedStandardUncertainty D25 — суммарная стандартная неопределённость, г/см³.
+ * @property DensityContribution F21 — процентный вклад плотности.
+ * @property TemperatureContribution F22 — процентный вклад температуры.
+ * @property RepeatabilityContribution F23 — процентный вклад повторяемости метода.
+ * @property SamplingContribution F24 — процентный вклад отбора проб.
+ * @property TotalContribution F25 — сумма процентных вкладов.
+ * @property ExpandedUncertainty F28 — расширенная неопределённость при k = 2, г/см³.
+ */
 export type Gost18995UncertaintyResult = {
-  /** D21 — стандартная неопределённость плотности, измеренной ареометром, г/см³. */
   DensityStandardUncertainty: number
-  /** D22 — стандартная неопределённость температуры, измеренной термометром, °C. */
   TemperatureStandardUncertainty: number
-  /** D23 — стандартная неопределённость повторяемости метода, г/см³. */
   RepeatabilityStandardUncertainty: number
-  /** D24 — стандартная неопределённость отбора проб, г/см³. */
   SamplingStandardUncertainty: number
-  /** E21 — относительная стандартная неопределённость плотности. */
   RelativeDensityStandardUncertainty: number
-  /** E22 — относительная стандартная неопределённость температуры. */
   RelativeTemperatureStandardUncertainty: number
-  /** E23 — относительная стандартная неопределённость повторяемости метода. */
   RelativeRepeatabilityStandardUncertainty: number
-  /** E24 — относительная стандартная неопределённость отбора проб. */
   RelativeSamplingStandardUncertainty: number
-  /** D25 — суммарная стандартная неопределённость, г/см³. */
   CombinedStandardUncertainty: number
-  /** F21 — процентный вклад плотности. */
   DensityContribution: number
-  /** F22 — процентный вклад температуры. */
   TemperatureContribution: number
-  /** F23 — процентный вклад повторяемости метода. */
   RepeatabilityContribution: number
-  /** F24 — процентный вклад отбора проб. */
   SamplingContribution: number
-  /** F25 — сумма процентных вкладов. */
   TotalContribution: number
-  /** F28 — расширенная неопределённость при k = 2, г/см³. */
   ExpandedUncertainty: number
 }
 
