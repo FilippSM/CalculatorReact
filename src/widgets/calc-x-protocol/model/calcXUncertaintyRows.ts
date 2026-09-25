@@ -5,7 +5,10 @@ import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
 import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
 import { calculateGost3900Uncertainty, resolveDensityAt20FieldValue } from "@/features/density"
-import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
+import {
+  calculateGost18995Uncertainty,
+  resolveDensityAt20Gost18995FieldValue,
+} from "@/features/density-at-20-gost-18995"
 import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { calculateViscosityIndexForStrings } from "@/features/index-viscosity/lib/viscositycalculateIV"
@@ -63,6 +66,21 @@ const resolveDensityAt20Uncertainty = (formData: InitialTestData): string => {
   return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
 }
 
+const resolveDensityAt20Gost18995Uncertainty = (formData: InitialTestData): string => {
+  const meanDensity = resolveDensityAt20Gost18995FieldValue(
+    formData,
+    "densityAt20Gost18995Average",
+  )
+  const result = calculateGost18995Uncertainty({
+    meanDensity,
+    thermometer: formData.densityAt20Gost18995EquipmentThermometer.includes("ЛТ-300")
+      ? "LT-300"
+      : "other",
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(3).replace(".", ",")
+}
+
 const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): string => {
   switch (id) {
     case "flashPoint":
@@ -113,6 +131,10 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
 const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData): string => {
   if (id === "densityAt20") {
     return resolveDensityAt20Uncertainty(formData)
+  }
+
+  if (id === "densityAt20Gost18995") {
+    return resolveDensityAt20Gost18995Uncertainty(formData)
   }
 
   return "0"
