@@ -85,9 +85,14 @@ const resolveDensityAt20Gost18995Uncertainty = (formData: InitialTestData): stri
   return result === null ? "" : result.ExpandedUncertainty.toFixed(3).replace(".", ",")
 }
 
-const resolveFlashPointUncertainty = (): string => {
+const resolveFlashPointUncertainty = (formData: InitialTestData): string => {
   const correctedFlashPoint = useFlashPointStore.getState().averageCorrectedTemperature
-  const result = calculateGost4333Uncertainty({ correctedFlashPoint })
+  const result = calculateGost4333Uncertainty({
+    correctedFlashPoint,
+    device: formData.flashPointEquipmentDevice.includes("Автоматический")
+      ? "automatic"
+      : "manual",
+  })
 
   return result === null ? "" : String(result.ExpandedUncertainty)
 }
@@ -141,7 +146,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
 
 const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData): string => {
   if (id === "flashPoint") {
-    return resolveFlashPointUncertainty()
+    return resolveFlashPointUncertainty(formData)
   }
 
   if (id === "densityAt20") {

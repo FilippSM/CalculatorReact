@@ -4,6 +4,7 @@ export { calculateFlashPointCorrection } from "./calculateFlashPointCorrection"
 export { calculateFlashPointRepeatability } from "./calculateFlashPointRepeatability"
 export {
   calculateGost4333Uncertainty,
+  type Gost4333DeviceType,
   type Gost4333UncertaintyInput,
   type Gost4333UncertaintyResult,
 } from "./calculateGost4333Uncertainty"

@@ -3,6 +3,7 @@ import { calculateGost4333Uncertainty } from "../lib/calculateGost4333Uncertaint
 
 const baseInput = {
   correctedFlashPoint: "243",
+  device: "manual" as const,
 }
 
 describe("calculateGost4333Uncertainty", () => {
@@ -33,12 +34,30 @@ describe("calculateGost4333Uncertainty", () => {
     )
   })
 
+  test("uses automatic varianceSum formula E43² + E18² + E19²", () => {
+    const manualResult = calculateGost4333Uncertainty(baseInput)
+    const automaticResult = calculateGost4333Uncertainty({
+      ...baseInput,
+      device: "automatic",
+    })
+
+    expect(automaticResult).not.toBeNull()
+    expect(automaticResult?.ExpandedUncertainty).toBe(
+      Math.round(automaticResult!.CombinedStandardUncertainty * 2),
+    )
+    expect(automaticResult?.CombinedStandardUncertainty).not.toBe(
+      manualResult?.CombinedStandardUncertainty,
+    )
+  })
+
   test("uses a coarser thermometer above 260 °C", () => {
     const belowOrEqualResult = calculateGost4333Uncertainty({
       correctedFlashPoint: "260",
+      device: "manual",
     })
     const aboveResult = calculateGost4333Uncertainty({
       correctedFlashPoint: "261",
+      device: "manual",
     })
 
     expect(belowOrEqualResult).not.toBeNull()
@@ -54,7 +73,11 @@ describe("calculateGost4333Uncertainty", () => {
   })
 
   test("returns null for an invalid corrected flash point", () => {
-    expect(calculateGost4333Uncertainty({ correctedFlashPoint: "" })).toBeNull()
-    expect(calculateGost4333Uncertainty({ correctedFlashPoint: "abc" })).toBeNull()
+    expect(
+      calculateGost4333Uncertainty({ correctedFlashPoint: "", device: "manual" }),
+    ).toBeNull()
+    expect(
+      calculateGost4333Uncertainty({ correctedFlashPoint: "abc", device: "manual" }),
+    ).toBeNull()
   })
 })

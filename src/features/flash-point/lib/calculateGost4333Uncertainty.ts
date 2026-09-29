@@ -7,6 +7,7 @@
  *     H6 — Цена деления барометра, кПа
  *     H7 — Погрешность термометра, °C
  *     H8 — Цена деления термометра, °C
+ *     H35 — Погрешность автоматического прибора, °C
  *
  *   Таблица 2 — Результаты измерений:
  *     D12 — Предел повторяемости, °C
@@ -21,6 +22,7 @@
  *     E17 — стандартная неопределённость барометрического давления, кПа
  *     E18 — стандартная неопределённость повторяемости метода, °C
  *     E19 — стандартная неопределённость отбора проб, °C
+ *     E43 — стандартная неопределённость температуры вспышки (автоматический прибор), °C
  *     G16 — суммарная стандартная неопределённость, °C
  *
  *     F16 — процентный вклад температуры вспышки
@@ -32,12 +34,17 @@
  *     G18 — расширенная неопределённость (k = 2), °C
  */
 
+/** Тип прибора для выбора формулы varianceSum. */
+export type Gost4333DeviceType = "manual" | "automatic"
+
 /**
  * Входные данные для расчёта неопределённости по ГОСТ 4333.
  * @property correctedFlashPoint E12 — среднее значение tср, °C.
+ * @property device Тип прибора: manual или automatic.
  */
 export type Gost4333UncertaintyInput = {
   correctedFlashPoint: string | number
+  device: Gost4333DeviceType
 }
 
 /**
@@ -82,6 +89,9 @@ const THERMOMETER_ACCURACY_THRESHOLD = 260
 /** H8 — Цена деления термометра, °C. */
 const H8ThermometerDivision = 2
 
+/** H35 — Погрешность автоматического прибора, °C. */
+const H35AutomaticDevice = 2
+
 /** D12 — Предел повторяемости, °C. */
 const D12RepeatabilityLimit = 8
 
@@ -90,14 +100,6 @@ const G12FlashPointSensitivity = 1
 
 /** H12 — коэффициент чувствительности по барометрическому давлению, °C/кПа. */
 const H12PressureSensitivity = -0.25
-
-/**
- * E19 — стандартная неопределённость отбора проб, °C.
- *
- * Формула:
- *   E19 = 0.306186217847897
- */
-const E19SamplingStandardUncertainty = 0.306186217847897
 
 /** Коэффициент охвата k для доверительной вероятности P = 95 %. */
 const COVERAGE_FACTOR = 2
@@ -121,6 +123,7 @@ const parseNumericValue = (value: string | number): number | null => {
  */
 export const calculateGost4333Uncertainty = ({
   correctedFlashPoint,
+  device,
 }: Gost4333UncertaintyInput): Gost4333UncertaintyResult | null => {
   /**
    * E12 — Температура вспышки, скорректированная на стандартное
@@ -157,6 +160,15 @@ export const calculateGost4333Uncertainty = ({
   )
 
   /**
+   * E43 — стандартная неопределённость температуры вспышки,
+   * измеренной автоматическим прибором, °C.
+   *
+   * Формула:
+   *   E43 = H35 / √3
+   */
+  const E43FlashPointAutomaticStandardUncertainty = H35AutomaticDevice / Math.sqrt(3)
+
+  /**
    * E17 — стандартная неопределённость барометрического давления, кПа.
    *
    * Математическая формула:
@@ -176,22 +188,37 @@ export const calculateGost4333Uncertainty = ({
   const E18RepeatabilityStandardUncertainty = D12RepeatabilityLimit / 2.8
 
   /**
-   * Знаменатель для суммарной неопределённости и вкладов.
+   * E19 — стандартная неопределённость отбора проб, °C.
    *
    * Формула:
+   *   E19 = 0.306186217847897
+   */
+  const E19SamplingStandardUncertainty = 0.306186217847897
+
+  /**
+   * Знаменатель для суммарной неопределённости и вкладов.
+   *
+   * Ручной метод (manual):
    *   varianceSum = E16²·G12² + E17²·H12² + E18² + E19²
+   *
+   * Автоматический прибор (automatic):
+   *   varianceSum = E43² + E18² + E19²
    */
   const varianceSum =
-    E16FlashPointStandardUncertainty ** 2 * G12FlashPointSensitivity ** 2 +
-    E17PressureStandardUncertainty ** 2 * H12PressureSensitivity ** 2 +
-    E18RepeatabilityStandardUncertainty ** 2 +
-    E19SamplingStandardUncertainty ** 2
+    device === "automatic"
+      ? E43FlashPointAutomaticStandardUncertainty ** 2 +
+        E18RepeatabilityStandardUncertainty ** 2 +
+        E19SamplingStandardUncertainty ** 2
+      : E16FlashPointStandardUncertainty ** 2 * G12FlashPointSensitivity ** 2 +
+        E17PressureStandardUncertainty ** 2 * H12PressureSensitivity ** 2 +
+        E18RepeatabilityStandardUncertainty ** 2 +
+        E19SamplingStandardUncertainty ** 2
 
   /**
    * G16 — суммарная стандартная неопределённость, °C.
    *
    * Формула:
-   *   G16 = √( E16²·G12² + E17²·H12² + E18² + E19² )
+   *   G16 = √varianceSum
    */
   const G16CombinedStandardUncertainty = Math.sqrt(varianceSum)
 
@@ -205,6 +232,16 @@ export const calculateGost4333Uncertainty = ({
     ((E16FlashPointStandardUncertainty ** 2 * G12FlashPointSensitivity ** 2) / varianceSum) *
     100
 
+  /**
+   * F43 — процентный вклад температуры вспышки для автоматичесуого прибора.
+   *
+   * Формула:
+   *   F43 = ( E43² / varianceSum ) · 100
+   */
+  const F43FlashPointaAuthomaticContribution =
+    (E43FlashPointAutomaticStandardUncertainty / varianceSum) *
+    100
+    
   /**
    * F17 — процентный вклад барометрического давления.
    *
@@ -237,12 +274,20 @@ export const calculateGost4333Uncertainty = ({
    *
    * Формула:
    *   F20 = F16 + F17 + F18 + F19
+   * 
+   * Формула для автоматического прибора:
+   *   F20 = F43 + F18 + F19
    */
-  const F20TotalContribution =
-    F16FlashPointContribution +
-    F17PressureContribution +
-    F18RepeatabilityContribution +
-    F19SamplingContribution
+
+  const  F20TotalContribution =
+  device === "automatic"
+    ? F43FlashPointaAuthomaticContribution +
+      F18RepeatabilityContribution +
+      F19SamplingContribution
+    : F16FlashPointContribution +
+      F17PressureContribution +
+      F18RepeatabilityContribution +
+      F19SamplingContribution
 
   /**
    * G18 — расширенная неопределённость при k = 2, °C.
