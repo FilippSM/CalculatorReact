@@ -1,4 +1,4 @@
-import { useFlashPointCalculations } from "@/features/flash-point"
+import { useFlashPointCalculations, useFlashPointStore } from "@/features/flash-point"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
@@ -29,6 +29,7 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
     firstMeasurementTemperature: formData.firstMeasurementTemperature,
     secondMeasurementTemperature: formData.secondMeasurementTemperature,
   })
+  const average = useFlashPointStore((state) => state.averageCorrectedTemperature)
 
   return (
     <div className={styles.testItem}>
@@ -128,8 +129,7 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
                 <td>
                   <Input
                     className={styles.tableInput}
-                    value={formData.averageCorrectedTemperature}
-                    onValueChange={(value) => updateTestData("averageCorrectedTemperature", value)}
+                    value={average}
                     readOnly
                   />
                 </td>

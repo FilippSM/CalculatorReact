@@ -1,3 +1,4 @@
+import { useFlashPointStore } from "@/features/flash-point"
 import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
 import { resolvePhFieldValue } from "@/features/ph"
@@ -158,7 +159,9 @@ export const buildProtocolDocument = (
         name,
         method,
         result:
-          test.id === "mechanicalImpurities"
+          test.id === "flashPoint"
+            ? useFlashPointStore.getState().averageCorrectedTemperature
+            : test.id === "mechanicalImpurities"
             ? resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage")
             : test.id === "mechanicalImpuritiesGost6479"
               ? resolveMechanicalImpuritiesGost6479FieldValue(

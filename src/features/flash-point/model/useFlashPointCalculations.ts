@@ -1,8 +1,10 @@
 import {
+  calculateFlashPointAverage,
   calculateFlashPointCorrectedTemperature,
   calculateFlashPointCorrection,
   calculateFlashPointRepeatability,
 } from "../lib"
+import { useFlashPointStore } from "./flashPointStore"
 
 type FlashPointCalculationInput = {
   pressure: string
@@ -28,6 +30,14 @@ export const useFlashPointCalculations = ({
     firstCorrectedTemperature,
     secondCorrectedTemperature,
   )
+  const average = calculateFlashPointAverage(
+    firstCorrectedTemperature,
+    secondCorrectedTemperature,
+  )
+
+  if (useFlashPointStore.getState().averageCorrectedTemperature !== average) {
+    useFlashPointStore.getState().setAverageCorrectedTemperature(average)
+  }
 
   return {
     correction,

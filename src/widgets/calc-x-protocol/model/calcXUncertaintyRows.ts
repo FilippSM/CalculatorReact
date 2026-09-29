@@ -10,6 +10,10 @@ import {
   resolveDensityAt20Gost18995FieldValue,
 } from "@/features/density-at-20-gost-18995"
 import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
+import {
+  calculateGost4333Uncertainty,
+  useFlashPointStore,
+} from "@/features/flash-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { calculateViscosityIndexForStrings } from "@/features/index-viscosity/lib/viscositycalculateIV"
 import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
@@ -81,10 +85,17 @@ const resolveDensityAt20Gost18995Uncertainty = (formData: InitialTestData): stri
   return result === null ? "" : result.ExpandedUncertainty.toFixed(3).replace(".", ",")
 }
 
+const resolveFlashPointUncertainty = (): string => {
+  const correctedFlashPoint = useFlashPointStore.getState().averageCorrectedTemperature
+  const result = calculateGost4333Uncertainty({ correctedFlashPoint })
+
+  return result === null ? "" : String(result.ExpandedUncertainty)
+}
+
 const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): string => {
   switch (id) {
     case "flashPoint":
-      return formData.averageCorrectedTemperature
+      return useFlashPointStore.getState().averageCorrectedTemperature
     case "mechanicalImpurities":
       return resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage")
     case "mechanicalImpuritiesGost6479":
@@ -129,6 +140,10 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
 }
 
 const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData): string => {
+  if (id === "flashPoint") {
+    return resolveFlashPointUncertainty()
+  }
+
   if (id === "densityAt20") {
     return resolveDensityAt20Uncertainty(formData)
   }

@@ -1,3 +1,4 @@
+import { useFlashPointStore } from "../model/flashPointStore"
 import { calculateFlashPointCorrectedTemperature } from "./calculateFlashPointCorrectedTemperature"
 import { calculateFlashPointCorrection } from "./calculateFlashPointCorrection"
 import { calculateFlashPointRepeatability } from "./calculateFlashPointRepeatability"
@@ -54,6 +55,10 @@ export const resolveFlashPointFieldValue = <T extends FlashPointFormSlice>(
       firstCorrectedTemperature,
       secondCorrectedTemperature,
     ).value
+  }
+
+  if (field === "averageCorrectedTemperature") {
+    return useFlashPointStore.getState().averageCorrectedTemperature
   }
 
   return formData[field]
