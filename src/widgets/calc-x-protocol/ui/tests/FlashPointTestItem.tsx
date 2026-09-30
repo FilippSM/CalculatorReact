@@ -31,6 +31,10 @@ const deviceOptions = [
 ] as const
 
 export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) => {
+  const selectedDevice =
+    deviceOptions.find((option) => option.label === formData.flashPointEquipmentDevice)?.value ??
+    deviceOptions[0].value
+
   const {
     correction,
     firstCorrectedTemperature,
@@ -40,12 +44,9 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
     pressure: formData.pressure,
     firstMeasurementTemperature: formData.firstMeasurementTemperature,
     secondMeasurementTemperature: formData.secondMeasurementTemperature,
+    device: selectedDevice,
   })
   const average = useFlashPointStore((state) => state.averageCorrectedTemperature)
-
-  const selectedDevice =
-    deviceOptions.find((option) => option.label === formData.flashPointEquipmentDevice)?.value ??
-    deviceOptions[0].value
 
   return (
     <div className={styles.testItem}>
