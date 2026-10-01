@@ -5,7 +5,7 @@ import { resolvePhFieldValue } from "@/features/ph"
 import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
 import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
-import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
+import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
@@ -162,7 +162,7 @@ export const buildProtocolDocument = (
           test.id === "flashPoint"
             ? useFlashPointStore.getState().averageCorrectedTemperature
             : test.id === "mechanicalImpurities"
-            ? resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage")
+            ? useMechanicalImpuritiesStore.getState().average
             : test.id === "mechanicalImpuritiesGost6479"
               ? resolveMechanicalImpuritiesGost6479FieldValue(
                   formData,

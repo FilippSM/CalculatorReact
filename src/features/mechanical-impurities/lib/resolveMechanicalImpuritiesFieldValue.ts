@@ -1,4 +1,4 @@
-import { calculateMechanicalImpuritiesAverage } from "./calculateMechanicalImpuritiesAverage"
+import { useMechanicalImpuritiesStore } from "../model/mechanicalImpuritiesStore"
 import { calculateMechanicalImpuritiesContent } from "./calculateMechanicalImpuritiesContent"
 import { calculateMechanicalImpuritiesRepeatability } from "./calculateMechanicalImpuritiesRepeatability"
 
@@ -26,7 +26,6 @@ export const resolveMechanicalImpuritiesFieldValue = <T extends MechanicalImpuri
     formData.mechanicalImpuritiesSecondM2,
     formData.mechanicalImpuritiesSecondM3,
   )
-  const average = calculateMechanicalImpuritiesAverage(firstX1, secondX2)
 
   if (field === "mechanicalImpuritiesFirstX1") {
     return firstX1
@@ -37,10 +36,11 @@ export const resolveMechanicalImpuritiesFieldValue = <T extends MechanicalImpuri
   }
 
   if (field === "mechanicalImpuritiesAverage") {
-    return average
+    return useMechanicalImpuritiesStore.getState().average
   }
 
   if (field === "mechanicalImpuritiesRepeatability") {
+    const average = useMechanicalImpuritiesStore.getState().average
     return calculateMechanicalImpuritiesRepeatability(firstX1, secondX2, average).value
   }
 
