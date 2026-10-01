@@ -9,5 +9,5 @@ export {
   calculateMechanicalImpuritiesRepeatability,
   getMechanicalImpuritiesRepeatabilityLimit,
 } from "./calculateMechanicalImpuritiesRepeatability"
-export { formatToSignificantDigits, parseNumber } from "./formatSignificantDigits"
+export { formatToSignificantDigits, parseNumber, roundToSignificantDigits } from "./formatSignificantDigits"
 export { resolveMechanicalImpuritiesFieldValue } from "./resolveMechanicalImpuritiesFieldValue"

@@ -1,3 +1,5 @@
+import { roundToSignificantDigits } from "./formatSignificantDigits"
+
 /**
  * Оценивание неопределённости определения массовой доли механических примесей (X)
  * по ГОСТ 6370.
@@ -115,14 +117,6 @@ const parseNumericValue = (value: string | number): number | null => {
 
   const parsedValue = Number(normalizedValue)
   return Number.isFinite(parsedValue) ? parsedValue : null
-}
-
-/** Округление до `digits` значащих цифр. */
-const roundToSignificantDigits = (value: number, digits: number): number => {
-  if (value === 0) return 0
-
-  const multiplier = 10 ** (digits - 1 - Math.floor(Math.log10(Math.abs(value))))
-  return Math.round(value * multiplier) / multiplier
 }
 
 /**
