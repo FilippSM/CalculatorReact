@@ -4,7 +4,21 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  justify-content: flex-end;
+}
+
+.deleteButton {
+  color: color(danger, 500);
+  border-color: color(danger, 500);
+
+  &:hover {
+    color: color(danger, 100);
+    border-color: color(danger, 100);
+  }
+
+  &:active {
+    color: color(danger, 700);
+    border-color: color(danger, 700);
+  }
 }
 
 .exportButton {

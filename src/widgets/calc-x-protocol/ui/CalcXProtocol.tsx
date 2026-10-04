@@ -52,39 +52,55 @@ export const CalcXProtocol = () => {
 
   return (
     <>
-      <div className={styles.toolbar}>
-        <Button variant="outlined" themeMode={theme} type="button" onClick={() => window.print()}>
-          Печать
-        </Button>
-        <Button
-          className={styles.exportButton}
-          variant="outlined"
-          themeMode={theme}
-          type="button"
-          disabled={exporting !== null}
-          aria-busy={exporting === "pdf"}
-          aria-label="Скачать PDF"
-          onClick={exportPdf}
-        >
-          <span className={clsx(exporting === "pdf" && styles.hiddenButtonLabel)}>Скачать PDF</span>
-          {exporting === "pdf" && <span className={styles.buttonSpinner} aria-hidden="true" />}
-        </Button>
-        <Button
-          className={styles.exportButton}
-          variant="outlined"
-          themeMode={theme}
-          type="button"
-          disabled={exporting !== null}
-          aria-busy={exporting === "docx"}
-          aria-label="Скачать Word"
-          onClick={exportDocx}
-        >
-          <span className={clsx(exporting === "docx" && styles.hiddenButtonLabel)}>Скачать Word</span>
-          {exporting === "docx" && <span className={styles.buttonSpinner} aria-hidden="true" />}
-        </Button>
-      </div>
-
       <div className={styles.screenOnly}>
+        <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
+          <div className={styles.section}>
+            <h2>Панель действий</h2>
+            <div className={styles.toolbar}>
+              <Button variant="add" themeMode={theme} type="button">
+                Сохранить
+              </Button>
+              <Button variant="outlined" className={styles.deleteButton} themeMode={theme} type="button">
+                Удалить
+              </Button>
+              <Button variant="outlined" themeMode={theme} type="button">
+                Изменить
+              </Button>
+            </div>
+            <div className={styles.toolbar}>
+              <Button variant="outlined" themeMode={theme} type="button" onClick={() => window.print()}>
+                Печать
+              </Button>
+              <Button
+                className={styles.exportButton}
+                variant="outlined"
+                themeMode={theme}
+                type="button"
+                disabled={exporting !== null}
+                aria-busy={exporting === "pdf"}
+                aria-label="Скачать PDF"
+                onClick={exportPdf}
+              >
+                <span className={clsx(exporting === "pdf" && styles.hiddenButtonLabel)}>Скачать PDF</span>
+                {exporting === "pdf" && <span className={styles.buttonSpinner} aria-hidden="true" />}
+              </Button>
+              <Button
+                className={styles.exportButton}
+                variant="outlined"
+                themeMode={theme}
+                type="button"
+                disabled={exporting !== null}
+                aria-busy={exporting === "docx"}
+                aria-label="Скачать Word"
+                onClick={exportDocx}
+              >
+                <span className={clsx(exporting === "docx" && styles.hiddenButtonLabel)}>Скачать Word</span>
+                {exporting === "docx" && <span className={styles.buttonSpinner} aria-hidden="true" />}
+              </Button>
+            </div>
+          </div>
+        </section>
+
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
           <CalcXTestVisibilitySelector
             visibleTests={visibleTests}
