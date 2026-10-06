@@ -1,10 +1,11 @@
+import { useFlashPointStore } from "@/features/flash-point"
 import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
 import { resolvePhFieldValue } from "@/features/ph"
 import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
 import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
-import { resolveMechanicalImpuritiesFieldValue } from "@/features/mechanical-impurities"
+import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
@@ -14,6 +15,7 @@ import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
 import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
 import { resolveKinematicViscosityFieldValue } from "@/features/viscosity"
+import { buildCalcXUncertaintyRows } from "./calcXUncertaintyRows"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -119,6 +121,9 @@ export const buildProtocolDocument = (
   visibleTests: Record<TestVisibilityKey, boolean>,
 ): ProtocolDocument => {
   const tests = getVisibleProtocolTests(visibleTests)
+  const uncertaintyByTestId = new Map(
+    buildCalcXUncertaintyRows(formData, visibleTests).map((row) => [row.id, row.uncertainty]),
+  )
   const equipmentNames = [
     formData.equipment,
     ...tests.flatMap((test) => test.equipmentFields.map((field) => formData[field])),
@@ -154,8 +159,10 @@ export const buildProtocolDocument = (
         name,
         method,
         result:
-          test.id === "mechanicalImpurities"
-            ? resolveMechanicalImpuritiesFieldValue(formData, "mechanicalImpuritiesAverage")
+          test.id === "flashPoint"
+            ? useFlashPointStore.getState().averageCorrectedTemperature
+            : test.id === "mechanicalImpurities"
+            ? useMechanicalImpuritiesStore.getState().average
             : test.id === "mechanicalImpuritiesGost6479"
               ? resolveMechanicalImpuritiesGost6479FieldValue(
                   formData,
@@ -194,7 +201,7 @@ export const buildProtocolDocument = (
                               : test.id === "autoIgnition"
                                 ? resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
                                 : formData[resultFields[test.id]],
-        uncertainty: "—",
+        uncertainty: uncertaintyByTestId.get(test.id) || "—",
       }
     }),
   }

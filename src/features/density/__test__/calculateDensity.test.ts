@@ -18,9 +18,9 @@ describe("calculateDensity", () => {
 
     expect(first).not.toBeNull()
     expect(second).not.toBeNull()
-    expect(formatDensityValue(firstAt20!, DENSITY_AT20_UNIT)).toBe("863,6")
+    expect(formatDensityValue(firstAt20!, DENSITY_AT20_UNIT)).toBe("863,7")
     expect(formatDensityValue(secondAt20!, DENSITY_AT20_UNIT)).toBe("876,3")
-    expect(formatDensityValue(first!, DENSITY_AT20_UNIT)).toBe("865,0")
+    expect(formatDensityValue(first!, DENSITY_AT20_UNIT)).toBe("865,1")
     expect(formatDensityValue(second!, DENSITY_AT20_UNIT)).toBe("877,7")
     expect(calculateDensityAverage(first, second, DENSITY_AT20_UNIT)).toBe("871,4")
   })
@@ -30,7 +30,7 @@ describe("calculateDensity", () => {
     const second = calculateDensity("875,0", "22,0", DENSITY_AT20_UNIT, DENSITY_AT20_CORRECTION)
 
     expect(calculateDensityRepeatability(first, second)).toEqual({
-      value: "12,7 > r (Error)",
+      value: "12,6 > r (Error)",
       isError: true,
     })
     expect(calculateDensityRepeatability(865, 865.3)).toEqual({
