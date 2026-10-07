@@ -1,7 +1,6 @@
 {
   "name": "my-app",
   "private": true,
-  "homepage": "http://FilippSM.github.io/CalculatorReact",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -10,8 +9,6 @@
     "lint:scss": "stylelint \"**/*.scss\"",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "pnpm run build",
-    "deploy": "gh-pages -d dist --dotfiles",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest run",
@@ -37,7 +34,6 @@
     "@tsparticles/slim": "^4.4.0",
     "clsx": "^2.1.1",
     "docxtemplater": "^3.69.3",
-    "gh-pages": "^6.3.0",
     "immer": "^11.1.4",
     "pdfmake": "^0.3.11",
     "pizzip": "^3.2.0",
