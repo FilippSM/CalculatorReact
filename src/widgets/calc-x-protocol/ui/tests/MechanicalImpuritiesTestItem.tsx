@@ -1,4 +1,7 @@
-import { useMechanicalImpuritiesCalculations } from "@/features/mechanical-impurities"
+import {
+  useMechanicalImpuritiesCalculations,
+  useMechanicalImpuritiesStore,
+} from "@/features/mechanical-impurities"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
@@ -19,7 +22,7 @@ if (!testConfig) {
 }
 
 export const MechanicalImpuritiesTestItem = ({ number, formData, updateTestData }: Props) => {
-  const { firstX1, secondX2, average, repeatability } = useMechanicalImpuritiesCalculations({
+  const { firstX1, secondX2, repeatability } = useMechanicalImpuritiesCalculations({
     firstM1: formData.mechanicalImpuritiesFirstM1,
     firstM2: formData.mechanicalImpuritiesFirstM2,
     firstM3: formData.mechanicalImpuritiesFirstM3,
@@ -27,6 +30,7 @@ export const MechanicalImpuritiesTestItem = ({ number, formData, updateTestData 
     secondM2: formData.mechanicalImpuritiesSecondM2,
     secondM3: formData.mechanicalImpuritiesSecondM3,
   })
+  const average = useMechanicalImpuritiesStore((state) => state.average)
 
   return (
     <div className={styles.testItem}>

@@ -1,9 +1,10 @@
-import { useFlashPointCalculations } from "@/features/flash-point"
+import { useFlashPointCalculations, useFlashPointStore } from "@/features/flash-point"
 import { Input } from "@/shared/components/Input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
 import { calcXTestConfig } from "../../model/calcXTestConfig"
-import type { InitialTestData } from "../../model/initialTestData"
+import { initialTestData, type InitialTestData } from "../../model/initialTestData"
 
 type Props = {
   number: number
@@ -18,7 +19,22 @@ if (!testConfig) {
   throw new Error(`Test config not found for id: ${TEST_ID}`)
 }
 
+const deviceOptions = [
+  {
+    value: "manual",
+    label: "Аппарат для определения температуры вспышки в открытом тигле ТВО-ПХП № 1052",
+  },
+  {
+    value: "automatic",
+    label: "Автоматический прибор",
+  },
+] as const
+
 export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) => {
+  const selectedDevice =
+    deviceOptions.find((option) => option.label === formData.flashPointEquipmentDevice)?.value ??
+    deviceOptions[0].value
+
   const {
     correction,
     firstCorrectedTemperature,
@@ -28,7 +44,9 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
     pressure: formData.pressure,
     firstMeasurementTemperature: formData.firstMeasurementTemperature,
     secondMeasurementTemperature: formData.secondMeasurementTemperature,
+    device: selectedDevice,
   })
+  const average = useFlashPointStore((state) => state.averageCorrectedTemperature)
 
   return (
     <div className={styles.testItem}>
@@ -44,11 +62,26 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
 
       <div className={styles.equipmentBlock}>
         <h3>Оборудование:</h3>
-        <Input
-          className={styles.fullWidthInput}
-          value={formData.flashPointEquipmentDevice}
-          onValueChange={(value) => updateTestData("flashPointEquipmentDevice", value)}
-        />
+        <Select
+          value={selectedDevice}
+          onValueChange={(value) => {
+            const option = deviceOptions.find((item) => item.value === value)
+            if (option) {
+              updateTestData("flashPointEquipmentDevice", option.label)
+            }
+          }}
+        >
+          <SelectTrigger className={styles.fullWidthSelect}>
+            <SelectValue placeholder={initialTestData.flashPointEquipmentDevice} />
+          </SelectTrigger>
+          <SelectContent>
+            {deviceOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Input
           className={styles.wideInput}
           value={formData.flashPointEquipmentThermometer}
@@ -128,8 +161,7 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
                 <td>
                   <Input
                     className={styles.tableInput}
-                    value={formData.averageCorrectedTemperature}
-                    onValueChange={(value) => updateTestData("averageCorrectedTemperature", value)}
+                    value={average}
                     readOnly
                   />
                 </td>

@@ -22,7 +22,7 @@ export const calculateDensity = (
     }
 
     const numTemp = temperature.replace(",", ".")
-    const aroundNumDens = (Math.ceil(numDens * 100) / 100).toFixed(3)
+    const aroundNumDens = (Math.floor(numDens * 100) / 100).toFixed(3)
     const densForTable = String(aroundNumDens).padEnd(6, "0")
     let tempForTable = numTemp
 

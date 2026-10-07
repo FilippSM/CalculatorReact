@@ -3,6 +3,7 @@ import {
   calculateMechanicalImpuritiesContent,
   calculateMechanicalImpuritiesRepeatability,
 } from "../lib"
+import { useMechanicalImpuritiesStore } from "./mechanicalImpuritiesStore"
 
 type MechanicalImpuritiesCalculationInput = {
   firstM1: string
@@ -26,5 +27,9 @@ export const useMechanicalImpuritiesCalculations = ({
   const average = calculateMechanicalImpuritiesAverage(firstX1, secondX2)
   const repeatability = calculateMechanicalImpuritiesRepeatability(firstX1, secondX2, average)
 
-  return { firstX1, secondX2, average, repeatability }
+  if (useMechanicalImpuritiesStore.getState().average !== average) {
+    useMechanicalImpuritiesStore.getState().setAverage(average)
+  }
+
+  return { firstX1, secondX2, repeatability }
 }

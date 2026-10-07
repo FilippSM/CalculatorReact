@@ -9,12 +9,14 @@ import { CalcXProtocolMetaSection } from "./CalcXProtocolMetaSection"
 import { CalcXProtocolPrintView } from "./CalcXProtocolPrintView"
 import { CalcXTestVisibilitySelector } from "./CalcXTestVisibilitySelector"
 import { CalcXTestsSection } from "./CalcXTestsSection"
+import { CalcXUncertaintySection } from "./CalcXUncertaintySection"
 import styles from "./CalcXProtocol.module.scss"
 
 export const CalcXProtocol = () => {
   const theme = useThemeStore((state) => state.theme)
   const [testData, setTestData] = useState(initialTestData)
   const [visibleTests, setVisibleTests] = useState(initialVisibleTests)
+  const [showUncertainty, setShowUncertainty] = useState(false)
   const [exporting, setExporting] = useState<"pdf" | "docx" | null>(null)
   const formData = { ...initialTestData, ...testData }
 
@@ -50,41 +52,62 @@ export const CalcXProtocol = () => {
 
   return (
     <>
-      <div className={styles.toolbar}>
-        <Button variant="outlined" themeMode={theme} type="button" onClick={() => window.print()}>
-          Печать
-        </Button>
-        <Button
-          className={styles.exportButton}
-          variant="outlined"
-          themeMode={theme}
-          type="button"
-          disabled={exporting !== null}
-          aria-busy={exporting === "pdf"}
-          aria-label="Скачать PDF"
-          onClick={exportPdf}
-        >
-          <span className={clsx(exporting === "pdf" && styles.hiddenButtonLabel)}>Скачать PDF</span>
-          {exporting === "pdf" && <span className={styles.buttonSpinner} aria-hidden="true" />}
-        </Button>
-        <Button
-          className={styles.exportButton}
-          variant="outlined"
-          themeMode={theme}
-          type="button"
-          disabled={exporting !== null}
-          aria-busy={exporting === "docx"}
-          aria-label="Скачать Word"
-          onClick={exportDocx}
-        >
-          <span className={clsx(exporting === "docx" && styles.hiddenButtonLabel)}>Скачать Word</span>
-          {exporting === "docx" && <span className={styles.buttonSpinner} aria-hidden="true" />}
-        </Button>
-      </div>
-
       <div className={styles.screenOnly}>
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
-          <CalcXTestVisibilitySelector visibleTests={visibleTests} setVisibleTests={setVisibleTests} />
+          <div className={styles.section}>
+            <h2>Панель действий</h2>
+            <div className={styles.toolbar}>
+              <Button variant="add" themeMode={theme} type="button">
+                Сохранить
+              </Button>
+              <Button variant="outlined" className={styles.deleteButton} themeMode={theme} type="button">
+                Удалить
+              </Button>
+              <Button variant="outlined" themeMode={theme} type="button">
+                Изменить
+              </Button>
+            </div>
+            <div className={styles.toolbar}>
+              <Button variant="outlined" themeMode={theme} type="button" onClick={() => window.print()}>
+                Печать
+              </Button>
+              <Button
+                className={styles.exportButton}
+                variant="outlined"
+                themeMode={theme}
+                type="button"
+                disabled={exporting !== null}
+                aria-busy={exporting === "pdf"}
+                aria-label="Скачать PDF"
+                onClick={exportPdf}
+              >
+                <span className={clsx(exporting === "pdf" && styles.hiddenButtonLabel)}>Скачать PDF</span>
+                {exporting === "pdf" && <span className={styles.buttonSpinner} aria-hidden="true" />}
+              </Button>
+              <Button
+                className={styles.exportButton}
+                variant="outlined"
+                themeMode={theme}
+                type="button"
+                disabled={exporting !== null}
+                aria-busy={exporting === "docx"}
+                aria-label="Скачать Word"
+                onClick={exportDocx}
+              >
+                <span className={clsx(exporting === "docx" && styles.hiddenButtonLabel)}>Скачать Word</span>
+                {exporting === "docx" && <span className={styles.buttonSpinner} aria-hidden="true" />}
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
+          <CalcXTestVisibilitySelector
+            visibleTests={visibleTests}
+            setVisibleTests={setVisibleTests}
+            showUncertainty={showUncertainty}
+            setShowUncertainty={setShowUncertainty}
+          />
         </section>
 
         <CalcXProtocolMetaSection formData={formData} updateTestData={updateTestData} theme={theme} />
@@ -92,6 +115,12 @@ export const CalcXProtocol = () => {
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
           <CalcXTestsSection formData={formData} visibleTests={visibleTests} updateTestData={updateTestData} />
         </section>
+
+        {showUncertainty && (
+          <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
+            <CalcXUncertaintySection formData={formData} visibleTests={visibleTests} />
+          </section>
+        )}
       </div>
 
       <CalcXProtocolPrintView formData={formData} visibleTests={visibleTests} />
