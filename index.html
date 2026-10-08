@@ -8,14 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculate</title>
     <style>
-      html.dark,
-      html.dark body {
+      /* Early paint only — React later moves the theme class to body (particles use z-index: -1). */
+      html.dark {
         color: #fff;
         background-color: #4c4c4c;
       }
 
-      html.light,
-      html.light body {
+      html.light {
         color: #4c4c4c;
         background-color: #fff;
       }

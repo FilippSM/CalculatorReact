@@ -14,20 +14,16 @@ body {
   font-family: Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-html.light,
-html.light body,
-body.light {
-  color: color(dark, 100);
-  background-color: color(light, 100);
-}
+  &.light {
+    color: color(dark, 100);
+    background-color: color(light, 100);
+  }
 
-html.dark,
-html.dark body,
-body.dark {
-  color: color(light, 100);
-  background-color: color(dark, 100);
+  &.dark {
+    color: color(light, 100);
+    background-color: color(dark, 100);
+  }
 }
 
 button,
