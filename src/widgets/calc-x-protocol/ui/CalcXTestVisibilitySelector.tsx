@@ -41,11 +41,11 @@ const GROUPS = {
   },
   trtsWithoutAdd: {
     label: "Испытания по ТР ТС 030/2012 для масел без присадок",
-    members: ["flashPoint", "mechanicalImpurities", "autoIgnition"],
+    members: ["flashPoint", "mechanicalImpurities", "waterContent", "autoIgnition"],
   },
   trtsWithAdd: {
     label: "Испытания по ТР ТС 030/2012 для масел с присадками",
-    members: ["flashPoint", "mechanicalImpurities", "waterContent", "autoIgnition"],
+    members: ["flashPoint", "mechanicalImpurities", "autoIgnition"],
   },
   trtsAntifreeze: {
     label: "Испытания по ТР ТС 030/2012 для антифризов",
