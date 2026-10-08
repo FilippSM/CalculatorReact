@@ -1,4 +1,5 @@
 import { useThemeStore } from "@/app/store"
+import palette from "@/shared/styles/colors.module.scss"
 import {
   MoveDirection,
   OutMode,
@@ -11,8 +12,8 @@ import { useMemo } from "react"
 import styles from "./ParticlesBackground.module.scss"
 
 const PARTICLE_COLORS = {
-  light: "#4c4c4c", // color(dark, 100)
-  dark: "#ffffff", // color(light, 100)
+  light: palette.dark100, // color(dark, 100)
+  dark: palette.light100, // color(light, 100)
 } as const
 
 const initParticles = async (engine: Engine) => {
