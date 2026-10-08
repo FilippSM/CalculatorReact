@@ -50,16 +50,19 @@ import {
 } from "../model/calcXProtocolConfig"
 import { getPrintTableSections, getVisibleProtocolTests } from "../model/calcXTestConfig"
 import type { TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
+import { buildCalcXUncertaintyRows } from "../model/calcXUncertaintyRows"
 import type { InitialTestData } from "../model/initialTestData"
 import styles from "./CalcXProtocolPrintView.module.scss"
 
 type Props = {
   formData: InitialTestData
   visibleTests: Record<TestVisibilityKey, boolean>
+  showUncertainty: boolean
 }
 
-export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
+export const CalcXProtocolPrintView = ({ formData, visibleTests, showUncertainty }: Props) => {
   const visibleProtocolTests = getVisibleProtocolTests(visibleTests)
+  const uncertaintyRows = showUncertainty ? buildCalcXUncertaintyRows(formData, visibleTests) : []
 
   return (
     <div className={styles.printRoot}>
@@ -459,6 +462,33 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests }: Props) => {
           )
         })}
       </section>
+
+      {showUncertainty && (
+        <section className={styles.uncertaintySection}>
+          <h2 className={styles.sectionTitle}>Результаты испытаний</h2>
+          <p className={styles.uncertaintyObjectName}>{formData.objectName}:</p>
+          <table className={styles.uncertaintyTable}>
+            <thead>
+              <tr>
+                <th>№ п/п</th>
+                <th>Наименование показателя, единицы измерения, ТНПА на метод испытания</th>
+                <th>Значение показателя</th>
+                <th>Расширенная неопределённость</th>
+              </tr>
+            </thead>
+            <tbody>
+              {uncertaintyRows.map((row, index) => (
+                <tr key={row.id}>
+                  <td>{index + 1}.</td>
+                  <td>{row.name}</td>
+                  <td>{row.result}</td>
+                  <td>{row.uncertainty}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
     </div>
   )
 }

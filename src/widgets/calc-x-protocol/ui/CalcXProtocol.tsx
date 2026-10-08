@@ -123,7 +123,11 @@ export const CalcXProtocol = () => {
         )}
       </div>
 
-      <CalcXProtocolPrintView formData={formData} visibleTests={visibleTests} />
+      <CalcXProtocolPrintView
+        formData={formData}
+        visibleTests={visibleTests}
+        showUncertainty={showUncertainty}
+      />
     </>
   )
 }

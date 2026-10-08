@@ -22,7 +22,8 @@
   }
 
   .metaSection,
-  .testsSection {
+  .testsSection,
+  .uncertaintySection {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -114,5 +115,51 @@
   .errorValue {
     color: #cc1439;
     font-weight: 700;
+  }
+
+  .uncertaintySection {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #999;
+  }
+
+  .uncertaintyObjectName {
+    margin: 0;
+    font-size: 10pt;
+  }
+
+  .uncertaintyTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+  }
+
+  .uncertaintyTable th,
+  .uncertaintyTable td {
+    padding: 4px 6px;
+    vertical-align: middle;
+    border: 1px solid #000;
+  }
+
+  .uncertaintyTable th {
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .uncertaintyTable td:first-child,
+  .uncertaintyTable td:nth-child(3),
+  .uncertaintyTable td:nth-child(4) {
+    text-align: center;
+  }
+
+  .uncertaintyTable th:first-child {
+    width: 48px;
+  }
+
+  .uncertaintyTable th:nth-child(3),
+  .uncertaintyTable th:nth-child(4) {
+    width: 140px;
   }
 }
