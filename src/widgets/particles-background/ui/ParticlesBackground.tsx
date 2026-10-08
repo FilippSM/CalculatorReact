@@ -8,6 +8,7 @@ import {
 import Particles, { ParticlesProvider } from "@tsparticles/react"
 import { loadSlim } from "@tsparticles/slim"
 import { useMemo } from "react"
+import styles from "./ParticlesBackground.module.scss"
 
 const PARTICLE_COLORS = {
   light: "#4c4c4c", // color(dark, 100)
@@ -26,7 +27,7 @@ const ParticlesCanvas = () => {
     () => ({
       fullScreen: {
         enable: true,
-        zIndex: -1,
+        zIndex: 0,
       },
       background: {
         color: {
@@ -81,7 +82,7 @@ const ParticlesCanvas = () => {
     [color],
   )
 
-  return <Particles key={theme} id="tsparticles" options={options} />
+  return <Particles id="tsparticles" className={styles.particles} options={options} />
 }
 
 export const ParticlesBackground = () => (
