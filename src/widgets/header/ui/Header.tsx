@@ -10,6 +10,7 @@ export const Header = () => {
   const { theme, toggleTheme } = useThemeStore()
 
   useEffect(() => {
+    document.documentElement.classList.remove("light", "dark")
     document.body.classList.remove("light", "dark")
     document.body.classList.add(theme)
   }, [theme])

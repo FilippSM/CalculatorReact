@@ -1,0 +1,11 @@
+@use "./colors" as *;
+@use "sass:map";
+
+// Expose palette tokens to JS from the same `$colors` map.
+:export {
+  @each $name, $shades in $colors {
+    @each $shade, $value in $shades {
+      #{$name}#{$shade}: #{$value};
+    }
+  }
+}

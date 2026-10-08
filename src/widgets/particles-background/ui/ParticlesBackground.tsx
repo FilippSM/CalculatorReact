@@ -1,4 +1,5 @@
 import { useThemeStore } from "@/app/store"
+import palette from "@/shared/styles/colors.module.scss"
 import {
   MoveDirection,
   OutMode,
@@ -8,10 +9,11 @@ import {
 import Particles, { ParticlesProvider } from "@tsparticles/react"
 import { loadSlim } from "@tsparticles/slim"
 import { useMemo } from "react"
+import styles from "./ParticlesBackground.module.scss"
 
 const PARTICLE_COLORS = {
-  light: "#4c4c4c", // color(dark, 100)
-  dark: "#ffffff", // color(light, 100)
+  light: palette.dark100, // color(dark, 100)
+  dark: palette.light100, // color(light, 100)
 } as const
 
 const initParticles = async (engine: Engine) => {
@@ -26,7 +28,7 @@ const ParticlesCanvas = () => {
     () => ({
       fullScreen: {
         enable: true,
-        zIndex: -1,
+        zIndex: 0,
       },
       background: {
         color: {
@@ -81,7 +83,7 @@ const ParticlesCanvas = () => {
     [color],
   )
 
-  return <Particles key={theme} id="tsparticles" options={options} />
+  return <Particles id="tsparticles" className={styles.particles} options={options} />
 }
 
 export const ParticlesBackground = () => (

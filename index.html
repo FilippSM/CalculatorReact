@@ -7,6 +7,38 @@
     <link rel="icon" type="image/svg+xml" href="colba-white.svg" media="(prefers-color-scheme: dark)" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculate</title>
+    <style>
+      /* Early paint only — React later moves the theme class to body (particles use z-index: -1). */
+      html.dark {
+        color: #fff;
+        background-color: #4c4c4c;
+      }
+
+      html.light {
+        color: #4c4c4c;
+        background-color: #fff;
+      }
+    </style>
+    <script>
+      /**
+       * Applies the persisted zustand theme (`theme-storage`) to `<html>`
+       * before React boots, so cold loads (e.g. GH Pages deep links) keep
+       * the correct background instead of a white flash.
+       */
+      (() => {
+        let theme = "dark"
+        try {
+          const raw = localStorage.getItem("theme-storage")
+          if (raw) {
+            const parsed = JSON.parse(raw)
+            if (parsed.state?.theme === "light" || parsed.state?.theme === "dark") {
+              theme = parsed.state.theme
+            }
+          }
+        } catch {}
+        document.documentElement.classList.add(theme)
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
