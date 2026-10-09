@@ -55,7 +55,8 @@ export const CalcXProtocol = () => {
       <div className={styles.screenOnly}>
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
           <div className={styles.section}>
-            <h2>Панель действий</h2>
+            <h2 className={styles.sectionTitleWithLine}>Панель действий</h2>
+            <h2>Первичные записи</h2>
             <div className={styles.toolbar}>
               <Button variant="add" themeMode={theme} type="button">
                 Сохранить
@@ -66,11 +67,25 @@ export const CalcXProtocol = () => {
               <Button variant="outlined" themeMode={theme} type="button">
                 Изменить
               </Button>
-            </div>
-            <div className={styles.toolbar}>
               <Button variant="outlined" themeMode={theme} type="button" onClick={() => window.print()}>
                 Печать
               </Button>
+              <Button
+                className={styles.exportButton}
+                variant="outlined"
+                themeMode={theme}
+                type="button"
+                disabled={exporting !== null}
+                aria-busy={exporting === "pdf"}
+                aria-label="Скачать PDF"
+                onClick={exportPdf}
+              >
+                <span className={clsx(exporting === "pdf" && styles.hiddenButtonLabel)}>Скачать PDF</span>
+                {exporting === "pdf" && <span className={styles.buttonSpinner} aria-hidden="true" />}
+              </Button>
+            </div>
+            <h2>Протокол</h2>
+            <div className={styles.toolbar}>
               <Button
                 className={styles.exportButton}
                 variant="outlined"

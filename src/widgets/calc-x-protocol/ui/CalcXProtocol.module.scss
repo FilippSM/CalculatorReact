@@ -93,6 +93,12 @@
   }
 }
 
+.sectionTitleWithLine {
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid color(light, 100);
+}
+
 .wideInput {
   input {
     width: min(520px, 100%);
