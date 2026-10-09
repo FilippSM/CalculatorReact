@@ -1,4 +1,4 @@
-import { useThemeStore } from "@/app/store"
+import { useRegistrationNumberStore, useThemeStore } from "@/app/store"
 import { Button } from "@/shared/components/Button"
 import clsx from "clsx"
 import { useState } from "react"
@@ -14,13 +14,19 @@ import styles from "./CalcXProtocol.module.scss"
 
 export const CalcXProtocol = () => {
   const theme = useThemeStore((state) => state.theme)
+  const registrationNumber = useRegistrationNumberStore((state) => state.registrationNumber)
+  const setRegistrationNumber = useRegistrationNumberStore((state) => state.setRegistrationNumber)
   const [testData, setTestData] = useState(initialTestData)
   const [visibleTests, setVisibleTests] = useState(initialVisibleTests)
   const [showUncertainty, setShowUncertainty] = useState(false)
-  const [exporting, setExporting] = useState<"pdf" | "docx" | null>(null)
-  const formData = { ...initialTestData, ...testData }
+  const [exporting, setExporting] = useState<"primaryPdf" | "pdf" | "docx" | null>(null)
+  const formData = { ...initialTestData, ...testData, registrationNumber }
 
   const updateTestData = (field: keyof typeof initialTestData, value: string) => {
+    if (field === "registrationNumber") {
+      setRegistrationNumber(value)
+    }
+
     setTestData((current) => ({
       ...initialTestData,
       ...current,
@@ -34,6 +40,19 @@ export const CalcXProtocol = () => {
     try {
       const { exportProtocolPdf } = await import("../lib/exportProtocolPdf")
       exportProtocolPdf(buildProtocolDocument(formData, visibleTests))
+    } finally {
+      setExporting(null)
+    }
+  }
+
+  const exportPrimaryRecordsPdf = async () => {
+    setExporting("primaryPdf")
+
+    try {
+      const { exportPrimaryRecordsPdf: downloadPrimaryRecordsPdf } = await import(
+        "../lib/exportPrimaryRecordsPdf"
+      )
+      downloadPrimaryRecordsPdf({ formData, visibleTests, showUncertainty })
     } finally {
       setExporting(null)
     }
@@ -76,12 +95,12 @@ export const CalcXProtocol = () => {
                 themeMode={theme}
                 type="button"
                 disabled={exporting !== null}
-                aria-busy={exporting === "pdf"}
+                aria-busy={exporting === "primaryPdf"}
                 aria-label="Скачать PDF"
-                onClick={exportPdf}
+                onClick={exportPrimaryRecordsPdf}
               >
-                <span className={clsx(exporting === "pdf" && styles.hiddenButtonLabel)}>Скачать PDF</span>
-                {exporting === "pdf" && <span className={styles.buttonSpinner} aria-hidden="true" />}
+                <span className={clsx(exporting === "primaryPdf" && styles.hiddenButtonLabel)}>Скачать PDF</span>
+                {exporting === "primaryPdf" && <span className={styles.buttonSpinner} aria-hidden="true" />}
               </Button>
             </div>
             <h2>Протокол</h2>

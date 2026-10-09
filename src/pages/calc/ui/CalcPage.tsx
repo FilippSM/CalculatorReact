@@ -1,6 +1,6 @@
 import { Container } from "@/shared/components/Container"
 import { Input } from "@/shared/components/Input"
-import { useThemeStore } from "@/app/store"
+import { useRegistrationNumberStore, useThemeStore } from "@/app/store"
 import clsx from "clsx"
 import { useState } from "react"
 import styles from "./CalcPage.module.scss"
@@ -18,6 +18,8 @@ const initialTestData = {
 
 export const Calc = () => {
   const theme = useThemeStore((state) => state.theme)
+  const registrationNumber = useRegistrationNumberStore((state) => state.registrationNumber)
+  const setRegistrationNumber = useRegistrationNumberStore((state) => state.setRegistrationNumber)
   const [testData, setTestData] = useState(initialTestData)
 
   const updateTestData = (field: keyof typeof initialTestData, value: string) => {
@@ -56,8 +58,8 @@ export const Calc = () => {
           <div className={styles.valueCell}>
             <Input
               className={styles.cellInput}
-              value={testData.registrationNumber}
-              onValueChange={(value) => updateTestData("registrationNumber", value)}
+              value={registrationNumber}
+              onValueChange={setRegistrationNumber}
             />
           </div>
 
