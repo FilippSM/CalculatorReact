@@ -20,7 +20,6 @@ import pdfFonts from "pdfmake/build/vfs_fonts"
 import type { Content, TableCell, TDocumentDefinitions } from "pdfmake/interfaces"
 import {
   protocolDataTitle,
-  protocolDocumentTitle,
   protocolEquipmentTitle,
   protocolMetaSections,
   protocolTestsTitle,
@@ -277,7 +276,7 @@ export const exportPrimaryRecordsPdf = ({
   visibleTests,
   showUncertainty,
 }: ExportPrimaryRecordsPdfParams) => {
-  const content: Content[] = [{ text: protocolDocumentTitle, style: "documentTitle" }]
+  const content: Content[] = []
 
   protocolMetaSections.forEach((section) => {
     if (section.title) {
@@ -383,12 +382,6 @@ export const exportPrimaryRecordsPdf = ({
     }),
     content,
     styles: {
-      documentTitle: {
-        fontSize: 14,
-        bold: true,
-        alignment: "center",
-        margin: [0, 0, 0, 7],
-      },
       sectionTitle: {
         fontSize: 9,
         bold: true,
