@@ -38,7 +38,10 @@ export const calculateMechanicalImpuritiesRepeatability = (
 
   const difference = Math.abs(x1 - x2)
   const limit = getMechanicalImpuritiesRepeatabilityLimit(average)
-  const formattedDifference = formatToSignificantDigits(difference, 4)
+  const formattedWithSignificantDigits = formatToSignificantDigits(difference, 4)
+  const formattedDifference = formattedWithSignificantDigits.includes(",")
+    ? formattedWithSignificantDigits.replace(/0+$/, "").replace(/,$/, "")
+    : formattedWithSignificantDigits
 
   if (difference <= limit) {
     return { value: formattedDifference, isError: false }
