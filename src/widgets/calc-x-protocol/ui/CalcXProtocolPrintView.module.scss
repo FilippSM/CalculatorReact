@@ -1,18 +1,6 @@
-.printRoot {
-  display: none;
-}
-
-@media print {
-  @page {
-    size: A4 landscape;
-    margin: 10mm;
-  }
-
-  .printRoot {
-    display: block;
-    color: #000;
-    background: #fff;
-  }
+@mixin print-layout {
+  color: #000;
+  background: #fff;
 
   .documentTitle {
     margin: 0 0 12px;
@@ -59,10 +47,9 @@
   }
 
   .testItem {
-    break-inside: avoid;
-    page-break-inside: avoid;
     padding: 8px 0;
     border-top: 1px solid #999;
+    break-inside: avoid;
   }
 
   .testTitle {
@@ -72,8 +59,8 @@
   }
 
   .equipmentList {
-    margin: 0 0 6px;
     padding-left: 16px;
+    margin: 0 0 6px;
     font-size: 9pt;
   }
 
@@ -91,8 +78,8 @@
 
   .testTable {
     width: 100%;
-    border-collapse: collapse;
     font-size: 7.5pt;
+    border-collapse: collapse;
   }
 
   .testTableResults {
@@ -103,8 +90,8 @@
   .testTable th,
   .testTable td {
     padding: 3px 4px;
-    text-align: center;
     vertical-align: middle;
+    text-align: center;
     border: 1px solid #000;
   }
 
@@ -113,16 +100,15 @@
   }
 
   .errorValue {
-    color: #cc1439;
     font-weight: 700;
+    color: #cc1439;
   }
 
   .uncertaintySection {
-    break-inside: avoid;
-    page-break-inside: avoid;
-    margin-top: 8px;
     padding-top: 8px;
+    margin-top: 8px;
     border-top: 1px solid #999;
+    break-inside: avoid;
   }
 
   .uncertaintyObjectName {
@@ -132,8 +118,8 @@
 
   .uncertaintyTable {
     width: 100%;
-    border-collapse: collapse;
     font-size: 9pt;
+    border-collapse: collapse;
   }
 
   .uncertaintyTable th,
@@ -161,5 +147,22 @@
   .uncertaintyTable th:nth-child(3),
   .uncertaintyTable th:nth-child(4) {
     width: 140px;
+  }
+}
+
+.printRoot {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: a4 landscape;
+    margin: 10mm;
+  }
+
+  .printRoot {
+    display: block;
+
+    @include print-layout;
   }
 }

@@ -52,7 +52,11 @@ export const CalcXProtocol = () => {
       const { exportPrimaryRecordsPdf: downloadPrimaryRecordsPdf } = await import(
         "../lib/exportPrimaryRecordsPdf"
       )
-      downloadPrimaryRecordsPdf({ formData, visibleTests, showUncertainty })
+      await downloadPrimaryRecordsPdf({
+        formData,
+        visibleTests,
+        showUncertainty,
+      })
     } finally {
       setExporting(null)
     }
