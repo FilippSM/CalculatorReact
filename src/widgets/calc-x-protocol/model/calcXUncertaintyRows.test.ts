@@ -1,5 +1,6 @@
 import { useFlashPointStore } from "@/features/flash-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
+import { usePhStore } from "@/features/ph"
 import { beforeEach, describe, expect, test } from "vitest"
 import { initialVisibleTests } from "./calcXTestVisibilityConfig"
 import { buildCalcXUncertaintyRows } from "./calcXUncertaintyRows"
@@ -9,6 +10,7 @@ import { buildProtocolDocument } from "./protocolDocument"
 beforeEach(() => {
   useFlashPointStore.getState().setAverageCorrectedTemperature("243")
   useMechanicalImpuritiesStore.getState().setAverage("0,0019")
+  usePhStore.getState().setAverage("8,7")
 })
 
 describe("ГОСТ 3900 uncertainty in the protocol", () => {
@@ -37,6 +39,22 @@ describe("ГОСТ 6370 uncertainty in the protocol", () => {
 
     expect(impuritiesRow?.uncertainty).toBe("0,0018")
     expect(impuritiesExportRow?.uncertainty).toBe("0,0018")
+  })
+})
+
+describe("ГОСТ 28084 uncertainty in the protocol", () => {
+  test("shows the calculated pH value and uncertainty in results and exported document data", () => {
+    const phRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "ph",
+    )
+    const phExportRow = buildProtocolDocument(initialTestData, initialVisibleTests).results.find(
+      (row) => row.method.includes("ГОСТ 28084"),
+    )
+
+    expect(phRow?.result).toBe("8,7")
+    expect(phRow?.uncertainty).toBe("0,2")
+    expect(phExportRow?.result).toBe("8,7")
+    expect(phExportRow?.uncertainty).toBe("0,2")
   })
 })
 

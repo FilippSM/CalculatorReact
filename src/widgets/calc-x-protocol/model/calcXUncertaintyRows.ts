@@ -23,7 +23,7 @@ import {
 } from "@/features/mechanical-impurities"
 import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
-import { resolvePhFieldValue } from "@/features/ph"
+import { calculateGost28084Uncertainty, usePhStore } from "@/features/ph"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
 import { resolveKinematicViscosityFieldValue } from "@/features/viscosity"
 import { calculateWaterContent, calculateWaterContentAverage } from "@/features/water-content"
@@ -99,6 +99,15 @@ const resolveMechanicalImpuritiesUncertainty = (formData: InitialTestData): stri
   return result === null ? "" : formatToSignificantDigits(result.ExpandedUncertainty, 2)
 }
 
+const resolvePhUncertainty = (formData: InitialTestData): string => {
+  const result = calculateGost28084Uncertainty({
+    measuredPh: usePhStore.getState().average,
+    phMeter: formData.phEquipmentMeter.includes("J0088992") ? "J0088992" : "other",
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
+}
+
 const resolveFlashPointUncertainty = (formData: InitialTestData): string => {
   const correctedFlashPoint = useFlashPointStore.getState().averageCorrectedTemperature
   const result = calculateGost4333Uncertainty({
@@ -124,7 +133,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "densityAt20Gost18995":
       return resolveDensityAt20Gost18995FieldValue(formData, "densityAt20Gost18995Average")
     case "ph":
-      return resolvePhFieldValue(formData, "phAverage")
+      return usePhStore.getState().average
     case "crystallizationStart":
       return resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
     case "crystallization":
@@ -173,6 +182,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "densityAt20Gost18995") {
     return resolveDensityAt20Gost18995Uncertainty(formData)
+  }
+
+  if (id === "ph") {
+    return resolvePhUncertainty(formData)
   }
 
   return "0"

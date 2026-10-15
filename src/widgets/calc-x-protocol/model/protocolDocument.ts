@@ -1,7 +1,7 @@
 import { useFlashPointStore } from "@/features/flash-point"
 import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
-import { resolvePhFieldValue } from "@/features/ph"
+import { usePhStore } from "@/features/ph"
 import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
 import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
@@ -173,7 +173,7 @@ export const buildProtocolDocument = (
               : test.id === "densityAt20Gost18995"
                 ? resolveDensityAt20Gost18995FieldValue(formData, "densityAt20Gost18995Average")
                 : test.id === "ph"
-                  ? resolvePhFieldValue(formData, "phAverage")
+                  ? usePhStore.getState().average
                   : test.id === "crystallizationStart"
                     ? resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
                     : test.id === "crystallization"
