@@ -2,7 +2,7 @@ import { useFlashPointStore } from "@/features/flash-point"
 import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
 import { usePhStore } from "@/features/ph"
-import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
+import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
 import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
@@ -175,7 +175,7 @@ export const buildProtocolDocument = (
                 : test.id === "ph"
                   ? usePhStore.getState().average
                   : test.id === "crystallizationStart"
-                    ? resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
+                    ? useCrystallizationStartStore.getState().average
                     : test.id === "crystallization"
                       ? resolveCrystallizationFieldValue(formData, "crystallizationAverage")
                       : test.id === "boilingPoint"

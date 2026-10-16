@@ -8,5 +8,5 @@ export {
   type Gost28084PhMeter,
   type Gost28084UncertaintyInput,
   type Gost28084UncertaintyResult,
-} from "./lib/Gost_28084"
+} from "./lib/calculateGost28084Uncertainty"
 export { usePhCalculations, usePhStore } from "./model"

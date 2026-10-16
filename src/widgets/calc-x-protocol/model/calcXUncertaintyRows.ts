@@ -3,7 +3,10 @@ import { resolveBaseNumberFieldValue } from "@/features/base-number"
 import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveCrystallizationFieldValue } from "@/features/crystallization"
-import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
+import {
+  calculateGost28084Uncertainty as calculateGost28084CrystallizationStartUncertainty,
+  useCrystallizationStartStore,
+} from "@/features/crystallization-start"
 import { calculateGost3900Uncertainty, resolveDensityAt20FieldValue } from "@/features/density"
 import {
   calculateGost18995Uncertainty,
@@ -108,6 +111,14 @@ const resolvePhUncertainty = (formData: InitialTestData): string => {
   return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
 }
 
+const resolveCrystallizationStartUncertainty = (): string => {
+  const result = calculateGost28084CrystallizationStartUncertainty({
+    measuredTemperature: useCrystallizationStartStore.getState().average,
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
+}
+
 const resolveFlashPointUncertainty = (formData: InitialTestData): string => {
   const correctedFlashPoint = useFlashPointStore.getState().averageCorrectedTemperature
   const result = calculateGost4333Uncertainty({
@@ -135,7 +146,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "ph":
       return usePhStore.getState().average
     case "crystallizationStart":
-      return resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
+      return useCrystallizationStartStore.getState().average
     case "crystallization":
       return resolveCrystallizationFieldValue(formData, "crystallizationAverage")
     case "boilingPoint":
@@ -186,6 +197,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "ph") {
     return resolvePhUncertainty(formData)
+  }
+
+  if (id === "crystallizationStart") {
+    return resolveCrystallizationStartUncertainty()
   }
 
   return "0"
