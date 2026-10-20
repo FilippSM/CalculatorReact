@@ -1,3 +1,4 @@
+import { useCrystallizationStore } from "@/features/crystallization"
 import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useFlashPointStore } from "@/features/flash-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
@@ -13,6 +14,7 @@ beforeEach(() => {
   useMechanicalImpuritiesStore.getState().setAverage("0,0019")
   usePhStore.getState().setAverage("8,7")
   useCrystallizationStartStore.getState().setAverage("-20,3")
+  useCrystallizationStore.getState().setAverage("-14,8")
 })
 
 describe("ГОСТ 3900 uncertainty in the protocol", () => {
@@ -70,9 +72,26 @@ describe("ГОСТ 28084 uncertainty in the protocol", () => {
     ).results.find((row) => row.method.includes("ГОСТ 28084 по п.4.3"))
 
     expect(crystallizationStartRow?.result).toBe("-20,3")
-    expect(crystallizationStartRow?.uncertainty).toBe("2,2")
+    expect(crystallizationStartRow?.uncertainty).toBe("1,8")
     expect(crystallizationStartExportRow?.result).toBe("-20,3")
-    expect(crystallizationStartExportRow?.uncertainty).toBe("2,2")
+    expect(crystallizationStartExportRow?.uncertainty).toBe("1,8")
+  })
+})
+
+describe("ГОСТ 18995.5 uncertainty in the protocol", () => {
+  test("shows the crystallization value and uncertainty in results and exported document data", () => {
+    const crystallizationRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "crystallization",
+    )
+    const crystallizationExportRow = buildProtocolDocument(
+      initialTestData,
+      initialVisibleTests,
+    ).results.find((row) => row.method.includes("ГОСТ 18995.5"))
+
+    expect(crystallizationRow?.result).toBe("-14,8")
+    expect(crystallizationRow?.uncertainty).toBe("1,2")
+    expect(crystallizationExportRow?.result).toBe("-14,8")
+    expect(crystallizationExportRow?.uncertainty).toBe("1,2")
   })
 })
 

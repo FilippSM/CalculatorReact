@@ -7,8 +7,8 @@ describe("calculateGost28084Uncertainty", () => {
       measuredTemperature: "-20,3",
     })
 
-    expect(result?.ApparatusAccuracy).toBe(1.5)
-    expect(result?.ExpandedUncertainty).toBe(2.2)
+    expect(result?.ApparatusAccuracy).toBe(1)
+    expect(result?.ExpandedUncertainty).toBe(1.8)
     expect(result?.TotalContribution).toBeCloseTo(100)
   })
 

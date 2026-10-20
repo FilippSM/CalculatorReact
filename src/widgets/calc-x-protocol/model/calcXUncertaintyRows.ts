@@ -2,7 +2,10 @@ import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
 import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
-import { resolveCrystallizationFieldValue } from "@/features/crystallization"
+import {
+  calculateGost18995Uncertainty as calculateGost18995CrystallizationUncertainty,
+  useCrystallizationStore,
+} from "@/features/crystallization"
 import {
   calculateGost28084Uncertainty as calculateGost28084CrystallizationStartUncertainty,
   useCrystallizationStartStore,
@@ -119,6 +122,14 @@ const resolveCrystallizationStartUncertainty = (): string => {
   return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
 }
 
+const resolveCrystallizationUncertainty = (): string => {
+  const result = calculateGost18995CrystallizationUncertainty({
+    measuredTemperature: useCrystallizationStore.getState().average,
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
+}
+
 const resolveFlashPointUncertainty = (formData: InitialTestData): string => {
   const correctedFlashPoint = useFlashPointStore.getState().averageCorrectedTemperature
   const result = calculateGost4333Uncertainty({
@@ -148,7 +159,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "crystallizationStart":
       return useCrystallizationStartStore.getState().average
     case "crystallization":
-      return resolveCrystallizationFieldValue(formData, "crystallizationAverage")
+      return useCrystallizationStore.getState().average
     case "boilingPoint":
       return resolveBoilingPointFieldValue(formData, "boilingPointAverage")
     case "corrosion":
@@ -201,6 +212,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "crystallizationStart") {
     return resolveCrystallizationStartUncertainty()
+  }
+
+  if (id === "crystallization") {
+    return resolveCrystallizationUncertainty()
   }
 
   return "0"
