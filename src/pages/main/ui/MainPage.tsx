@@ -1,17 +1,17 @@
 import { Container } from "@/shared/components/Container"
-import * as Tooltip from "@radix-ui/react-tooltip"
+import styles from "./MainPage.module.css"
 
 export const Main = () => {
   return (
     <Container>
-      <h1>Main</h1>
-
-      <Tooltip.Provider>
-        <Tooltip.Root>
-          <Tooltip.Trigger>Наведите на меня</Tooltip.Trigger>
-          <Tooltip.Content>Содержимое подсказки</Tooltip.Content>
-        </Tooltip.Root>
-      </Tooltip.Provider>
+      <div className={styles.hero}>
+        <h1 className={styles.title}>Система управления лабораторной информацией</h1>
+        <img
+          className={styles.image}
+          src={`${import.meta.env.BASE_URL}mainPicture.png`}
+          alt="Производственный процесс: от сырья до готовой продукции"
+        />
+      </div>
     </Container>
   )
 }

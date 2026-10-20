@@ -8,9 +8,9 @@ import { Calc } from "@/pages/calc"
 import { CalcX } from "@/pages/calcX"
 
 export const Path = {
-  Tests: "/",
+  Main: "/",
+  Tests: "/test",
   Login: "/LoginPage",
-  Main: "/MainPage",
   Results: "/ResultsPage",
   Calc: "/calc",
   CalcX: "/calcX",
@@ -20,9 +20,9 @@ export const Path = {
 export const Routing = () => {
   return (
     <Routes>
+      <Route path={Path.Main} element={<Main />} />
       <Route path={Path.Tests} element={<Tests />} />
       <Route path={Path.Login} element={<Login />} />
-      <Route path={Path.Main} element={<Main />} />
       <Route path={Path.Results} element={<Results />} />
       <Route path={Path.Calc} element={<Calc />} />
       <Route path={Path.CalcX} element={<CalcX />} />
