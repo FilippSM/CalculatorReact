@@ -12,6 +12,11 @@ const EMPTY_RESULT: DeterminabilityResult = {
 
 const formatToHundredths = (value: number) => value.toFixed(2).replace(".", ",")
 
+/**
+ * Фактическая определяемость в %:
+ *   |t₁ − t₂| / tср · 100
+ * Ошибка, если абсолютная разность больше предела d(tср) из прецизионности.
+ */
 export const calculateDeterminability = (
   firstTime: string,
   secondTime: string,
@@ -22,22 +27,28 @@ export const calculateDeterminability = (
   const second = normalizeNumber(secondTime)
   const roundedAverage = normalizeNumber(average)
 
-  if (!Number.isFinite(first) || !Number.isFinite(second) || !Number.isFinite(roundedAverage)) {
+  if (
+    !Number.isFinite(first) ||
+    !Number.isFinite(second) ||
+    !Number.isFinite(roundedAverage) ||
+    roundedAverage === 0
+  ) {
     return EMPTY_RESULT
   }
 
-  const calculated = formula(roundedAverage)
+  const limitAbsolute = formula(roundedAverage)
 
-  if (!Number.isFinite(calculated)) return EMPTY_RESULT
+  if (!Number.isFinite(limitAbsolute)) return EMPTY_RESULT
 
-  const difference = Number(Math.abs(first - second).toFixed(2))
-  const roundedCalculated = Number(calculated.toFixed(2))
-  const isError = difference > roundedCalculated
-  const formattedDifference = formatToHundredths(difference)
+  const differenceAbsolute = Math.abs(first - second)
+  const differencePercent = Number(((differenceAbsolute / roundedAverage) * 100).toFixed(2))
+  const limitPercent = Number(((limitAbsolute / roundedAverage) * 100).toFixed(2))
+  const isError = differenceAbsolute > limitAbsolute
+  const formattedDifference = formatToHundredths(differencePercent)
 
   return {
     value: isError
-      ? `${formattedDifference} > d=${formatToHundredths(roundedCalculated)} (Error)`
+      ? `${formattedDifference} > d=${formatToHundredths(limitPercent)} (Error)`
       : formattedDifference,
     isError,
   }

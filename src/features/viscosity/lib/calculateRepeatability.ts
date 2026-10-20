@@ -1,11 +1,9 @@
 import { normalizeNumber, roundToSignificantFigures, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS } from "./viscosty"
 
-const getDecimalPlaces = (value: string) => {
-  const [, fraction = ""] = value.replace(",", ".").split(".")
-  return fraction.length
-}
+const formatToDecimalPlaces = (value: number, decimalPlaces: number) =>
+  value.toFixed(decimalPlaces).replace(".", ",")
 
-const formatToDecimalPlaces = (value: number, decimalPlaces: number) => value.toFixed(decimalPlaces).replace(".", ",")
+const formatToHundredths = (value: number) => formatToDecimalPlaces(value, 2)
 
 export const calculateViscosityAverage = (firstViscosity: string, secondViscosity: string): string => {
   const first = normalizeNumber(firstViscosity)
@@ -14,7 +12,10 @@ export const calculateViscosityAverage = (firstViscosity: string, secondViscosit
   if (!Number.isFinite(first) || !Number.isFinite(second)) return ""
 
   const average = roundToSignificantFigures((first + second) / 2, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS)
-  const decimalPlaces = Math.max(0, VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS - 1 - Math.floor(Math.log10(Math.abs(average))))
+  const decimalPlaces = Math.max(
+    0,
+    VISCOSITY_AVERAGE_SIGNIFICANT_DIGITS - 1 - Math.floor(Math.log10(Math.abs(average))),
+  )
 
   return formatToDecimalPlaces(average, decimalPlaces)
 }
@@ -29,6 +30,11 @@ const EMPTY_RESULT: RepeatabilityResult = {
   isError: false,
 }
 
+/**
+ * Фактическая повторяемость в %:
+ *   |ν₁ − ν₂| / νср · 100
+ * Ошибка, если абсолютная разность больше предела r(νср) из прецизионности.
+ */
 export const calculateRepeatability = (
   firstViscosity: string,
   secondViscosity: string,
@@ -39,23 +45,23 @@ export const calculateRepeatability = (
   const second = normalizeNumber(secondViscosity)
   const average = normalizeNumber(averageValue)
 
-  if (!Number.isFinite(first) || !Number.isFinite(second) || !Number.isFinite(average)) {
+  if (!Number.isFinite(first) || !Number.isFinite(second) || !Number.isFinite(average) || average === 0) {
     return EMPTY_RESULT
   }
 
-  const calculated = formula(average)
+  const limitAbsolute = formula(average)
 
-  if (!Number.isFinite(calculated)) return EMPTY_RESULT
+  if (!Number.isFinite(limitAbsolute)) return EMPTY_RESULT
 
-  const decimalPlaces = getDecimalPlaces(averageValue)
-  const difference = Number(Math.abs(first - second).toFixed(decimalPlaces))
-  const roundedCalculated = Number(calculated.toFixed(decimalPlaces))
-  const isError = difference > roundedCalculated
-  const formattedDifference = formatToDecimalPlaces(difference, decimalPlaces)
+  const differenceAbsolute = Math.abs(first - second)
+  const differencePercent = Number(((differenceAbsolute / average) * 100).toFixed(2))
+  const limitPercent = Number(((limitAbsolute / average) * 100).toFixed(2))
+  const isError = differenceAbsolute > limitAbsolute
+  const formattedDifference = formatToHundredths(differencePercent)
 
   return {
     value: isError
-      ? `${formattedDifference} > r=${formatToDecimalPlaces(roundedCalculated, decimalPlaces)} (Error)`
+      ? `${formattedDifference} > r=${formatToHundredths(limitPercent)} (Error)`
       : formattedDifference,
     isError,
   }
