@@ -209,25 +209,32 @@ export const calculateGost33Uncertainty = ({
   const H5StopwatchAccuracy = C17AverageFlowTime * 9.6 * 10 ** -6 + 0.01
 
   /**
+   * Абсолютный предел определяемости, с.
+   * H8 задан в %, поэтому:
+   *   H8_абс = C17 · H8 / 100
+   */
+  const H8DetectionLimitAbsolute = (C17AverageFlowTime * H8DetectionLimit) / 100
+
+  /**
    * E37 — стандартная неопределённость времени истечения, с.
    *
    * Формула:
-   *   E37 = √( (H5 / √3)² + (H6 / (2 · √3))² + (H8 / 2,8)² )
+   *   E37 = √( (H5 / √3)² + (H6 / (2 · √3))² + (H8_абс / 2,8)² )
    */
   const E37TimeStandardUncertainty = Math.sqrt(
     (H5StopwatchAccuracy / Math.sqrt(3)) ** 2 +
       (H6StopwatchResolution / (2 * Math.sqrt(3))) ** 2 +
-      (H8DetectionLimit / 2.8) ** 2,
+      (H8DetectionLimitAbsolute / 2.8) ** 2,
   )
 
   /**
    * E38 — стандартная неопределённость поправки на погрешность вискозиметра, мм²/с.
    *
    * Формула:
-   *   E38 = (H10 · E17) / (100 · √3)
+   *   E38 = (H10 · B23) / (100 · √3)
    */
   const E38ViscometerStandardUncertainty =
-    (H10ViscometerAccuracy * E17ViscometerConstant) / (100 * Math.sqrt(3))
+    (H10ViscometerAccuracy * B23KinematicViscosity) / (100 * Math.sqrt(3))
 
   /**
    * E39 — стандартная неопределённость поддержания температуры, °C.
@@ -241,10 +248,10 @@ export const calculateGost33Uncertainty = ({
    * E40 — стандартная неопределённость повторяемости метода, мм²/с.
    *
    * Формула:
-   *   E40 = (H9 · E17) / (100 · 2,8)
+   *   E40 = (H9 · B23) / (100 · 2,8)
    */
   const E40RepeatabilityStandardUncertainty =
-    (H9RepeatabilityLimit * E17ViscometerConstant) / (100 * 2.8)
+    (H9RepeatabilityLimit * B23KinematicViscosity) / (100 * 2.8)
 
   /**
    * G37 — относительная стандартная неопределённость времени истечения.

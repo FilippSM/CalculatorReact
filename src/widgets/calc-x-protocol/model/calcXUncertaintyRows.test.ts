@@ -149,8 +149,8 @@ describe("ГОСТ 33 uncertainty in the protocol", () => {
     ).results.find((row) => row.name.includes("100°C") && row.method.includes("ГОСТ 33"))
 
     expect(viscosityRow?.result).toBe("7,333")
-    expect(viscosityRow?.uncertainty).toBe("0,005")
+    expect(viscosityRow?.uncertainty).toBe("0,03")
     expect(viscosityExportRow?.result).toBe("7,333")
-    expect(viscosityExportRow?.uncertainty).toBe("0,005")
+    expect(viscosityExportRow?.uncertainty).toBe("0,03")
   })
 })

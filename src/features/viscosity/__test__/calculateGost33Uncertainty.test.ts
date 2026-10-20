@@ -12,7 +12,7 @@ describe("calculateGost33Uncertainty", () => {
     })
 
     expect(result?.TotalContribution).toBeCloseTo(100)
-    expect(result?.ExpandedUncertainty).toBe(0.004)
+    expect(result?.ExpandedUncertainty).toBe(0.005)
   })
 
   test("rounds expanded uncertainty to the decimal places of the mean", () => {
@@ -24,7 +24,7 @@ describe("calculateGost33Uncertainty", () => {
       repeatabilityLimitPercent: 0.26,
     })
 
-    expect(resultNearSeven?.ExpandedUncertainty).toBe(0.005)
+    expect(resultNearSeven?.ExpandedUncertainty).toBe(0.03)
 
     const resultNearEleven = calculateGost33Uncertainty({
       averageFlowTime: 100,
@@ -34,7 +34,7 @@ describe("calculateGost33Uncertainty", () => {
       repeatabilityLimitPercent: 0.11,
     })
 
-    expect(resultNearEleven?.ExpandedUncertainty).toBe(0.02)
+    expect(resultNearEleven?.ExpandedUncertainty).toBe(0.04)
   })
 
   test("returns null when required inputs are empty or invalid", () => {
