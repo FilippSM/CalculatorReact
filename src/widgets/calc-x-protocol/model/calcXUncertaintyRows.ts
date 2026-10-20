@@ -1,6 +1,9 @@
 import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
-import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
+import {
+  calculateGost18995Uncertainty as calculateGost189956BoilingPointUncertainty,
+  useBoilingPointStore,
+} from "@/features/boiling-point"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import {
   calculateGost18995Uncertainty as calculateGost18995CrystallizationUncertainty,
@@ -130,6 +133,14 @@ const resolveCrystallizationUncertainty = (): string => {
   return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
 }
 
+const resolveBoilingPointUncertainty = (): string => {
+  const result = calculateGost189956BoilingPointUncertainty({
+    measuredTemperature: useBoilingPointStore.getState().average,
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
+}
+
 const resolveFlashPointUncertainty = (formData: InitialTestData): string => {
   const correctedFlashPoint = useFlashPointStore.getState().averageCorrectedTemperature
   const result = calculateGost4333Uncertainty({
@@ -161,7 +172,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "crystallization":
       return useCrystallizationStore.getState().average
     case "boilingPoint":
-      return resolveBoilingPointFieldValue(formData, "boilingPointAverage")
+      return useBoilingPointStore.getState().average
     case "corrosion":
       return formData.corrosionResultsCopperAverage
     case "kinematicViscosity100":
@@ -216,6 +227,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "crystallization") {
     return resolveCrystallizationUncertainty()
+  }
+
+  if (id === "boilingPoint") {
+    return resolveBoilingPointUncertainty()
   }
 
   return "0"

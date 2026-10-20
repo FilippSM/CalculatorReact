@@ -1,3 +1,4 @@
+import { useBoilingPointStore } from "@/features/boiling-point"
 import { useCrystallizationStore } from "@/features/crystallization"
 import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useFlashPointStore } from "@/features/flash-point"
@@ -15,6 +16,7 @@ beforeEach(() => {
   usePhStore.getState().setAverage("8,7")
   useCrystallizationStartStore.getState().setAverage("-20,3")
   useCrystallizationStore.getState().setAverage("-14,8")
+  useBoilingPointStore.getState().setAverage("246,3")
 })
 
 describe("ГОСТ 3900 uncertainty in the protocol", () => {
@@ -92,6 +94,23 @@ describe("ГОСТ 18995.5 uncertainty in the protocol", () => {
     expect(crystallizationRow?.uncertainty).toBe("1,2")
     expect(crystallizationExportRow?.result).toBe("-14,8")
     expect(crystallizationExportRow?.uncertainty).toBe("1,2")
+  })
+})
+
+describe("ГОСТ 18995.6 uncertainty in the protocol", () => {
+  test("shows the boiling point value and uncertainty in results and exported document data", () => {
+    const boilingPointRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "boilingPoint",
+    )
+    const boilingPointExportRow = buildProtocolDocument(
+      initialTestData,
+      initialVisibleTests,
+    ).results.find((row) => row.method.includes("ГОСТ 18995.6"))
+
+    expect(boilingPointRow?.result).toBe("246,3")
+    expect(boilingPointRow?.uncertainty).toBe("1,3")
+    expect(boilingPointExportRow?.result).toBe("246,3")
+    expect(boilingPointExportRow?.uncertainty).toBe("1,3")
   })
 })
 

@@ -1,7 +1,4 @@
-import {
-  calculateBoilingPointAverage,
-  calculateBoilingPointRepeatability,
-} from "@/features/boiling-point"
+import { useBoilingPointCalculations, useBoilingPointStore } from "@/features/boiling-point"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
@@ -48,11 +45,11 @@ const renderHeader = (header: string) => {
 }
 
 export const BoilingPointTestItem = ({ number, formData, updateTestData }: Props) => {
-  const repeatability = calculateBoilingPointRepeatability(
-    formData.boilingPointFirstX0,
-    formData.boilingPointSecondX0,
-  )
-  const average = calculateBoilingPointAverage(formData.boilingPointFirstX0, formData.boilingPointSecondX0)
+  const { repeatability } = useBoilingPointCalculations({
+    firstX0: formData.boilingPointFirstX0,
+    secondX0: formData.boilingPointSecondX0,
+  })
+  const average = useBoilingPointStore((state) => state.average)
 
   return (
     <div className={styles.testItem}>

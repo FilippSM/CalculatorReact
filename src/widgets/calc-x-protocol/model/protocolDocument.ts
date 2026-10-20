@@ -4,7 +4,7 @@ import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-
 import { usePhStore } from "@/features/ph"
 import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useCrystallizationStore } from "@/features/crystallization"
-import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
+import { useBoilingPointStore } from "@/features/boiling-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
@@ -179,7 +179,7 @@ export const buildProtocolDocument = (
                     : test.id === "crystallization"
                       ? useCrystallizationStore.getState().average
                       : test.id === "boilingPoint"
-                        ? resolveBoilingPointFieldValue(formData, "boilingPointAverage")
+                        ? useBoilingPointStore.getState().average
                         : test.id === "corrosion"
                           ? formData["corrosionResultsCopperAverage"]
                       : test.id === "kinematicViscosity100"
