@@ -14,7 +14,10 @@ import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosit
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
 import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
-import { resolveKinematicViscosityFieldValue } from "@/features/viscosity"
+import {
+  useKinematicViscosity100Store,
+  useKinematicViscosity40Store,
+} from "@/features/viscosity"
 import { buildCalcXUncertaintyRows } from "./calcXUncertaintyRows"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
@@ -183,9 +186,9 @@ export const buildProtocolDocument = (
                         : test.id === "corrosion"
                           ? formData["corrosionResultsCopperAverage"]
                       : test.id === "kinematicViscosity100"
-                ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
+                ? useKinematicViscosity100Store.getState().average
                 : test.id === "kinematicViscosity40"
-                  ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
+                  ? useKinematicViscosity40Store.getState().average
                   : test.id === "pourPoint"
                     ? resolvePourPointFieldValue(formData, "pourPointAverage")
                     : test.id === "freezingPoint"

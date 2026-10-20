@@ -4,6 +4,10 @@ import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useFlashPointStore } from "@/features/flash-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { usePhStore } from "@/features/ph"
+import {
+  DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
+  useKinematicViscosity100Store,
+} from "@/features/viscosity"
 import { beforeEach, describe, expect, test } from "vitest"
 import { initialVisibleTests } from "./calcXTestVisibilityConfig"
 import { buildCalcXUncertaintyRows } from "./calcXUncertaintyRows"
@@ -17,6 +21,11 @@ beforeEach(() => {
   useCrystallizationStartStore.getState().setAverage("-20,3")
   useCrystallizationStore.getState().setAverage("-14,8")
   useBoilingPointStore.getState().setAverage("246,3")
+  useKinematicViscosity100Store.getState().setResults({
+    average: "7,333",
+    firstTAverage: "239,65",
+    precisionName: DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
+  })
 })
 
 describe("ГОСТ 3900 uncertainty in the protocol", () => {
@@ -126,5 +135,22 @@ describe("ГОСТ 4333 uncertainty in the protocol", () => {
 
     expect(flashPointRow?.uncertainty).toBe("6")
     expect(flashPointExportRow?.uncertainty).toBe("6")
+  })
+})
+
+describe("ГОСТ 33 uncertainty in the protocol", () => {
+  test("shows the kinematic viscosity 100 value and uncertainty in results and exported document data", () => {
+    const viscosityRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "kinematicViscosity100",
+    )
+    const viscosityExportRow = buildProtocolDocument(
+      initialTestData,
+      initialVisibleTests,
+    ).results.find((row) => row.name.includes("100°C") && row.method.includes("ГОСТ 33"))
+
+    expect(viscosityRow?.result).toBe("7,333")
+    expect(viscosityRow?.uncertainty).toBe("0,005")
+    expect(viscosityExportRow?.result).toBe("7,333")
+    expect(viscosityExportRow?.uncertainty).toBe("0,005")
   })
 })

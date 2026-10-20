@@ -1,5 +1,9 @@
 import { calculateViscosityIndexForStrings } from "@/features/index-viscosity/lib/viscositycalculateIV"
-import { useKinematicViscosityCalculations } from "@/features/viscosity"
+import {
+  useKinematicViscosity100Store,
+  useKinematicViscosity40Store,
+  useKinematicViscosityCalculations,
+} from "@/features/viscosity"
 import { Input } from "@/shared/components/Input"
 import styles from "../CalcXProtocol.module.scss"
 import { calcXTestConfig } from "../../model/calcXTestConfig"
@@ -18,27 +22,32 @@ if (!testConfig) {
   throw new Error(`Test config not found for id: ${TEST_ID}`)
 }
 
-const defaultPrecisionName = "Компаундированные масла при 40 °С и 100 °С"
-
 export const ViscosityIndexTestItem = ({ number, formData, updateTestData }: Props) => {
-  const { average: viscosityIndexV100 } = useKinematicViscosityCalculations({
+  const precisionName100 = useKinematicViscosity100Store((state) => state.precisionName)
+  const precisionName40 = useKinematicViscosity40Store((state) => state.precisionName)
+  const viscosityIndexV100 = useKinematicViscosity100Store((state) => state.average)
+  const viscosityIndexV40 = useKinematicViscosity40Store((state) => state.average)
+
+  useKinematicViscosityCalculations({
     firstT1: formData.kinematicViscosity100FirstT1,
     firstT2: formData.kinematicViscosity100FirstT2,
     secondT1: formData.kinematicViscosity100SecondT1,
     secondT2: formData.kinematicViscosity100SecondT2,
     firstConstant: formData.kinematicViscosity100FirstViscometerConstant,
     secondConstant: formData.kinematicViscosity100SecondViscometerConstant,
-    precisionName: defaultPrecisionName,
+    precisionName: precisionName100,
+    target: "100",
   })
 
-  const { average: viscosityIndexV40 } = useKinematicViscosityCalculations({
+  useKinematicViscosityCalculations({
     firstT1: formData.kinematicViscosity40FirstT1,
     firstT2: formData.kinematicViscosity40FirstT2,
     secondT1: formData.kinematicViscosity40SecondT1,
     secondT2: formData.kinematicViscosity40SecondT2,
     firstConstant: formData.kinematicViscosity40FirstViscometerConstant,
     secondConstant: formData.kinematicViscosity40SecondViscometerConstant,
-    precisionName: defaultPrecisionName,
+    precisionName: precisionName40,
+    target: "40",
   })
 
   const calculatedIV = calculateViscosityIndexForStrings(viscosityIndexV100, viscosityIndexV40)

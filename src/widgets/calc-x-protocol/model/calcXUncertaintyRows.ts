@@ -34,11 +34,42 @@ import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechan
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { calculateGost28084Uncertainty, usePhStore } from "@/features/ph"
 import { resolvePourPointFieldValue } from "@/features/pour-point"
-import { resolveKinematicViscosityFieldValue } from "@/features/viscosity"
+import {
+  calculateGost33Uncertainty,
+  useKinematicViscosity100Store,
+  useKinematicViscosity40Store,
+} from "@/features/viscosity"
+import { viscosityPrecisionData } from "@/features/viscosity/constans/viscosityPrecisionData"
 import { calculateWaterContent, calculateWaterContentAverage } from "@/features/water-content"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
+
+const parseNumeric = (value: string): number | null => {
+  const normalized = value.trim().replace(",", ".")
+  if (normalized === "") return null
+  const parsed = Number(normalized)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+const resolveViscosityPrecisionPercents = (
+  precisionName: string,
+  averageFlowTime: string,
+  kinematicViscosity: string,
+): { detectionLimitPercent: number; repeatabilityLimitPercent: number } | null => {
+  const precision = viscosityPrecisionData.find((item) => item.name === precisionName)
+  const flowTime = parseNumeric(averageFlowTime)
+  const viscosity = parseNumeric(kinematicViscosity)
+
+  if (!precision || flowTime === null || flowTime <= 0 || viscosity === null || viscosity <= 0) {
+    return null
+  }
+
+  return {
+    detectionLimitPercent: (precision.d(flowTime) / flowTime) * 100,
+    repeatabilityLimitPercent: (precision.r(viscosity) / viscosity) * 100,
+  }
+}
 
 export type CalcXUncertaintyRow = {
   id: TestVisibilityKey
@@ -62,9 +93,9 @@ const resolveWaterContentAverage = (formData: InitialTestData) => {
   return calculateWaterContentAverage(firstValue, secondValue)
 }
 
-const resolveViscosityIndex = (formData: InitialTestData) => {
-  const viscosity100 = resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
-  const viscosity40 = resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
+const resolveViscosityIndex = () => {
+  const viscosity100 = useKinematicViscosity100Store.getState().average
+  const viscosity40 = useKinematicViscosity40Store.getState().average
   const result = calculateViscosityIndexForStrings(viscosity100, viscosity40)
 
   return result === null ? "" : String(result)
@@ -153,6 +184,23 @@ const resolveFlashPointUncertainty = (formData: InitialTestData): string => {
   return result === null ? "" : String(result.ExpandedUncertainty)
 }
 
+const resolveKinematicViscosity100Uncertainty = (formData: InitialTestData): string => {
+  const { average, firstTAverage, precisionName } = useKinematicViscosity100Store.getState()
+  const percents = resolveViscosityPrecisionPercents(precisionName, firstTAverage, average)
+
+  if (percents === null) return ""
+
+  const result = calculateGost33Uncertainty({
+    averageFlowTime: firstTAverage,
+    viscometerConstant: formData.kinematicViscosity100FirstViscometerConstant,
+    kinematicViscosity: average,
+    detectionLimitPercent: percents.detectionLimitPercent,
+    repeatabilityLimitPercent: percents.repeatabilityLimitPercent,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
 const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): string => {
   switch (id) {
     case "flashPoint":
@@ -176,11 +224,11 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "corrosion":
       return formData.corrosionResultsCopperAverage
     case "kinematicViscosity100":
-      return resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
+      return useKinematicViscosity100Store.getState().average
     case "kinematicViscosity40":
-      return resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
+      return useKinematicViscosity40Store.getState().average
     case "viscosityIndex":
-      return resolveViscosityIndex(formData)
+      return resolveViscosityIndex()
     case "waterContent":
       return resolveWaterContentAverage(formData)
     case "pourPoint":
@@ -231,6 +279,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "boilingPoint") {
     return resolveBoilingPointUncertainty()
+  }
+
+  if (id === "kinematicViscosity100") {
+    return resolveKinematicViscosity100Uncertainty(formData)
   }
 
   return "0"
