@@ -25,14 +25,15 @@
 
 /**
  * Входные данные для расчёта неопределённости по ГОСТ 33.
- * Значения берутся из испытания
- * «Кинематическая вязкость при 100°C, мм²/с по ГОСТ 33».
+ * Используется для кинематической вязкости при 100°C и при 40°C.
  *
  * @property averageFlowTime C17 — среднее время истечения tср первого измерения, с.
  * @property viscometerConstant E17 — постоянная вискозиметра, мм²/с².
  * @property kinematicViscosity B23 — среднее значение νср, мм²/с.
  * @property detectionLimitPercent H8 — предел определяемости из прецизионности, %.
  * @property repeatabilityLimitPercent H9 — предел повторяемости из прецизионности, %.
+ * @property testTemperature G17 — температура испытания, °C (100 или 40).
+ * @property samplingStandardUncertainty E41 — стандартная неопределённость отбора проб, мм²/с.
  */
 export type Gost33UncertaintyInput = {
   averageFlowTime: string | number
@@ -40,6 +41,8 @@ export type Gost33UncertaintyInput = {
   kinematicViscosity: string | number
   detectionLimitPercent: string | number
   repeatabilityLimitPercent: string | number
+  testTemperature?: number
+  samplingStandardUncertainty?: number
 }
 
 /**
@@ -97,11 +100,11 @@ const H7ThermostatAccuracy = 0.01
 /** H10 — Погрешность вискозиметра, %. */
 const H10ViscometerAccuracy = 0.3
 
-/** G17 — Температура испытания, °C. */
-const G17TestTemperature = 100
+/** G17 по умолчанию — температура испытания при 100°C, °C. */
+const DEFAULT_TEST_TEMPERATURE = 100
 
-/** E41 — стандартная неопределённость отбора проб, мм²/с. */
-const E41SamplingStandardUncertainty = 0.00176776695811058
+/** E41 по умолчанию — стандартная неопределённость отбора проб при 100°C, мм²/с. */
+const DEFAULT_SAMPLING_STANDARD_UNCERTAINTY = 0.00176776695811058
 
 /** Коэффициент охвата k для доверительной вероятности P = 95 %. */
 const COVERAGE_FACTOR = 2
@@ -156,6 +159,8 @@ export const calculateGost33Uncertainty = ({
   kinematicViscosity,
   detectionLimitPercent,
   repeatabilityLimitPercent,
+  testTemperature = DEFAULT_TEST_TEMPERATURE,
+  samplingStandardUncertainty = DEFAULT_SAMPLING_STANDARD_UNCERTAINTY,
 }: Gost33UncertaintyInput): Gost33UncertaintyResult | null => {
   /**
    * C17 — Среднее время истечения, с.
@@ -187,6 +192,17 @@ export const calculateGost33Uncertainty = ({
    */
   const H9RepeatabilityLimit = parseNumericValue(repeatabilityLimitPercent)
 
+  /**
+   * G17 — Температура испытания, °C.
+   */
+  const G17TestTemperature = testTemperature
+
+  /**
+   * E41 — стандартная неопределённость отбора проб, мм²/с.
+   * Для 100°C — значение по умолчанию; для 40°C — 0.
+   */
+  const E41SamplingStandardUncertainty = samplingStandardUncertainty
+
   if (
     C17AverageFlowTime === null ||
     C17AverageFlowTime <= 0 ||
@@ -195,7 +211,11 @@ export const calculateGost33Uncertainty = ({
     B23KinematicViscosity === null ||
     B23KinematicViscosity <= 0 ||
     H8DetectionLimit === null ||
-    H9RepeatabilityLimit === null
+    H9RepeatabilityLimit === null ||
+    !Number.isFinite(G17TestTemperature) ||
+    G17TestTemperature <= 0 ||
+    !Number.isFinite(E41SamplingStandardUncertainty) ||
+    E41SamplingStandardUncertainty < 0
   ) {
     return null
   }

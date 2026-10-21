@@ -7,6 +7,7 @@ import { usePhStore } from "@/features/ph"
 import {
   DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
   useKinematicViscosity100Store,
+  useKinematicViscosity40Store,
 } from "@/features/viscosity"
 import { beforeEach, describe, expect, test } from "vitest"
 import { initialVisibleTests } from "./calcXTestVisibilityConfig"
@@ -24,6 +25,11 @@ beforeEach(() => {
   useKinematicViscosity100Store.getState().setResults({
     average: "7,333",
     firstTAverage: "239,65",
+    precisionName: DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
+  })
+  useKinematicViscosity40Store.getState().setResults({
+    average: "36,83",
+    firstTAverage: "327,91",
     precisionName: DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
   })
 })
@@ -152,5 +158,20 @@ describe("ГОСТ 33 uncertainty in the protocol", () => {
     expect(viscosityRow?.uncertainty).toBe("0,03")
     expect(viscosityExportRow?.result).toBe("7,333")
     expect(viscosityExportRow?.uncertainty).toBe("0,03")
+  })
+
+  test("shows the kinematic viscosity 40 value and uncertainty in results and exported document data", () => {
+    const viscosityRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "kinematicViscosity40",
+    )
+    const viscosityExportRow = buildProtocolDocument(
+      initialTestData,
+      initialVisibleTests,
+    ).results.find((row) => row.name.includes("40°С") && row.method.includes("ГОСТ 33"))
+
+    expect(viscosityRow?.result).toBe("36,83")
+    expect(viscosityRow?.uncertainty).toBe("0,15")
+    expect(viscosityExportRow?.result).toBe("36,83")
+    expect(viscosityExportRow?.uncertainty).toBe("0,15")
   })
 })

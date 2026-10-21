@@ -196,6 +196,26 @@ const resolveKinematicViscosity100Uncertainty = (formData: InitialTestData): str
     kinematicViscosity: average,
     detectionLimitPercent: percents.detectionLimitPercent,
     repeatabilityLimitPercent: percents.repeatabilityLimitPercent,
+    testTemperature: 100,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
+const resolveKinematicViscosity40Uncertainty = (formData: InitialTestData): string => {
+  const { average, firstTAverage, precisionName } = useKinematicViscosity40Store.getState()
+  const percents = resolveViscosityPrecisionPercents(precisionName, firstTAverage, average)
+
+  if (percents === null) return ""
+
+  const result = calculateGost33Uncertainty({
+    averageFlowTime: firstTAverage,
+    viscometerConstant: formData.kinematicViscosity40FirstViscometerConstant,
+    kinematicViscosity: average,
+    detectionLimitPercent: percents.detectionLimitPercent,
+    repeatabilityLimitPercent: percents.repeatabilityLimitPercent,
+    testTemperature: 40,
+    samplingStandardUncertainty: 0,
   })
 
   return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
@@ -283,6 +303,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "kinematicViscosity100") {
     return resolveKinematicViscosity100Uncertainty(formData)
+  }
+
+  if (id === "kinematicViscosity40") {
+    return resolveKinematicViscosity40Uncertainty(formData)
   }
 
   return "0"

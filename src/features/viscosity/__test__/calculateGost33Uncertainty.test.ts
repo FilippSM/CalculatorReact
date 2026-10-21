@@ -22,6 +22,7 @@ describe("calculateGost33Uncertainty", () => {
       kinematicViscosity: "7,333",
       detectionLimitPercent: 0.13,
       repeatabilityLimitPercent: 0.26,
+      testTemperature: 100,
     })
 
     expect(resultNearSeven?.ExpandedUncertainty).toBe(0.03)
@@ -35,6 +36,21 @@ describe("calculateGost33Uncertainty", () => {
     })
 
     expect(resultNearEleven?.ExpandedUncertainty).toBe(0.04)
+  })
+
+  test("calculates expanded uncertainty for 40 °C with zero sampling uncertainty", () => {
+    const result = calculateGost33Uncertainty({
+      averageFlowTime: "327,91",
+      viscometerConstant: "0,112311",
+      kinematicViscosity: "36,83",
+      detectionLimitPercent: 0.13,
+      repeatabilityLimitPercent: 0.26,
+      testTemperature: 40,
+      samplingStandardUncertainty: 0,
+    })
+
+    expect(result?.SamplingStandardUncertainty).toBe(0)
+    expect(result?.ExpandedUncertainty).toBe(0.15)
   })
 
   test("returns null when required inputs are empty or invalid", () => {
