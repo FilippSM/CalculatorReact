@@ -162,9 +162,9 @@ describe("ГОСТ 2477 uncertainty in the protocol", () => {
     )
 
     expect(waterContentRow?.result).toBe("1,00")
-    expect(waterContentRow?.uncertainty).toBe("0,2")
+    expect(waterContentRow?.uncertainty).toBe("0,05")
     expect(waterContentExportRow?.result).toBe("1,00")
-    expect(waterContentExportRow?.uncertainty).toBe("0,2")
+    expect(waterContentExportRow?.uncertainty).toBe("0,05")
   })
 })
 

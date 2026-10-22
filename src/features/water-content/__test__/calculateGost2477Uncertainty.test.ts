@@ -23,8 +23,8 @@ describe("calculateGost2477Uncertainty", () => {
       sampleAmount: 100,
     })
 
-    expect(result?.ExpandedUncertainty).toBe(0.2)
-    expect(result?.SamplingStandardUncertainty).toBe(0.1)
+    expect(result?.ExpandedUncertainty).toBe(0.05)
+    expect(result?.SamplingStandardUncertainty).toBe(0.025)
     expect(result?.TotalContribution).toBeCloseTo(100)
   })
 

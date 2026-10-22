@@ -86,7 +86,7 @@ export type Gost2477UncertaintyResult = {
 const H7CylinderAccuracy = 0.01
 
 /** H8 — Погрешность весов, г. */
-const H8ScaleAccuracy = 0.1
+const H8ScaleAccuracy = 0.01
 
 /** H9 — Предел повторяемости, %. */
 const H9RepeatabilityLimit = 0.1
@@ -95,7 +95,7 @@ const H9RepeatabilityLimit = 0.1
 const E23SamplingStandardUncertaintyMass = 0.025
 
 /** E37 — стандартная неопределённость отбора проб (объёмная доля), %. */
-const E37SamplingStandardUncertaintyVolume = 0.1
+const E37SamplingStandardUncertaintyVolume = 0.025
 
 /** Коэффициент охвата k для доверительной вероятности P = 95 %. */
 const COVERAGE_FACTOR = 2
