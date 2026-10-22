@@ -9,6 +9,7 @@ import {
   useKinematicViscosity100Store,
   useKinematicViscosity40Store,
 } from "@/features/viscosity"
+import { useWaterContentStore } from "@/features/water-content"
 import { beforeEach, describe, expect, test } from "vitest"
 import { initialVisibleTests } from "./calcXTestVisibilityConfig"
 import { buildCalcXUncertaintyRows } from "./calcXUncertaintyRows"
@@ -32,6 +33,7 @@ beforeEach(() => {
     firstTAverage: "327,91",
     precisionName: DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
   })
+  useWaterContentStore.getState().clearStore()
 })
 
 describe("ГОСТ 3900 uncertainty in the protocol", () => {
@@ -141,6 +143,28 @@ describe("ГОСТ 4333 uncertainty in the protocol", () => {
 
     expect(flashPointRow?.uncertainty).toBe("6")
     expect(flashPointExportRow?.uncertainty).toBe("6")
+  })
+})
+
+describe("ГОСТ 2477 uncertainty in the protocol", () => {
+  test("shows Xср and uncertainty in results and exported document data", () => {
+    const formData = {
+      ...initialTestData,
+      waterContentFirstWaterVolume: "1,00",
+      waterContentSecondWaterVolume: "1,00",
+    }
+
+    const waterContentRow = buildCalcXUncertaintyRows(formData, initialVisibleTests).find(
+      (row) => row.id === "waterContent",
+    )
+    const waterContentExportRow = buildProtocolDocument(formData, initialVisibleTests).results.find(
+      (row) => row.method.includes("ГОСТ 2477"),
+    )
+
+    expect(waterContentRow?.result).toBe("1,00")
+    expect(waterContentRow?.uncertainty).toBe("0,2")
+    expect(waterContentExportRow?.result).toBe("1,00")
+    expect(waterContentExportRow?.uncertainty).toBe("0,2")
   })
 })
 

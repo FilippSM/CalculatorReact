@@ -5,6 +5,7 @@ import {
   getWaterContentIntermediateDecimalPlaces,
   WATER_CONTENT_FINAL_DECIMAL_PLACES,
 } from "../lib/formatWaterContent"
+import { useWaterContentStore } from "./waterContentStore"
 
 type WaterContentCalculationInput = {
   firstSample: string
@@ -32,6 +33,10 @@ export const useWaterContentCalculations = ({
     secondWaterVolume,
     WATER_CONTENT_FINAL_DECIMAL_PLACES,
   )
+
+  if (useWaterContentStore.getState().average !== average) {
+    useWaterContentStore.getState().setAverage(average)
+  }
 
   return { firstValue, secondValue, average, repeatability }
 }

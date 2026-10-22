@@ -303,6 +303,8 @@ export const initialTestData = {
   viscosityIndexV40: "36,83",
   viscosityIndexIV: "169",
   waterContentTestName: "Содержание воды, % по ГОСТ 2477",
+  waterContentWaterShare: "Объемная доля воды",
+  waterContentReceiverTrap: "Приемник-ловушка 10 см³",
   waterContentEquipmentBalance: "Весы лабораторные электронные Radwag PS 10100/C/2/MS № 698940",
   waterContentEquipmentReceiver: "Приемник-ловушка к аппарату АКОВ № 17 - 10 мл",
   waterContentEquipmentStopwatch: "Секундомер электронный «Интеграл С-01» № 411295",

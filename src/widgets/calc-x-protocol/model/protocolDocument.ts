@@ -18,6 +18,7 @@ import {
   useKinematicViscosity100Store,
   useKinematicViscosity40Store,
 } from "@/features/viscosity"
+import { resolveWaterContentAverage } from "@/features/water-content"
 import { buildCalcXUncertaintyRows } from "./calcXUncertaintyRows"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
@@ -203,7 +204,15 @@ export const buildProtocolDocument = (
                               ? resolveBaseNumberFieldValue(formData, "baseNumberAverage")
                               : test.id === "autoIgnition"
                                 ? resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
-                                : formData[resultFields[test.id]],
+                                : test.id === "waterContent"
+                                  ? resolveWaterContentAverage({
+                                      firstSample: formData.waterContentFirstSampleMass,
+                                      firstWaterVolume: formData.waterContentFirstWaterVolume,
+                                      secondSample: formData.waterContentSecondSampleMass,
+                                      secondWaterVolume: formData.waterContentSecondWaterVolume,
+                                      receiverTrap: formData.waterContentReceiverTrap,
+                                    })
+                                  : formData[resultFields[test.id]],
         uncertainty: uncertaintyByTestId.get(test.id) || "—",
       }
     }),

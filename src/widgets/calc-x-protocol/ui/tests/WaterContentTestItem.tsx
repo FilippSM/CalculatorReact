@@ -2,7 +2,6 @@ import { useWaterContentCalculations } from "@/features/water-content"
 import { Input } from "@/shared/components/Input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import clsx from "clsx"
-import { useState } from "react"
 import styles from "../CalcXProtocol.module.scss"
 import { calcXTestConfig } from "../../model/calcXTestConfig"
 import { initialTestData, type InitialTestData } from "../../model/initialTestData"
@@ -33,9 +32,16 @@ const receiverTrapOptions = ["Приемник-ловушка 5 см³", "При
 type ReceiverTrapOption = (typeof receiverTrapOptions)[number]
 
 export const WaterContentTestItem = ({ number, formData, updateTestData }: Props) => {
-  const [selectedWaterShare, setSelectedWaterShare] = useState<WaterShareOption>("Объемная доля воды")
-  const [selectedReceiverTrap, setSelectedReceiverTrap] =
-    useState<ReceiverTrapOption>("Приемник-ловушка 10 см³")
+  const selectedWaterShare = waterShareOptions.includes(
+    formData.waterContentWaterShare as WaterShareOption,
+  )
+    ? (formData.waterContentWaterShare as WaterShareOption)
+    : "Объемная доля воды"
+  const selectedReceiverTrap = receiverTrapOptions.includes(
+    formData.waterContentReceiverTrap as ReceiverTrapOption,
+  )
+    ? (formData.waterContentReceiverTrap as ReceiverTrapOption)
+    : "Приемник-ловушка 10 см³"
   const sampleColumnLabel =
     selectedWaterShare === "Массовая доля воды" ? "Масса образца m, г" : "Объем образца V, см³"
   const { firstValue, secondValue, average, repeatability } = useWaterContentCalculations({
@@ -63,7 +69,7 @@ export const WaterContentTestItem = ({ number, formData, updateTestData }: Props
         <h3>Доля воды:</h3>
         <Select
           value={selectedWaterShare}
-          onValueChange={(value) => setSelectedWaterShare(value as WaterShareOption)}
+          onValueChange={(value) => updateTestData("waterContentWaterShare", value)}
         >
           <SelectTrigger className={styles.fullWidthSelect}>
             <SelectValue />
@@ -82,7 +88,7 @@ export const WaterContentTestItem = ({ number, formData, updateTestData }: Props
         <h3>Приемник-ловушка:</h3>
         <Select
           value={selectedReceiverTrap}
-          onValueChange={(value) => setSelectedReceiverTrap(value as ReceiverTrapOption)}
+          onValueChange={(value) => updateTestData("waterContentReceiverTrap", value)}
         >
           <SelectTrigger className={styles.fullWidthSelect}>
             <SelectValue />

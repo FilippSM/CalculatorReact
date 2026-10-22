@@ -40,7 +40,12 @@ import {
   useKinematicViscosity40Store,
 } from "@/features/viscosity"
 import { viscosityPrecisionData } from "@/features/viscosity/constans/viscosityPrecisionData"
-import { calculateWaterContent, calculateWaterContentAverage } from "@/features/water-content"
+import {
+  calculateGost2477Uncertainty,
+  resolveWaterContentAverage,
+  type Gost2477ReceiverCapacity,
+  type Gost2477WaterShareType,
+} from "@/features/water-content"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
@@ -78,19 +83,31 @@ export type CalcXUncertaintyRow = {
   uncertainty: string
 }
 
-const resolveWaterContentAverage = (formData: InitialTestData) => {
-  const firstValue = calculateWaterContent(
-    formData.waterContentFirstSampleMass,
-    formData.waterContentFirstWaterVolume,
-    2,
-  )
-  const secondValue = calculateWaterContent(
-    formData.waterContentSecondSampleMass,
-    formData.waterContentSecondWaterVolume,
-    2,
-  )
+const resolveWaterContentResult = (formData: InitialTestData) =>
+  resolveWaterContentAverage({
+    firstSample: formData.waterContentFirstSampleMass,
+    firstWaterVolume: formData.waterContentFirstWaterVolume,
+    secondSample: formData.waterContentSecondSampleMass,
+    secondWaterVolume: formData.waterContentSecondWaterVolume,
+    receiverTrap: formData.waterContentReceiverTrap,
+  })
 
-  return calculateWaterContentAverage(firstValue, secondValue)
+const resolveWaterContentWaterShare = (formData: InitialTestData): Gost2477WaterShareType =>
+  formData.waterContentWaterShare === "Массовая доля воды" ? "mass" : "volume"
+
+const resolveWaterContentReceiverCapacity = (
+  formData: InitialTestData,
+): Gost2477ReceiverCapacity => (formData.waterContentReceiverTrap.includes("5 см") ? 5 : 10)
+
+const resolveWaterContentUncertainty = (formData: InitialTestData): string => {
+  const result = calculateGost2477Uncertainty({
+    waterShare: resolveWaterContentWaterShare(formData),
+    receiverCapacity: resolveWaterContentReceiverCapacity(formData),
+    waterVolume: formData.waterContentFirstWaterVolume,
+    sampleAmount: formData.waterContentFirstSampleMass,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
 }
 
 const resolveViscosityIndex = () => {
@@ -250,7 +267,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "viscosityIndex":
       return resolveViscosityIndex()
     case "waterContent":
-      return resolveWaterContentAverage(formData)
+      return resolveWaterContentResult(formData)
     case "pourPoint":
       return resolvePourPointFieldValue(formData, "pourPointAverage")
     case "freezingPoint":
@@ -307,6 +324,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "kinematicViscosity40") {
     return resolveKinematicViscosity40Uncertainty(formData)
+  }
+
+  if (id === "waterContent") {
+    return resolveWaterContentUncertainty(formData)
   }
 
   return "0"
