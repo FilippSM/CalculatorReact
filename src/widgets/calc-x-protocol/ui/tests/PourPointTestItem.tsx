@@ -1,4 +1,4 @@
-import { usePourPointCalculations } from "@/features/pour-point"
+import { usePourPointCalculations, usePourPointStore } from "@/features/pour-point"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
@@ -19,10 +19,11 @@ if (!testConfig) {
 }
 
 export const PourPointTestItem = ({ number, formData, updateTestData }: Props) => {
-  const { average, repeatability } = usePourPointCalculations({
+  const { repeatability } = usePourPointCalculations({
     firstT1: formData.pourPointFirstT1,
     secondT2: formData.pourPointSecondT2,
   })
+  const average = usePourPointStore((state) => state.average)
 
   return (
     <div className={styles.testItem}>

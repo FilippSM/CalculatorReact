@@ -167,8 +167,8 @@ const F19_contributionTotal =
 /**
  * D19 — расширенная неопределённость при k = 2, °C.
  */
-const D19_expandedUncertainty = 
-  Math.round(Math.sqrt(contributionDenominator) * 2 * 1000) / 1000;
+const D19_expandedUncertainty =
+  Math.round(Math.sqrt(contributionDenominator) * 2);
 
 // ============================================================
 // Экспорт

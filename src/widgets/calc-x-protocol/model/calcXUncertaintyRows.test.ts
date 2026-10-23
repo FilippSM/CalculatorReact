@@ -4,6 +4,7 @@ import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useFlashPointStore } from "@/features/flash-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { usePhStore } from "@/features/ph"
+import { usePourPointStore } from "@/features/pour-point"
 import {
   DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
   useKinematicViscosity100Store,
@@ -23,6 +24,7 @@ beforeEach(() => {
   useCrystallizationStartStore.getState().setAverage("-20,3")
   useCrystallizationStore.getState().setAverage("-14,8")
   useBoilingPointStore.getState().setAverage("246,3")
+  usePourPointStore.getState().setAverage("-21")
   useKinematicViscosity100Store.getState().setResults({
     average: "7,333",
     firstTAverage: "239,65",
@@ -128,6 +130,23 @@ describe("ГОСТ 18995.6 uncertainty in the protocol", () => {
     expect(boilingPointRow?.uncertainty).toBe("1,3")
     expect(boilingPointExportRow?.result).toBe("246,3")
     expect(boilingPointExportRow?.uncertainty).toBe("1,3")
+  })
+})
+
+describe("ГОСТ 20287 uncertainty in the protocol", () => {
+  test("shows the pour point value and uncertainty in results and exported document data", () => {
+    const pourPointRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "pourPoint",
+    )
+    const pourPointExportRow = buildProtocolDocument(
+      initialTestData,
+      initialVisibleTests,
+    ).results.find((row) => row.method.includes("ГОСТ 20287") && row.name.includes("текучести"))
+
+    expect(pourPointRow?.result).toBe("-21")
+    expect(pourPointRow?.uncertainty).toBe("3")
+    expect(pourPointExportRow?.result).toBe("-21")
+    expect(pourPointExportRow?.uncertainty).toBe("3")
   })
 })
 

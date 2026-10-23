@@ -7,7 +7,7 @@ import { useCrystallizationStore } from "@/features/crystallization"
 import { useBoilingPointStore } from "@/features/boiling-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
-import { resolvePourPointFieldValue } from "@/features/pour-point"
+import { usePourPointStore } from "@/features/pour-point"
 import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
@@ -191,7 +191,7 @@ export const buildProtocolDocument = (
                 : test.id === "kinematicViscosity40"
                   ? useKinematicViscosity40Store.getState().average
                   : test.id === "pourPoint"
-                    ? resolvePourPointFieldValue(formData, "pourPointAverage")
+                    ? usePourPointStore.getState().average
                     : test.id === "freezingPoint"
                       ? resolveFreezingPointFieldValue(formData, "freezingPointAverage")
                       : test.id === "noackLoss"

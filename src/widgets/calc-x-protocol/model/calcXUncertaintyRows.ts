@@ -33,7 +33,10 @@ import {
 import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { calculateGost28084Uncertainty, usePhStore } from "@/features/ph"
-import { resolvePourPointFieldValue } from "@/features/pour-point"
+import {
+  calculateGost20287Uncertainty,
+  usePourPointStore,
+} from "@/features/pour-point"
 import {
   calculateGost33Uncertainty,
   useKinematicViscosity100Store,
@@ -238,6 +241,14 @@ const resolveKinematicViscosity40Uncertainty = (formData: InitialTestData): stri
   return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
 }
 
+const resolvePourPointUncertainty = (): string => {
+  const result = calculateGost20287Uncertainty({
+    measuredPourPoint: usePourPointStore.getState().average,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
 const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): string => {
   switch (id) {
     case "flashPoint":
@@ -269,7 +280,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "waterContent":
       return resolveWaterContentResult(formData)
     case "pourPoint":
-      return resolvePourPointFieldValue(formData, "pourPointAverage")
+      return usePourPointStore.getState().average
     case "freezingPoint":
       return resolveFreezingPointFieldValue(formData, "freezingPointAverage")
     case "noackLoss":
@@ -328,6 +339,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "waterContent") {
     return resolveWaterContentUncertainty(formData)
+  }
+
+  if (id === "pourPoint") {
+    return resolvePourPointUncertainty()
   }
 
   return "0"

@@ -1,4 +1,4 @@
-import { calculatePourPointAverage } from "./calculatePourPointAverage"
+import { usePourPointStore } from "../model/pourPointStore"
 import { calculatePourPointRepeatability } from "./calculatePourPointRepeatability"
 
 type PourPointFormSlice = {
@@ -12,7 +12,7 @@ export const resolvePourPointFieldValue = <T extends PourPointFormSlice>(
   field: keyof T & string,
 ): string => {
   if (field === "pourPointAverage") {
-    return calculatePourPointAverage(formData.pourPointFirstT1, formData.pourPointSecondT2)
+    return usePourPointStore.getState().average
   }
 
   if (field === "pourPointRepeatability") {
