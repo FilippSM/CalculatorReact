@@ -8,7 +8,7 @@ import { useBoilingPointStore } from "@/features/boiling-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
 import { usePourPointStore } from "@/features/pour-point"
-import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
+import { useFreezingPointStore } from "@/features/freezing-point"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
@@ -193,7 +193,7 @@ export const buildProtocolDocument = (
                   : test.id === "pourPoint"
                     ? usePourPointStore.getState().average
                     : test.id === "freezingPoint"
-                      ? resolveFreezingPointFieldValue(formData, "freezingPointAverage")
+                      ? useFreezingPointStore.getState().average
                       : test.id === "noackLoss"
                         ? resolveNoackLossFieldValue(formData, "noackLossAverage")
                         : test.id === "dynamicViscosity30"

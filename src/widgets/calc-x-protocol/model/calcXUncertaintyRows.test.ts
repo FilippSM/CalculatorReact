@@ -4,6 +4,7 @@ import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useFlashPointStore } from "@/features/flash-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { usePhStore } from "@/features/ph"
+import { useFreezingPointStore } from "@/features/freezing-point"
 import { usePourPointStore } from "@/features/pour-point"
 import {
   DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
@@ -25,6 +26,7 @@ beforeEach(() => {
   useCrystallizationStore.getState().setAverage("-14,8")
   useBoilingPointStore.getState().setAverage("246,3")
   usePourPointStore.getState().setAverage("-21")
+  useFreezingPointStore.getState().setAverage("-24")
   useKinematicViscosity100Store.getState().setResults({
     average: "7,333",
     firstTAverage: "239,65",
@@ -147,6 +149,21 @@ describe("ГОСТ 20287 uncertainty in the protocol", () => {
     expect(pourPointRow?.uncertainty).toBe("3")
     expect(pourPointExportRow?.result).toBe("-21")
     expect(pourPointExportRow?.uncertainty).toBe("3")
+  })
+
+  test("shows the freezing point value and uncertainty in results and exported document data", () => {
+    const freezingPointRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "freezingPoint",
+    )
+    const freezingPointExportRow = buildProtocolDocument(
+      initialTestData,
+      initialVisibleTests,
+    ).results.find((row) => row.method.includes("ГОСТ 20287") && row.name.includes("застывания"))
+
+    expect(freezingPointRow?.result).toBe("-24")
+    expect(freezingPointRow?.uncertainty).toBe("1")
+    expect(freezingPointExportRow?.result).toBe("-24")
+    expect(freezingPointExportRow?.uncertainty).toBe("1")
   })
 })
 

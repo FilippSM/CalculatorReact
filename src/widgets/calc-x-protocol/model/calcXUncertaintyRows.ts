@@ -23,7 +23,10 @@ import {
   calculateGost4333Uncertainty,
   useFlashPointStore,
 } from "@/features/flash-point"
-import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
+import {
+  calculateGost20287Uncertainty as calculateGost20287FreezingPointUncertainty,
+  useFreezingPointStore,
+} from "@/features/freezing-point"
 import { calculateViscosityIndexForStrings } from "@/features/index-viscosity/lib/viscositycalculateIV"
 import {
   calculateGost6370Uncertainty,
@@ -34,7 +37,7 @@ import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechan
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { calculateGost28084Uncertainty, usePhStore } from "@/features/ph"
 import {
-  calculateGost20287Uncertainty,
+  calculateGost20287Uncertainty as calculateGost20287PourPointUncertainty,
   usePourPointStore,
 } from "@/features/pour-point"
 import {
@@ -242,8 +245,16 @@ const resolveKinematicViscosity40Uncertainty = (formData: InitialTestData): stri
 }
 
 const resolvePourPointUncertainty = (): string => {
-  const result = calculateGost20287Uncertainty({
+  const result = calculateGost20287PourPointUncertainty({
     measuredPourPoint: usePourPointStore.getState().average,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
+const resolveFreezingPointUncertainty = (): string => {
+  const result = calculateGost20287FreezingPointUncertainty({
+    measuredFreezingPoint: useFreezingPointStore.getState().average,
   })
 
   return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
@@ -282,7 +293,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "pourPoint":
       return usePourPointStore.getState().average
     case "freezingPoint":
-      return resolveFreezingPointFieldValue(formData, "freezingPointAverage")
+      return useFreezingPointStore.getState().average
     case "noackLoss":
       return resolveNoackLossFieldValue(formData, "noackLossAverage")
     case "dynamicViscosity30":
@@ -343,6 +354,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "pourPoint") {
     return resolvePourPointUncertainty()
+  }
+
+  if (id === "freezingPoint") {
+    return resolveFreezingPointUncertainty()
   }
 
   return "0"

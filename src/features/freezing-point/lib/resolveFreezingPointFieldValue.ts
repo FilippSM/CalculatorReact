@@ -1,4 +1,4 @@
-import { calculateFreezingPointAverage } from "./calculateFreezingPointAverage"
+import { useFreezingPointStore } from "../model/freezingPointStore"
 import { calculateFreezingPointRepeatability } from "./calculateFreezingPointRepeatability"
 
 type FreezingPointFormSlice = {
@@ -12,7 +12,7 @@ export const resolveFreezingPointFieldValue = <T extends FreezingPointFormSlice>
   field: keyof T & string,
 ): string => {
   if (field === "freezingPointAverage") {
-    return calculateFreezingPointAverage(formData.freezingPointFirstT1, formData.freezingPointSecondT2)
+    return useFreezingPointStore.getState().average
   }
 
   if (field === "freezingPointRepeatability") {

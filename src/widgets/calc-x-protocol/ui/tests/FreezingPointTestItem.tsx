@@ -1,4 +1,4 @@
-import { useFreezingPointCalculations } from "@/features/freezing-point"
+import { useFreezingPointCalculations, useFreezingPointStore } from "@/features/freezing-point"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
@@ -19,10 +19,11 @@ if (!testConfig) {
 }
 
 export const FreezingPointTestItem = ({ number, formData, updateTestData }: Props) => {
-  const { average, repeatability } = useFreezingPointCalculations({
+  const { repeatability } = useFreezingPointCalculations({
     firstT1: formData.freezingPointFirstT1,
     secondT2: formData.freezingPointSecondT2,
   })
+  const average = useFreezingPointStore((state) => state.average)
 
   return (
     <div className={styles.testItem}>

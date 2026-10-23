@@ -1,4 +1,5 @@
 import { calculateFreezingPointAverage, calculateFreezingPointRepeatability } from "../lib"
+import { useFreezingPointStore } from "./freezingPointStore"
 
 type FreezingPointCalculationInput = {
   firstT1: string
@@ -9,5 +10,9 @@ export const useFreezingPointCalculations = ({ firstT1, secondT2 }: FreezingPoin
   const average = calculateFreezingPointAverage(firstT1, secondT2)
   const repeatability = calculateFreezingPointRepeatability(firstT1, secondT2)
 
-  return { average, repeatability }
+  if (useFreezingPointStore.getState().average !== average) {
+    useFreezingPointStore.getState().setAverage(average)
+  }
+
+  return { repeatability }
 }
