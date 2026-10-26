@@ -4,6 +4,7 @@ import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useFlashPointStore } from "@/features/flash-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
 import { usePhStore } from "@/features/ph"
+import { useAutoIgnitionStore } from "@/features/auto-ignition"
 import { useFreezingPointStore } from "@/features/freezing-point"
 import { usePourPointStore } from "@/features/pour-point"
 import {
@@ -27,6 +28,7 @@ beforeEach(() => {
   useBoilingPointStore.getState().setAverage("246,3")
   usePourPointStore.getState().setAverage("-21")
   useFreezingPointStore.getState().setAverage("-24")
+  useAutoIgnitionStore.getState().setAverage("351")
   useKinematicViscosity100Store.getState().setResults({
     average: "7,333",
     firstTAverage: "239,65",
@@ -164,6 +166,23 @@ describe("ГОСТ 20287 uncertainty in the protocol", () => {
     expect(freezingPointRow?.uncertainty).toBe("1")
     expect(freezingPointExportRow?.result).toBe("-24")
     expect(freezingPointExportRow?.uncertainty).toBe("1")
+  })
+})
+
+describe("ГОСТ 12.1.044 uncertainty in the protocol", () => {
+  test("shows the auto-ignition value and uncertainty in results and exported document data", () => {
+    const autoIgnitionRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "autoIgnition",
+    )
+    const autoIgnitionExportRow = buildProtocolDocument(
+      initialTestData,
+      initialVisibleTests,
+    ).results.find((row) => row.method.includes("ГОСТ 12.1.044"))
+
+    expect(autoIgnitionRow?.result).toBe("351")
+    expect(autoIgnitionRow?.uncertainty).toBe("8")
+    expect(autoIgnitionExportRow?.result).toBe("351")
+    expect(autoIgnitionExportRow?.uncertainty).toBe("8")
   })
 })
 

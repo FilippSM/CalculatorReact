@@ -1,4 +1,7 @@
-import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
+import {
+  calculateGost121044Uncertainty,
+  useAutoIgnitionStore,
+} from "@/features/auto-ignition"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
 import {
   calculateGost18995Uncertainty as calculateGost189956BoilingPointUncertainty,
@@ -260,6 +263,14 @@ const resolveFreezingPointUncertainty = (): string => {
   return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
 }
 
+const resolveAutoIgnitionUncertainty = (): string => {
+  const result = calculateGost121044Uncertainty({
+    measuredAutoIgnitionTemperature: useAutoIgnitionStore.getState().average,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
 const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): string => {
   switch (id) {
     case "flashPoint":
@@ -303,7 +314,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "baseNumber":
       return resolveBaseNumberFieldValue(formData, "baseNumberAverage")
     case "autoIgnition":
-      return resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
+      return useAutoIgnitionStore.getState().average
   }
 }
 
@@ -358,6 +369,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "freezingPoint") {
     return resolveFreezingPointUncertainty()
+  }
+
+  if (id === "autoIgnition") {
+    return resolveAutoIgnitionUncertainty()
   }
 
   return "0"

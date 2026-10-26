@@ -13,7 +13,7 @@ import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
-import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
+import { useAutoIgnitionStore } from "@/features/auto-ignition"
 import {
   useKinematicViscosity100Store,
   useKinematicViscosity40Store,
@@ -203,7 +203,7 @@ export const buildProtocolDocument = (
                             : test.id === "baseNumber"
                               ? resolveBaseNumberFieldValue(formData, "baseNumberAverage")
                               : test.id === "autoIgnition"
-                                ? resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
+                                ? useAutoIgnitionStore.getState().average
                                 : test.id === "waterContent"
                                   ? resolveWaterContentAverage({
                                       firstSample: formData.waterContentFirstSampleMass,
