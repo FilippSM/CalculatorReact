@@ -3,6 +3,7 @@ import { useCrystallizationStore } from "@/features/crystallization"
 import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useFlashPointStore } from "@/features/flash-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
+import { useMechanicalImpuritiesGost6479Store } from "@/features/mechanical-impurities-gost-6479"
 import { usePhStore } from "@/features/ph"
 import { useAutoIgnitionStore } from "@/features/auto-ignition"
 import { useFreezingPointStore } from "@/features/freezing-point"
@@ -22,6 +23,13 @@ import { buildProtocolDocument } from "./protocolDocument"
 beforeEach(() => {
   useFlashPointStore.getState().setAverageCorrectedTemperature("243")
   useMechanicalImpuritiesStore.getState().setAverage("0,0019")
+  useMechanicalImpuritiesGost6479Store.getState().setResults({
+    firstX1: "0,012",
+    secondX2: "0,014",
+    average: "0,013",
+    repeatabilityValue: "0,002",
+    repeatabilityIsError: false,
+  })
   usePhStore.getState().setAverage("8,7")
   useCrystallizationStartStore.getState().setAverage("-20,3")
   useCrystallizationStore.getState().setAverage("-14,8")
@@ -68,6 +76,23 @@ describe("ГОСТ 6370 uncertainty in the protocol", () => {
 
     expect(impuritiesRow?.uncertainty).toBe("0,0018")
     expect(impuritiesExportRow?.uncertainty).toBe("0,0018")
+  })
+})
+
+describe("ГОСТ 6479 uncertainty in the protocol", () => {
+  test("shows the calculated value in results and exported document data", () => {
+    const impuritiesRow = buildCalcXUncertaintyRows(initialTestData, initialVisibleTests).find(
+      (row) => row.id === "mechanicalImpuritiesGost6479",
+    )
+    const impuritiesExportRow = buildProtocolDocument(
+      initialTestData,
+      initialVisibleTests,
+    ).results.find((row) => row.method.includes("ГОСТ 6479"))
+
+    expect(impuritiesRow?.result).toBe("0,013")
+    expect(impuritiesRow?.uncertainty).toBe("0,018")
+    expect(impuritiesExportRow?.result).toBe("0,013")
+    expect(impuritiesExportRow?.uncertainty).toBe("0,018")
   })
 })
 

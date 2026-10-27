@@ -36,7 +36,10 @@ import {
   formatToSignificantDigits,
   useMechanicalImpuritiesStore,
 } from "@/features/mechanical-impurities"
-import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
+import {
+  calculateGost6479Uncertainty,
+  useMechanicalImpuritiesGost6479Store,
+} from "@/features/mechanical-impurities-gost-6479"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { calculateGost28084Uncertainty, usePhStore } from "@/features/ph"
 import {
@@ -165,6 +168,17 @@ const resolveMechanicalImpuritiesUncertainty = (formData: InitialTestData): stri
   return result === null ? "" : formatToSignificantDigits(result.ExpandedUncertainty, 2)
 }
 
+const resolveMechanicalImpuritiesGost6479Uncertainty = (formData: InitialTestData): string => {
+  const result = calculateGost6479Uncertainty({
+    filterWithImpuritiesMass: formData.mechanicalImpuritiesGost6479FirstM1,
+    cleanFilterMass: formData.mechanicalImpuritiesGost6479FirstM2,
+    sampleMass: formData.mechanicalImpuritiesGost6479FirstM3,
+    meanMassFraction: useMechanicalImpuritiesGost6479Store.getState().average,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
 const resolvePhUncertainty = (formData: InitialTestData): string => {
   const result = calculateGost28084Uncertainty({
     measuredPh: usePhStore.getState().average,
@@ -278,7 +292,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "mechanicalImpurities":
       return useMechanicalImpuritiesStore.getState().average
     case "mechanicalImpuritiesGost6479":
-      return resolveMechanicalImpuritiesGost6479FieldValue(formData, "mechanicalImpuritiesGost6479Average")
+      return useMechanicalImpuritiesGost6479Store.getState().average
     case "densityAt20":
       return resolveDensityAt20FieldValue(formData, "densityAt20Average")
     case "densityAt20Gost18995":
@@ -325,6 +339,10 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
 
   if (id === "mechanicalImpurities") {
     return resolveMechanicalImpuritiesUncertainty(formData)
+  }
+
+  if (id === "mechanicalImpuritiesGost6479") {
+    return resolveMechanicalImpuritiesGost6479Uncertainty(formData)
   }
 
   if (id === "densityAt20") {

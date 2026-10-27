@@ -25,8 +25,8 @@ import {
   resolveMechanicalImpuritiesFieldValue,
 } from "@/features/mechanical-impurities"
 import {
-  calculateMechanicalImpuritiesGost6479Repeatability,
   resolveMechanicalImpuritiesGost6479FieldValue,
+  useMechanicalImpuritiesGost6479Store,
 } from "@/features/mechanical-impurities-gost-6479"
 import { calculatePourPointRepeatability, resolvePourPointFieldValue } from "@/features/pour-point"
 import { calculateFreezingPointRepeatability, resolveFreezingPointFieldValue } from "@/features/freezing-point"
@@ -208,16 +208,7 @@ export const CalcXProtocolPrintView = ({ formData, visibleTests, showUncertainty
                               ).isError) ||
                             (test.id === "mechanicalImpuritiesGost6479" &&
                               field === "mechanicalImpuritiesGost6479Repeatability" &&
-                              calculateMechanicalImpuritiesGost6479Repeatability(
-                                resolveMechanicalImpuritiesGost6479FieldValue(
-                                  formData,
-                                  "mechanicalImpuritiesGost6479FirstX1",
-                                ),
-                                resolveMechanicalImpuritiesGost6479FieldValue(
-                                  formData,
-                                  "mechanicalImpuritiesGost6479SecondX2",
-                                ),
-                              ).isError) ||
+                              useMechanicalImpuritiesGost6479Store.getState().repeatabilityIsError) ||
                             (test.id === "densityAt20" &&
                               field === "densityAt20Repeatability" &&
                               calculateDensityRepeatability(

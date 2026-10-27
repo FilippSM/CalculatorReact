@@ -6,7 +6,7 @@ import { useCrystallizationStartStore } from "@/features/crystallization-start"
 import { useCrystallizationStore } from "@/features/crystallization"
 import { useBoilingPointStore } from "@/features/boiling-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
-import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
+import { useMechanicalImpuritiesGost6479Store } from "@/features/mechanical-impurities-gost-6479"
 import { usePourPointStore } from "@/features/pour-point"
 import { useFreezingPointStore } from "@/features/freezing-point"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
@@ -168,10 +168,7 @@ export const buildProtocolDocument = (
             : test.id === "mechanicalImpurities"
             ? useMechanicalImpuritiesStore.getState().average
             : test.id === "mechanicalImpuritiesGost6479"
-              ? resolveMechanicalImpuritiesGost6479FieldValue(
-                  formData,
-                  "mechanicalImpuritiesGost6479Average",
-                )
+              ? useMechanicalImpuritiesGost6479Store.getState().average
               : test.id === "densityAt20"
               ? resolveDensityAt20FieldValue(formData, "densityAt20Average")
               : test.id === "densityAt20Gost18995"

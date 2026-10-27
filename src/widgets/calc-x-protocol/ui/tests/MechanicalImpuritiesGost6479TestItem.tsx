@@ -1,4 +1,7 @@
-import { useMechanicalImpuritiesGost6479Calculations } from "@/features/mechanical-impurities-gost-6479"
+import {
+  useMechanicalImpuritiesGost6479Calculations,
+  useMechanicalImpuritiesGost6479Store,
+} from "@/features/mechanical-impurities-gost-6479"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
@@ -19,7 +22,7 @@ if (!testConfig) {
 }
 
 export const MechanicalImpuritiesGost6479TestItem = ({ number, formData, updateTestData }: Props) => {
-  const { firstX1, secondX2, average, repeatability } = useMechanicalImpuritiesGost6479Calculations({
+  useMechanicalImpuritiesGost6479Calculations({
     firstM1: formData.mechanicalImpuritiesGost6479FirstM1,
     firstM2: formData.mechanicalImpuritiesGost6479FirstM2,
     firstM3: formData.mechanicalImpuritiesGost6479FirstM3,
@@ -27,6 +30,13 @@ export const MechanicalImpuritiesGost6479TestItem = ({ number, formData, updateT
     secondM2: formData.mechanicalImpuritiesGost6479SecondM2,
     secondM3: formData.mechanicalImpuritiesGost6479SecondM3,
   })
+  const firstX1 = useMechanicalImpuritiesGost6479Store((state) => state.firstX1)
+  const secondX2 = useMechanicalImpuritiesGost6479Store((state) => state.secondX2)
+  const average = useMechanicalImpuritiesGost6479Store((state) => state.average)
+  const repeatabilityValue = useMechanicalImpuritiesGost6479Store((state) => state.repeatabilityValue)
+  const repeatabilityIsError = useMechanicalImpuritiesGost6479Store(
+    (state) => state.repeatabilityIsError,
+  )
 
   return (
     <div className={styles.testItem}>
@@ -149,8 +159,8 @@ export const MechanicalImpuritiesGost6479TestItem = ({ number, formData, updateT
                 </td>
                 <td>
                   <Input
-                    className={clsx(styles.tableInput, repeatability.isError && styles.tableInputError)}
-                    value={repeatability.value}
+                    className={clsx(styles.tableInput, repeatabilityIsError && styles.tableInputError)}
+                    value={repeatabilityValue}
                     placeholder={initialTestData.mechanicalImpuritiesGost6479Repeatability}
                     readOnly
                   />
