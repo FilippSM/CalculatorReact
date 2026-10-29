@@ -18,7 +18,7 @@ export const CalcXProtocol = () => {
   const setRegistrationNumber = useRegistrationNumberStore((state) => state.setRegistrationNumber)
   const [testData, setTestData] = useState(initialTestData)
   const [visibleTests, setVisibleTests] = useState(initialVisibleTests)
-  const [showUncertainty, setShowUncertainty] = useState(false)
+  const [showUncertainty, setShowUncertainty] = useState(true)
   const [exporting, setExporting] = useState<"primaryPdf" | "pdf" | "docx" | null>(null)
   const formData = { ...initialTestData, ...testData, registrationNumber }
 

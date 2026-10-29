@@ -70,7 +70,8 @@ const GROUPS = {
       "waterContent",
       "pourPoint",
       "freezingPoint",
-      "ph",
+      "crystallizationStart",
+      "crystallization",
     ],
   },
   accreditationVI: {
@@ -85,6 +86,8 @@ const GROUPS = {
       "waterContent",
       "pourPoint",
       "freezingPoint",
+      "crystallizationStart",
+      "crystallization",
     ],
   },
   accreditationAntifreeze: {
