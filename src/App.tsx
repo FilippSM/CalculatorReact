@@ -1,4 +1,5 @@
 import { Routing } from "./app/routing/routes"
+import { Footer } from "./widgets/footer"
 import { Header } from "./widgets/header"
 import { ParticlesBackground } from "./widgets/particles-background"
 import styles from "./App.module.scss"
@@ -9,7 +10,10 @@ function App() {
       <ParticlesBackground />
       <div className={styles.content}>
         <Header />
-        <Routing />
+        <main className={styles.main}>
+          <Routing />
+        </main>
+        <Footer />
       </div>
     </>
   )
