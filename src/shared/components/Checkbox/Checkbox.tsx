@@ -5,12 +5,15 @@ import styles from "./Checkbox.module.scss"
 
 export type CheckboxProps = {
   label?: ReactNode
+  /** When true, clicking the label text also toggles the checkbox. Default: false */
+  labelClickable?: boolean
   onValueChange?: (checked: boolean) => void
 } & Omit<ComponentPropsWithRef<"input">, "type">
 
 export const Checkbox = ({
   id,
   label,
+  labelClickable = false,
   className,
   disabled,
   onChange,
@@ -26,21 +29,36 @@ export const Checkbox = ({
     onChange?.(event)
   }
 
+  const labelClassName = clsx(styles.label, labelClickable && styles.labelClickable)
+
   return (
-    <label
-      className={clsx(styles.wrapper, styles[`wrapper--${theme}`], disabled && styles.disabled, className)}
-      htmlFor={checkboxId}
+    <div
+      className={clsx(
+        styles.wrapper,
+        styles[`wrapper--${theme}`],
+        disabled && styles.disabled,
+        className,
+      )}
     >
-      <input
-        {...rest}
-        id={checkboxId}
-        className={styles.input}
-        type="checkbox"
-        disabled={disabled}
-        onChange={handleChange}
-      />
-      <span className={styles.control} aria-hidden="true" />
-      {label && <span className={styles.label}>{label}</span>}
-    </label>
+      <label className={styles.controlLabel} htmlFor={checkboxId}>
+        <input
+          {...rest}
+          id={checkboxId}
+          className={styles.input}
+          type="checkbox"
+          disabled={disabled}
+          onChange={handleChange}
+        />
+        <span className={styles.control} aria-hidden="true" />
+      </label>
+      {label &&
+        (labelClickable ? (
+          <label className={labelClassName} htmlFor={checkboxId}>
+            {label}
+          </label>
+        ) : (
+          <span className={labelClassName}>{label}</span>
+        ))}
+    </div>
   )
 }

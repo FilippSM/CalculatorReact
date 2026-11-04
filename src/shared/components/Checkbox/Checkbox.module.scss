@@ -10,7 +10,6 @@
   gap: 8px;
   align-items: center;
   font-size: var(--font-size-m);
-  cursor: pointer;
   user-select: none;
 
   &--light {
@@ -24,10 +23,15 @@
   }
 }
 
+.controlLabel {
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
 .control {
   position: relative;
   display: grid;
-  flex-shrink: 0;
   place-items: center;
   width: 26px;
   height: 26px;
@@ -52,6 +56,11 @@
 
 .label {
   line-height: 1.4;
+  cursor: default;
+}
+
+.labelClickable {
+  cursor: pointer;
 }
 
 .input {
@@ -84,9 +93,13 @@
   --checkbox-checked-border: #{color(dark, 300)};
 
   color: color(light, 900);
-  cursor: not-allowed;
+
+  .controlLabel,
+  .label {
+    cursor: not-allowed;
+  }
 }
 
-.wrapper:not(.disabled):hover .control {
+.wrapper:not(.disabled) .controlLabel:hover .control {
   border-color: color(accent, 300);
 }

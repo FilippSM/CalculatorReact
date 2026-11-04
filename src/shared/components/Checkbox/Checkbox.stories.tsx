@@ -10,10 +10,13 @@ const meta = {
     layout: "centered",
   },
   args: {
-    label: "Checkbox",
+    label: "Only box",
   },
   argTypes: {
     disabled: {
+      type: "boolean",
+    },
+    labelClickable: {
       type: "boolean",
     },
     onChange: {
@@ -25,8 +28,18 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
-  args: {},
+export const OnlyBox: Story = {
+  args: {
+    label: "Only box",
+    labelClickable: false,
+  },
+}
+
+export const BoxAndText: Story = {
+  args: {
+    label: "Box and text",
+    labelClickable: true,
+  },
 }
 
 export const Checked: Story = {
