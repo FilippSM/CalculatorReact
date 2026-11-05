@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 import { Checkbox } from "@/shared/components/Checkbox"
 import clsx from "clsx"
+import { scrollToCalcXTest } from "../model/calcXTestAnchor"
 import { testVisibilityConfig, type TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
 import styles from "./CalcXProtocol.module.scss"
 
@@ -219,6 +220,7 @@ export const CalcXTestVisibilitySelector = ({
               checked={isActive}
               className={clsx(styles.testFilterItem, !isActive && styles.testFilterItemInactive)}
               label={number !== null ? `${number}. ${label}` : label}
+              onLabelClick={isActive ? () => scrollToCalcXTest(id) : undefined}
               onValueChange={(checked) => handleIndicatorChange(id, checked)}
             />
           )

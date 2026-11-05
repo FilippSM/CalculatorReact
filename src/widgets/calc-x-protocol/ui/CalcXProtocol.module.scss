@@ -172,7 +172,8 @@
   border-radius: 2px;
 }
 
-.section > .testItem + .testItem {
+.section > .testItem + .testItem,
+.section > [id^="calc-x-test-"] + [id^="calc-x-test-"] {
   margin-top: 15px;
 }
 

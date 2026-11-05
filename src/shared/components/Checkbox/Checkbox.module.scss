@@ -55,12 +55,19 @@
 }
 
 .label {
+  display: inline-block;
   line-height: 1.4;
   cursor: default;
 }
 
-.labelClickable {
+.labelClickable,
+.labelAction {
   cursor: pointer;
+}
+
+.labelAction:focus-visible {
+  outline: 2px solid color(accent, 100);
+  outline-offset: 2px;
 }
 
 .input {

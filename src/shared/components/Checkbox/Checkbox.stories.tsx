@@ -22,6 +22,9 @@ const meta = {
     onChange: {
       action: "changed",
     },
+    onLabelClick: {
+      action: "labelClicked",
+    },
   },
 } satisfies Meta<typeof Checkbox>
 
@@ -39,6 +42,14 @@ export const BoxAndText: Story = {
   args: {
     label: "Box and text",
     labelClickable: true,
+  },
+}
+
+export const LabelAction: Story = {
+  args: {
+    label: "Scroll on label click",
+    labelClickable: false,
+    defaultChecked: true,
   },
 }
 

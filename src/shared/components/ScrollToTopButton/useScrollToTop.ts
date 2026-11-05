@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { SCROLL_BEHAVIOR } from "@/shared/lib/scroll"
 
 const DEFAULT_THRESHOLD_PX = 300
 
@@ -35,7 +36,7 @@ export const useScrollToTop = (threshold = DEFAULT_THRESHOLD_PX) => {
   }, [threshold])
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    window.scrollTo({ top: 0, behavior: SCROLL_BEHAVIOR })
   }
 
   return { isVisible, scrollToTop }
