@@ -23,7 +23,7 @@ export const constansVisc: Viscosity[] = [
     { id: 145, diameter: 1.16, constant: 0.1056, calibration: false },
     { id: 691, diameter: 1.16, constant: 0.09725, calibration: false },
     { id: 5, diameter: 1.52, constant: 0.337121, calibration: false },
-    { id: 3595, diameter: 1.52, constant: 0.333743, calibration: false},
+    { id: 3595, diameter: 1.52, constant: 0.31816, calibration: false},
     { id: 3555, diameter: 1.52, constant: 0.322547, calibration: true},
     { id: 745, diameter: 2.10, constant: 1.129067, calibration: true},
     { id: 769, diameter: 2.10, constant: 1.090, calibration: false },
