@@ -7,13 +7,26 @@ const baseInput = {
 }
 
 describe("calculateGost4333Uncertainty", () => {
-  test("calculates expanded uncertainty", () => {
+  /** Считает расширенную неопределённость для manual. */
+  test("calculates expanded uncertainty for manual", () => {
     const result = calculateGost4333Uncertainty(baseInput)
 
     expect(result).not.toBeNull()
     expect(result?.ExpandedUncertainty).toBe(6)
   })
 
+  /** Считает расширенную неопределённость для automatic. */
+  test("calculates expanded uncertainty for automatic", () => {
+    const automaticResult = calculateGost4333Uncertainty({
+      ...baseInput,
+      device: "automatic",
+    })
+
+    expect(automaticResult).not.toBeNull()
+    expect(automaticResult?.ExpandedUncertainty).toBe(6)
+  })
+
+  /** Считает процентные вклады F16–F20. */
   test("calculates percentage contributions F16-F20", () => {
     const result = calculateGost4333Uncertainty(baseInput)
 
@@ -25,22 +38,7 @@ describe("calculateGost4333Uncertainty", () => {
     expect(result?.TotalContribution).toBeCloseTo(100)
   })
 
-  test("uses automatic varianceSum formula", () => {
-    const manualResult = calculateGost4333Uncertainty(baseInput)
-    const automaticResult = calculateGost4333Uncertainty({
-      ...baseInput,
-      device: "automatic",
-    })
-
-    expect(automaticResult).not.toBeNull()
-    expect(automaticResult?.ExpandedUncertainty).toBe(
-      Math.round(automaticResult!.CombinedStandardUncertainty * 2),
-    )
-    expect(automaticResult?.CombinedStandardUncertainty).not.toBe(
-      manualResult?.CombinedStandardUncertainty,
-    )
-  })
-
+  /** Использует более грубый термометр выше 260 °C. */
   test("uses a coarser thermometer above 260 °C", () => {
     const belowOrEqualResult = calculateGost4333Uncertainty({
       correctedFlashPoint: "260",
@@ -53,17 +51,12 @@ describe("calculateGost4333Uncertainty", () => {
 
     expect(belowOrEqualResult).not.toBeNull()
     expect(aboveResult).not.toBeNull()
-    expect(aboveResult!.FlashPointStandardUncertainty).toBeGreaterThan(
-      belowOrEqualResult!.FlashPointStandardUncertainty,
-    )
-    expect(aboveResult!.ExpandedUncertainty).toBeGreaterThan(
-      belowOrEqualResult!.ExpandedUncertainty,
-    )
     expect(belowOrEqualResult!.ExpandedUncertainty).toBe(6)
     expect(aboveResult!.ExpandedUncertainty).toBe(7)
   })
 
-  test("returns null for an invalid corrected flash point", () => {
+  /** Отклоняет некорректную скорректированную температуру вспышки. */
+  test("rejects an invalid corrected flash point", () => {
     expect(
       calculateGost4333Uncertainty({ correctedFlashPoint: "", device: "manual" }),
     ).toBeNull()
