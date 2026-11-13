@@ -26,13 +26,27 @@ describe("calculateGost4333Uncertainty", () => {
     expect(automaticResult?.ExpandedUncertainty).toBe(6)
   })
 
-  /** Считает процентные вклады F16–F20. */
-  test("calculates percentage contributions F16-F20", () => {
+  /** Считает процентные вклады F16–F20 для manual. */
+  test("calculates percentage contributions F16-F20 for manual", () => {
     const result = calculateGost4333Uncertainty(baseInput)
 
     expect(result).not.toBeNull()
     expect(result?.FlashPointContribution).toBeGreaterThan(0)
     expect(result?.PressureContribution).toBeGreaterThan(0)
+    expect(result?.RepeatabilityContribution).toBeGreaterThan(0)
+    expect(result?.SamplingContribution).toBeGreaterThan(0)
+    expect(result?.TotalContribution).toBeCloseTo(100)
+  })
+
+  /** Считает процентные вклады F43, F18–F20 для automatic. */
+  test("calculates percentage contributions F43, F18-F20 for automatic", () => {
+    const result = calculateGost4333Uncertainty({
+      ...baseInput,
+      device: "automatic",
+    })
+
+    expect(result).not.toBeNull()
+    expect(result?.FlashPointAutomaticContribution).toBeGreaterThan(0)
     expect(result?.RepeatabilityContribution).toBeGreaterThan(0)
     expect(result?.SamplingContribution).toBeGreaterThan(0)
     expect(result?.TotalContribution).toBeCloseTo(100)

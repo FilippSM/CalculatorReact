@@ -55,6 +55,7 @@ export type Gost4333UncertaintyInput = {
  * @property SamplingStandardUncertainty E19 — стандартная неопределённость отбора проб, °C.
  * @property CombinedStandardUncertainty G16 — суммарная стандартная неопределённость, °C.
  * @property FlashPointContribution F16 — процентный вклад температуры вспышки.
+ * @property FlashPointAutomaticContribution F43 — процентный вклад температуры вспышки (автоматический прибор).
  * @property PressureContribution F17 — процентный вклад барометрического давления.
  * @property RepeatabilityContribution F18 — процентный вклад повторяемости метода.
  * @property SamplingContribution F19 — процентный вклад отбора проб.
@@ -68,6 +69,7 @@ export type Gost4333UncertaintyResult = {
   SamplingStandardUncertainty: number
   CombinedStandardUncertainty: number
   FlashPointContribution: number
+  FlashPointAutomaticContribution: number
   PressureContribution: number
   RepeatabilityContribution: number
   SamplingContribution: number
@@ -136,7 +138,7 @@ export const calculateGost4333Uncertainty = ({
   if (E12CorrectedFlashPoint === null) {
     return null
   }
-
+ 
   /**
    * H7 — Термометр, погрешность, °C.
    *
@@ -233,15 +235,14 @@ export const calculateGost4333Uncertainty = ({
     100
 
   /**
-   * F43 — процентный вклад температуры вспышки для автоматичесуого прибора.
+   * F43 — процентный вклад температуры вспышки для автоматического прибора.
    *
    * Формула:
    *   F43 = ( E43² / varianceSum ) · 100
    */
-  const F43FlashPointaAuthomaticContribution =
-    (E43FlashPointAutomaticStandardUncertainty / varianceSum) *
-    100
-    
+  const F43FlashPointAutomaticContribution =
+    (E43FlashPointAutomaticStandardUncertainty ** 2 / varianceSum) * 100
+
   /**
    * F17 — процентный вклад барометрического давления.
    *
@@ -279,15 +280,15 @@ export const calculateGost4333Uncertainty = ({
    *   F20 = F43 + F18 + F19
    */
 
-  const  F20TotalContribution =
-  device === "automatic"
-    ? F43FlashPointaAuthomaticContribution +
-      F18RepeatabilityContribution +
-      F19SamplingContribution
-    : F16FlashPointContribution +
-      F17PressureContribution +
-      F18RepeatabilityContribution +
-      F19SamplingContribution
+  const F20TotalContribution =
+    device === "automatic"
+      ? F43FlashPointAutomaticContribution +
+        F18RepeatabilityContribution +
+        F19SamplingContribution
+      : F16FlashPointContribution +
+        F17PressureContribution +
+        F18RepeatabilityContribution +
+        F19SamplingContribution
 
   /**
    * G18 — расширенная неопределённость при k = 2, °C.
@@ -308,6 +309,7 @@ export const calculateGost4333Uncertainty = ({
     SamplingStandardUncertainty: E19SamplingStandardUncertainty,
     CombinedStandardUncertainty: G16CombinedStandardUncertainty,
     FlashPointContribution: F16FlashPointContribution,
+    FlashPointAutomaticContribution: F43FlashPointAutomaticContribution,
     PressureContribution: F17PressureContribution,
     RepeatabilityContribution: F18RepeatabilityContribution,
     SamplingContribution: F19SamplingContribution,
