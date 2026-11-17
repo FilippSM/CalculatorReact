@@ -43,8 +43,8 @@ describe("calculateFlashPointAverage", () => {
     expect(calculateFlashPointAverage("120", "124")).toBe("122")
   })
 
-  /** Полный цикл: pressure 99.5, manual, 120 и 124 → 122. */
-  test("calculates average for manual at 99.5 with 120 and 124", () => {
+  /** Полный цикл: pressure 99.5, manual*/
+  test("calculates average for manual at 99.5", () => {
     const result = calculateFlashPointAverageFromInputs({
       pressure: "99.5",
       firstMeasurementTemperature: "120",
@@ -55,8 +55,8 @@ describe("calculateFlashPointAverage", () => {
     expect(result).toBe("122")
   })
 
-  /** Полный цикл: pressure 99.5, manual, 250 и 254 → 252. */
-  test("calculates average for manual at 99.5 with 250 and 254", () => {
+  /** Полный цикл: pressure 99.5, manual*/
+  test("calculates average for manual at 99.5", () => {
     const result = calculateFlashPointAverageFromInputs({
       pressure: "99.5",
       firstMeasurementTemperature: "250",
@@ -79,8 +79,8 @@ describe("calculateFlashPointAverage", () => {
     expect(result).toBe("123")
   })
 
-  /** Полный цикл: pressure 99.2, manual, 250 и 254 → 253. */
-  test("calculates average for manual at 99.2 with 250 and 254", () => {
+  /** Полный цикл: pressure 99.2, manual*/
+  test("calculates average for manual at 99.2", () => {
     const result = calculateFlashPointAverageFromInputs({
       pressure: "99.2",
       firstMeasurementTemperature: "250",
@@ -91,7 +91,7 @@ describe("calculateFlashPointAverage", () => {
     expect(result).toBe("253")
   })
 
-  /** Полный цикл: pressure 99.5, automatic, 120 и 124 → 122. */
+  /** Полный цикл: pressure 99.5, automatic*/
   test("calculates average for automatic at 99.5 with 120 and 124", () => {
     const result = calculateFlashPointAverageFromInputs({
       pressure: "99.5",
@@ -103,7 +103,7 @@ describe("calculateFlashPointAverage", () => {
     expect(result).toBe("122")
   })
 
-  /** Полный цикл: pressure 99.5, automatic, 250 и 254 → 252. */
+  /** Полный цикл: pressure 99.5, automatic*/
   test("calculates average for automatic at 99.5 with 250 and 254", () => {
     const result = calculateFlashPointAverageFromInputs({
       pressure: "99.5",
@@ -115,7 +115,7 @@ describe("calculateFlashPointAverage", () => {
     expect(result).toBe("252")
   })
 
-  /** Полный цикл: pressure 99.2, automatic, 120 и 124 → 122. */
+  /** Полный цикл: pressure 99.2, automatic*/
   test("calculates average for automatic at 99.2 with 120 and 124", () => {
     const result = calculateFlashPointAverageFromInputs({
       pressure: "99.2",
@@ -127,7 +127,7 @@ describe("calculateFlashPointAverage", () => {
     expect(result).toBe("122")
   })
 
-  /** Полный цикл: pressure 99.2, automatic, 250 и 254 → 252. */
+  /** Полный цикл: pressure 99.2, automatic*/
   test("calculates average for automatic at 99.2 with 250 and 254", () => {
     const result = calculateFlashPointAverageFromInputs({
       pressure: "99.2",
