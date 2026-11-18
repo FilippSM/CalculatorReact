@@ -10,6 +10,10 @@ const MANUAL_DEVICE =
   "Аппарат для определения температуры вспышки в открытом тигле ТВО-ПХП № 1052"
 const AUTOMATIC_DEVICE = "Автоматический прибор"
 
+/** 
+ * Рендерит FlashPointTestItem с управляемым formData для RTL-тестов. 
+ * Renders FlashPointTestItem with controlled formData for RTL tests.
+*/
 const renderFlashPoint = (overrides: Partial<InitialTestData> = {}) => {
   const updateTestData = vi.fn()
 
@@ -34,19 +38,22 @@ const renderFlashPoint = (overrides: Partial<InitialTestData> = {}) => {
   return { ...render(<Wrapper />), updateTestData }
 }
 
-const getDataTable = () => {
-  const heading = screen.getByRole("heading", { name: "Данные:" })
-  const section = heading.closest("div")
-  if (!section) throw new Error("Data section not found")
-  return within(section).getByRole("table")
-}
+/** 
+ * Таблица секции «Данные» по aria-label. 
+ * Data section table by aria-label.
+*/
+const getDataTable = () =>
+  screen.getByRole("table", { name: "Данные температуры вспышки" })
 
 describe("FlashPointTestItem", () => {
   beforeEach(() => {
     useFlashPointStore.getState().clearStore()
   })
 
-  /** Рендерит название испытания и блоки оборудования/данных. */
+  /** 
+   * Рендерит название испытания и блоки оборудования/данных. 
+   * Renders the test name and equipment/data sections.
+   * */
   test("renders flash point form sections", () => {
     renderFlashPoint()
 
