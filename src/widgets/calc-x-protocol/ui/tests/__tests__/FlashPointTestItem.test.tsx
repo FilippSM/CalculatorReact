@@ -3,8 +3,8 @@ import { render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { useState } from "react"
 import { beforeEach, describe, expect, test, vi } from "vitest"
-import { initialTestData, type InitialTestData } from "../../model/initialTestData"
-import { FlashPointTestItem } from "./FlashPointTestItem"
+import { initialTestData, type InitialTestData } from "../../../model/initialTestData"
+import { FlashPointTestItem } from "../FlashPointTestItem"
 
 const MANUAL_DEVICE =
   "Аппарат для определения температуры вспышки в открытом тигле ТВО-ПХП № 1052"
@@ -63,8 +63,8 @@ describe("FlashPointTestItem", () => {
     expect(screen.getByRole("heading", { name: "Данные:" })).toBeInTheDocument()
   })
 
-  /** Manual: pressure 99.5, 120 и 124 → среднее 122 на экране. */
-  test("shows average 122 for manual at pressure 99.5 with 120 and 124", async () => {
+  /** Показывает поправку, повторяемость и среднее для ручного прибора при давлении 99.5. */
+  test("shows correction, repeatability and average for manual at pressure 99.5", async () => {
     renderFlashPoint({
       pressure: "99.5",
       firstMeasurementTemperature: "120",
@@ -81,8 +81,8 @@ describe("FlashPointTestItem", () => {
     expect(within(table).getByDisplayValue("4")).toBeInTheDocument()
   })
 
-  /** Manual: pressure 99.2, 120 и 124 → поправка 1 и среднее 123. */
-  test("shows correction and average 123 for manual at pressure 99.2", async () => {
+  /** Показывает поправку, скорректированные температуры и среднее для ручного прибора при давлении 99.2. */
+  test("shows correction, corrected temperatures and average for manual at pressure 99.2", async () => {
     renderFlashPoint({
       pressure: "99.2",
       firstMeasurementTemperature: "120",
@@ -100,8 +100,25 @@ describe("FlashPointTestItem", () => {
     expect(within(table).getByDisplayValue("125")).toBeInTheDocument()
   })
 
-  /** Automatic: поправка "-", давление не меняет среднее. */
-  test("shows dash correction and average 122 for automatic", async () => {
+  /** Показывает поправку и среднее для автоматического прибора при давлении 99.5. */
+  test("shows dash correction and average for automatic at pressure 99.5", async () => {
+    renderFlashPoint({
+      pressure: "99.5",
+      firstMeasurementTemperature: "120",
+      secondMeasurementTemperature: "124",
+      flashPointEquipmentDevice: AUTOMATIC_DEVICE,
+    })
+
+    const table = getDataTable()
+
+    expect(within(table).getAllByDisplayValue("-")).toHaveLength(2)
+    await waitFor(() => {
+      expect(within(table).getByDisplayValue("122")).toBeInTheDocument()
+    })
+  })
+
+  /** Показывает поправку и среднее для автоматического прибора при давлении 99.2. */
+  test("shows dash correction and average for automatic at pressure 99.2", async () => {
     renderFlashPoint({
       pressure: "99.2",
       firstMeasurementTemperature: "120",
@@ -117,7 +134,7 @@ describe("FlashPointTestItem", () => {
     })
   })
 
-  /** Повторяемость: разница > 8 показывает ошибку. */
+  /** Показывает ошибку повторяемости, если разница температур превышает 8. */
   test("shows repeatability error when temperature difference exceeds 8", () => {
     renderFlashPoint({
       pressure: "99.5",
@@ -130,7 +147,7 @@ describe("FlashPointTestItem", () => {
     expect(within(table).getByDisplayValue("10 > r (Error)")).toBeInTheDocument()
   })
 
-  /** Давление в таблице только для чтения. */
+  /** Сохраняет поля давления только для чтения в таблице данных. */
   test("keeps pressure inputs read-only in the data table", () => {
     renderFlashPoint({
       pressure: "99.5",
@@ -147,8 +164,8 @@ describe("FlashPointTestItem", () => {
     }
   })
 
-  /** Ввод температуры вызывает updateTestData и пересчитывает среднее. */
-  test("updates average after typing measurement temperatures", async () => {
+  /** Обновляет данные формы и среднее после ввода температур измерений. */
+  test("updates form data and average after typing measurement temperatures", async () => {
     const user = userEvent.setup()
     const { updateTestData } = renderFlashPoint({
       pressure: "99.5",
