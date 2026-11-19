@@ -20,13 +20,13 @@ export const Header = () => {
       <Container className={styles.container}>
         <nav className={styles.nav}>
           <Button asChild variant="secondary">
+            <Link to={Path.Main}>Main</Link>
+          </Button>
+          <Button asChild variant="secondary">
             <Link to={Path.Tests}>Test</Link>
           </Button>
           <Button asChild variant="secondary">
             <Link to={Path.Login}>Login</Link>
-          </Button>
-          <Button asChild variant="secondary">
-            <Link to={Path.Main}>Main</Link>
           </Button>
           <Button asChild variant="secondary">
             <Link to={Path.Results}>Results</Link>

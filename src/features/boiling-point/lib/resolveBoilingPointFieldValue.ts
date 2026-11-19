@@ -1,3 +1,5 @@
+import { useBoilingPointStore } from "../model/boilingPointStore"
+
 const REPEATABILITY_LIMIT = 0.2
 
 type BoilingPointFormSlice = {
@@ -5,7 +7,7 @@ type BoilingPointFormSlice = {
   boilingPointSecondX0: string
 } & Record<string, string>
 
-const calculateAverage = (first: string, second: string): string => {
+export const calculateBoilingPointAverage = (first: string, second: string): string => {
   const firstNum = parseFloat(first.replace(",", "."))
   const secondNum = parseFloat(second.replace(",", "."))
 
@@ -38,7 +40,7 @@ export const resolveBoilingPointFieldValue = <T extends BoilingPointFormSlice>(
   field: keyof T & string,
 ): string => {
   if (field === "boilingPointAverage") {
-    return calculateAverage(formData.boilingPointFirstX0, formData.boilingPointSecondX0)
+    return useBoilingPointStore.getState().average
   }
 
   if (field === "boilingPointRepeatability") {
@@ -70,5 +72,3 @@ export const calculateBoilingPointRepeatability = (
 
   return { value: formattedDifference, isError: false }
 }
-
-export const calculateBoilingPointAverage = calculateAverage

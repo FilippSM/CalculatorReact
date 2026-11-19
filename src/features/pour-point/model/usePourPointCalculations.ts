@@ -1,4 +1,5 @@
 import { calculatePourPointAverage, calculatePourPointRepeatability } from "../lib"
+import { usePourPointStore } from "./pourPointStore"
 
 type PourPointCalculationInput = {
   firstT1: string
@@ -9,5 +10,9 @@ export const usePourPointCalculations = ({ firstT1, secondT2 }: PourPointCalcula
   const average = calculatePourPointAverage(firstT1, secondT2)
   const repeatability = calculatePourPointRepeatability(firstT1, secondT2)
 
-  return { average, repeatability }
+  if (usePourPointStore.getState().average !== average) {
+    usePourPointStore.getState().setAverage(average)
+  }
+
+  return { repeatability }
 }

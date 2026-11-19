@@ -1,4 +1,6 @@
+import { usePhCalculations, usePhStore } from "@/features/ph"
 import { Input } from "@/shared/components/Input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
 import { calcXTestConfig } from "../../model/calcXTestConfig"
@@ -17,41 +19,20 @@ if (!testConfig) {
   throw new Error(`Test config not found for id: ${TEST_ID}`)
 }
 
-const REPEATABILITY_LIMIT = 0.1
-
-const calculateAverage = (first: string, second: string): string => {
-  const firstNum = parseFloat(first.replace(",", "."))
-  const secondNum = parseFloat(second.replace(",", "."))
-
-  if (isNaN(firstNum) || isNaN(secondNum)) return ""
-
-  const average = (firstNum + secondNum) / 2
-  return average.toFixed(1).replace(".", ",")
-}
-
-const calculateRepeatability = (first: string, second: string): { value: string; isError: boolean } => {
-  const firstNum = parseFloat(first.replace(",", "."))
-  const secondNum = parseFloat(second.replace(",", "."))
-
-  if (isNaN(firstNum) || isNaN(secondNum)) return { value: "", isError: false }
-
-  const difference = Math.abs(firstNum - secondNum)
-  const roundedDifference = Math.round(difference * 100) / 100
-  const formattedDifference = roundedDifference.toFixed(2).replace(".", ",")
-
-  if (roundedDifference > REPEATABILITY_LIMIT) {
-    return {
-      value: `${formattedDifference} > r=0,1 (Error)`,
-      isError: true,
-    }
-  }
-
-  return { value: formattedDifference, isError: false }
-}
+const phMeterOptions = [
+  { value: "J0088992", label: "Портативный pH/мВ/°C-метр HI8424 № J0088992" },
+  { value: "other", label: "ph-метр" },
+] as const
 
 export const PhTestItem = ({ number, formData, updateTestData }: Props) => {
-  const repeatability = calculateRepeatability(formData.phFirstPh, formData.phSecondPh)
-  const average = calculateAverage(formData.phFirstPh, formData.phSecondPh)
+  const { repeatability } = usePhCalculations({
+    firstPh: formData.phFirstPh,
+    secondPh: formData.phSecondPh,
+  })
+  const average = usePhStore((state) => state.average)
+
+  const selectedPhMeter =
+    phMeterOptions.find((option) => option.label === formData.phEquipmentMeter)?.value ?? phMeterOptions[0].value
 
   return (
     <div className={styles.testItem}>
@@ -68,12 +49,26 @@ export const PhTestItem = ({ number, formData, updateTestData }: Props) => {
 
       <div className={styles.equipmentBlock}>
         <h3>Оборудование:</h3>
-        <Input
-          className={styles.fullWidthInput}
-          value={formData.phEquipmentMeter}
-          placeholder={initialTestData.phEquipmentMeter}
-          onValueChange={(value) => updateTestData("phEquipmentMeter", value)}
-        />
+        <Select
+          value={selectedPhMeter}
+          onValueChange={(value) => {
+            const option = phMeterOptions.find((item) => item.value === value)
+            if (option) {
+              updateTestData("phEquipmentMeter", option.label)
+            }
+          }}
+        >
+          <SelectTrigger className={styles.fullWidthSelect}>
+            <SelectValue placeholder={initialTestData.phEquipmentMeter} />
+          </SelectTrigger>
+          <SelectContent>
+            {phMeterOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Input
           className={styles.fullWidthInput}
           value={formData.phEquipmentThermometer}

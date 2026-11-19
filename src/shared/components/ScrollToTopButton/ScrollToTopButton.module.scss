@@ -1,0 +1,41 @@
+@use "../../styles/colors" as *;
+
+.button {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  color: color(light, 100);
+  cursor: pointer;
+  background-color: color(primary, 100);
+  border: none;
+  border-radius: 50%;
+  outline: none;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color(secondary, 100);
+    outline-offset: 2px;
+  }
+}
+
+.icon {
+  display: block;
+  color: inherit;
+}
+
+@media print {
+  .button {
+    display: none !important;
+  }
+}

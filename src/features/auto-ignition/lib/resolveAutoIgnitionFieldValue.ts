@@ -1,4 +1,4 @@
-import { calculateAutoIgnitionAverage } from "./calculateAutoIgnitionAverage"
+import { useAutoIgnitionStore } from "../model/autoIgnitionStore"
 import { calculateAutoIgnitionRepeatability } from "./calculateAutoIgnitionRepeatability"
 
 type AutoIgnitionFormSlice = {
@@ -12,11 +12,12 @@ export const resolveAutoIgnitionFieldValue = <T extends AutoIgnitionFormSlice>(
   field: keyof T & string,
 ): string => {
   if (field === "autoIgnitionAverage") {
-    return calculateAutoIgnitionAverage(formData.autoIgnitionFirstT1, formData.autoIgnitionSecondT2)
+    return useAutoIgnitionStore.getState().average
   }
 
   if (field === "autoIgnitionRepeatability") {
-    return calculateAutoIgnitionRepeatability(formData.autoIgnitionFirstT1, formData.autoIgnitionSecondT2).value
+    return calculateAutoIgnitionRepeatability(formData.autoIgnitionFirstT1, formData.autoIgnitionSecondT2)
+      .value
   }
 
   return formData[field]

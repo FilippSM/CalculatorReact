@@ -102,7 +102,10 @@ export const FlashPointTestItem = ({ number, formData, updateTestData }: Props) 
       <div className={styles.tableSection}>
         <h3>Данные:</h3>
         <div className={styles.tableScroll}>
-          <table className={styles.testTable}>
+          <table
+            className={styles.testTable}
+            aria-label="Данные температуры вспышки"
+          >
             <thead>
               <tr>
                 {testConfig.groupHeaders?.map((group, index) => (

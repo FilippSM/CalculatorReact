@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 import { Checkbox } from "@/shared/components/Checkbox"
 import clsx from "clsx"
+import { scrollToCalcXTest } from "../model/calcXTestAnchor"
 import { testVisibilityConfig, type TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
 import styles from "./CalcXProtocol.module.scss"
 
@@ -41,11 +42,11 @@ const GROUPS = {
   },
   trtsWithoutAdd: {
     label: "Испытания по ТР ТС 030/2012 для масел без присадок",
-    members: ["flashPoint", "mechanicalImpurities", "autoIgnition"],
+    members: ["flashPoint", "mechanicalImpurities", "waterContent", "autoIgnition"],
   },
   trtsWithAdd: {
     label: "Испытания по ТР ТС 030/2012 для масел с присадками",
-    members: ["flashPoint", "mechanicalImpurities", "waterContent", "autoIgnition"],
+    members: ["flashPoint", "mechanicalImpurities", "autoIgnition"],
   },
   trtsAntifreeze: {
     label: "Испытания по ТР ТС 030/2012 для антифризов",
@@ -70,7 +71,8 @@ const GROUPS = {
       "waterContent",
       "pourPoint",
       "freezingPoint",
-      "ph",
+      "crystallizationStart",
+      "crystallization",
     ],
   },
   accreditationVI: {
@@ -85,6 +87,8 @@ const GROUPS = {
       "waterContent",
       "pourPoint",
       "freezingPoint",
+      "crystallizationStart",
+      "crystallization",
     ],
   },
   accreditationAntifreeze: {
@@ -216,6 +220,7 @@ export const CalcXTestVisibilitySelector = ({
               checked={isActive}
               className={clsx(styles.testFilterItem, !isActive && styles.testFilterItemInactive)}
               label={number !== null ? `${number}. ${label}` : label}
+              onLabelClick={isActive ? () => scrollToCalcXTest(id) : undefined}
               onValueChange={(checked) => handleIndicatorChange(id, checked)}
             />
           )

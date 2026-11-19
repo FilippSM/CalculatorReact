@@ -10,14 +10,20 @@ const meta = {
     layout: "centered",
   },
   args: {
-    label: "Checkbox",
+    label: "Only box",
   },
   argTypes: {
     disabled: {
       type: "boolean",
     },
+    labelClickable: {
+      type: "boolean",
+    },
     onChange: {
       action: "changed",
+    },
+    onLabelClick: {
+      action: "labelClicked",
     },
   },
 } satisfies Meta<typeof Checkbox>
@@ -25,8 +31,26 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
-  args: {},
+export const OnlyBox: Story = {
+  args: {
+    label: "Only box",
+    labelClickable: false,
+  },
+}
+
+export const BoxAndText: Story = {
+  args: {
+    label: "Box and text",
+    labelClickable: true,
+  },
+}
+
+export const LabelAction: Story = {
+  args: {
+    label: "Scroll on label click",
+    labelClickable: false,
+    defaultChecked: true,
+  },
 }
 
 export const Checked: Story = {

@@ -5,8 +5,8 @@ export type MechanicalImpuritiesGost6479RepeatabilityResult = {
   isError: boolean
 }
 
-/** Норма повторяемости r по ГОСТ 6479 фиксированная: 0,0025. */
-export const MECHANICAL_IMPURITIES_GOST6479_REPEATABILITY_LIMIT = 0.0025
+/** Норма повторяемости r по ГОСТ 6479 фиксированная: 0,025. */
+export const MECHANICAL_IMPURITIES_GOST6479_REPEATABILITY_LIMIT = 0.025
 
 const REPEATABILITY_SIGNIFICANT_DIGITS = 2
 
@@ -26,7 +26,7 @@ const formatLimit = () =>
 
 /**
  * Повторяемость по ГОСТ 6479: |X₁ − X₂|, округлённая до 2 значащих цифр.
- * Если модуль разности > r = 0,0025 → «разность > r=0,0025 (Error)»,
+ * Если модуль разности > r = 0,025 → «разность > r=0,025 (Error)»,
  * иначе выводится только значение разности.
  */
 export const calculateMechanicalImpuritiesGost6479Repeatability = (

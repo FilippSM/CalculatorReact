@@ -15,7 +15,10 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "test:file": "vitest run --reporter=verbose"
+    "test:file": "vitest run --reporter=verbose",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -47,6 +50,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "4.1.1",
     "@eslint/js": "^9.25.0",
+    "@playwright/test": "^1.65.1",
     "@storybook/addon-a11y": "9.1.4",
     "@storybook/addon-docs": "9.1.4",
     "@storybook/addon-onboarding": "9.1.4",
@@ -68,7 +72,7 @@
     "eslint-plugin-storybook": "9.1.4",
     "globals": "^16.0.0",
     "jsdom": "^27.4.0",
-    "playwright": "^1.55.0",
+    "playwright": "^1.65.1",
     "prettier": "3.6.2",
     "sass": "^1.97.1",
     "storybook": "9.1.4",

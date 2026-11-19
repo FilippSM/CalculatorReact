@@ -27,6 +27,7 @@ export default defineConfig({
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
+      '**/e2e/**',
       '**/.storybook/**',
       '**/*.stories.{js,ts,jsx,tsx}'
     ],

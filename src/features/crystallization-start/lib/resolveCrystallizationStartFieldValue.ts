@@ -1,3 +1,5 @@
+import { useCrystallizationStartStore } from "../model/crystallizationStartStore"
+
 const REPEATABILITY_LIMIT = 2
 
 type CrystallizationStartFormSlice = {
@@ -5,7 +7,7 @@ type CrystallizationStartFormSlice = {
   crystallizationStartSecondT: string
 } & Record<string, string>
 
-const calculateAverage = (first: string, second: string): string => {
+export const calculateCrystallizationStartAverage = (first: string, second: string): string => {
   const firstNum = parseFloat(first.replace(",", "."))
   const secondNum = parseFloat(second.replace(",", "."))
 
@@ -38,7 +40,7 @@ export const resolveCrystallizationStartFieldValue = <T extends CrystallizationS
   field: keyof T & string,
 ): string => {
   if (field === "crystallizationStartAverage") {
-    return calculateAverage(formData.crystallizationStartFirstT, formData.crystallizationStartSecondT)
+    return useCrystallizationStartStore.getState().average
   }
 
   if (field === "crystallizationStartRepeatability") {

@@ -1,4 +1,4 @@
-import { useThemeStore } from "@/app/store"
+import { useRegistrationNumberStore, useThemeStore } from "@/app/store"
 import { Button } from "@/shared/components/Button"
 import clsx from "clsx"
 import { useState } from "react"
@@ -14,13 +14,19 @@ import styles from "./CalcXProtocol.module.scss"
 
 export const CalcXProtocol = () => {
   const theme = useThemeStore((state) => state.theme)
+  const registrationNumber = useRegistrationNumberStore((state) => state.registrationNumber)
+  const setRegistrationNumber = useRegistrationNumberStore((state) => state.setRegistrationNumber)
   const [testData, setTestData] = useState(initialTestData)
   const [visibleTests, setVisibleTests] = useState(initialVisibleTests)
-  const [showUncertainty, setShowUncertainty] = useState(false)
-  const [exporting, setExporting] = useState<"pdf" | "docx" | null>(null)
-  const formData = { ...initialTestData, ...testData }
+  const [showUncertainty, setShowUncertainty] = useState(true)
+  const [exporting, setExporting] = useState<"primaryPdf" | "pdf" | "docx" | null>(null)
+  const formData = { ...initialTestData, ...testData, registrationNumber }
 
   const updateTestData = (field: keyof typeof initialTestData, value: string) => {
+    if (field === "registrationNumber") {
+      setRegistrationNumber(value)
+    }
+
     setTestData((current) => ({
       ...initialTestData,
       ...current,
@@ -34,6 +40,23 @@ export const CalcXProtocol = () => {
     try {
       const { exportProtocolPdf } = await import("../lib/exportProtocolPdf")
       exportProtocolPdf(buildProtocolDocument(formData, visibleTests))
+    } finally {
+      setExporting(null)
+    }
+  }
+
+  const exportPrimaryRecordsPdf = async () => {
+    setExporting("primaryPdf")
+
+    try {
+      const { exportPrimaryRecordsPdf: downloadPrimaryRecordsPdf } = await import(
+        "../lib/exportPrimaryRecordsPdf"
+      )
+      await downloadPrimaryRecordsPdf({
+        formData,
+        visibleTests,
+        showUncertainty,
+      })
     } finally {
       setExporting(null)
     }
@@ -55,7 +78,8 @@ export const CalcXProtocol = () => {
       <div className={styles.screenOnly}>
         <section className={clsx(styles.entityBlock, styles[`entityBlock--${theme}`])}>
           <div className={styles.section}>
-            <h2>Панель действий</h2>
+            <h2 className={styles.sectionTitleWithLine}>Панель действий</h2>
+            <h2>Первичные записи</h2>
             <div className={styles.toolbar}>
               <Button variant="add" themeMode={theme} type="button">
                 Сохранить
@@ -66,11 +90,25 @@ export const CalcXProtocol = () => {
               <Button variant="outlined" themeMode={theme} type="button">
                 Изменить
               </Button>
-            </div>
-            <div className={styles.toolbar}>
               <Button variant="outlined" themeMode={theme} type="button" onClick={() => window.print()}>
                 Печать
               </Button>
+              <Button
+                className={styles.exportButton}
+                variant="outlined"
+                themeMode={theme}
+                type="button"
+                disabled={exporting !== null}
+                aria-busy={exporting === "primaryPdf"}
+                aria-label="Скачать PDF"
+                onClick={exportPrimaryRecordsPdf}
+              >
+                <span className={clsx(exporting === "primaryPdf" && styles.hiddenButtonLabel)}>Скачать PDF</span>
+                {exporting === "primaryPdf" && <span className={styles.buttonSpinner} aria-hidden="true" />}
+              </Button>
+            </div>
+            <h2>Протокол</h2>
+            <div className={styles.toolbar}>
               <Button
                 className={styles.exportButton}
                 variant="outlined"
@@ -123,7 +161,11 @@ export const CalcXProtocol = () => {
         )}
       </div>
 
-      <CalcXProtocolPrintView formData={formData} visibleTests={visibleTests} />
+      <CalcXProtocolPrintView
+        formData={formData}
+        visibleTests={visibleTests}
+        showUncertainty={showUncertainty}
+      />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { useAutoIgnitionCalculations } from "@/features/auto-ignition"
+import { useAutoIgnitionCalculations, useAutoIgnitionStore } from "@/features/auto-ignition"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
@@ -19,10 +19,11 @@ if (!testConfig) {
 }
 
 export const AutoIgnitionTestItem = ({ number, formData, updateTestData }: Props) => {
-  const { average, repeatability } = useAutoIgnitionCalculations({
+  const { repeatability } = useAutoIgnitionCalculations({
     firstT1: formData.autoIgnitionFirstT1,
     secondT2: formData.autoIgnitionSecondT2,
   })
+  const average = useAutoIgnitionStore((state) => state.average)
 
   return (
             <div className={styles.testItem}>
