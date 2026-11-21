@@ -93,6 +93,12 @@
   }
 }
 
+.sectionTitleWithLine {
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid color(light, 100);
+}
+
 .wideInput {
   input {
     width: min(520px, 100%);
@@ -166,7 +172,8 @@
   border-radius: 2px;
 }
 
-.section > .testItem + .testItem {
+.section > .testItem + .testItem,
+.section > [id^="calc-x-test-"] + [id^="calc-x-test-"] {
   margin-top: 15px;
 }
 

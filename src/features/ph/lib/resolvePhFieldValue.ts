@@ -1,3 +1,5 @@
+import { usePhStore } from "../model/phStore"
+
 const REPEATABILITY_LIMIT = 0.1
 
 type PhFormSlice = {
@@ -5,7 +7,7 @@ type PhFormSlice = {
   phSecondPh: string
 } & Record<string, string>
 
-const calculateAverage = (first: string, second: string): string => {
+export const calculatePhAverage = (first: string, second: string): string => {
   const firstNum = parseFloat(first.replace(",", "."))
   const secondNum = parseFloat(second.replace(",", "."))
 
@@ -38,7 +40,7 @@ export const resolvePhFieldValue = <T extends PhFormSlice>(
   field: keyof T & string,
 ): string => {
   if (field === "phAverage") {
-    return calculateAverage(formData.phFirstPh, formData.phSecondPh)
+    return usePhStore.getState().average
   }
 
   if (field === "phRepeatability") {

@@ -1,3 +1,4 @@
+import { useCrystallizationCalculations, useCrystallizationStore } from "@/features/crystallization"
 import { Input } from "@/shared/components/Input"
 import clsx from "clsx"
 import styles from "../CalcXProtocol.module.scss"
@@ -15,38 +16,6 @@ const testConfig = calcXTestConfig.find((t) => t.id === TEST_ID)
 
 if (!testConfig) {
   throw new Error(`Test config not found for id: ${TEST_ID}`)
-}
-
-const REPEATABILITY_LIMIT = 0.2
-
-const calculateAverage = (first: string, second: string): string => {
-  const firstNum = parseFloat(first.replace(",", "."))
-  const secondNum = parseFloat(second.replace(",", "."))
-
-  if (isNaN(firstNum) || isNaN(secondNum)) return ""
-
-  const average = (firstNum + secondNum) / 2
-  return average.toFixed(1).replace(".", ",")
-}
-
-const calculateRepeatability = (first: string, second: string): { value: string; isError: boolean } => {
-  const firstNum = parseFloat(first.replace(",", "."))
-  const secondNum = parseFloat(second.replace(",", "."))
-
-  if (isNaN(firstNum) || isNaN(secondNum)) return { value: "", isError: false }
-
-  const difference = Math.abs(firstNum - secondNum)
-  const roundedDifference = Math.round(difference * 10) / 10
-  const formattedDifference = roundedDifference.toFixed(1).replace(".", ",")
-
-  if (roundedDifference > REPEATABILITY_LIMIT) {
-    return {
-      value: `${formattedDifference} > r=0,2 (Error)`,
-      isError: true,
-    }
-  }
-
-  return { value: formattedDifference, isError: false }
 }
 
 const renderHeader = (header: string) => {
@@ -76,8 +45,11 @@ const renderHeader = (header: string) => {
 }
 
 export const CrystallizationTestItem = ({ number, formData, updateTestData }: Props) => {
-  const repeatability = calculateRepeatability(formData.crystallizationFirstT, formData.crystallizationSecondT)
-  const average = calculateAverage(formData.crystallizationFirstT, formData.crystallizationSecondT)
+  const { repeatability } = useCrystallizationCalculations({
+    firstT: formData.crystallizationFirstT,
+    secondT: formData.crystallizationSecondT,
+  })
+  const average = useCrystallizationStore((state) => state.average)
 
   return (
     <div className={styles.testItem}>

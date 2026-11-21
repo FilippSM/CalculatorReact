@@ -1,9 +1,21 @@
-import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
+import {
+  calculateGost121044Uncertainty,
+  useAutoIgnitionStore,
+} from "@/features/auto-ignition"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
-import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
+import {
+  calculateGost18995Uncertainty as calculateGost189956BoilingPointUncertainty,
+  useBoilingPointStore,
+} from "@/features/boiling-point"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
-import { resolveCrystallizationFieldValue } from "@/features/crystallization"
-import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
+import {
+  calculateGost18995Uncertainty as calculateGost18995CrystallizationUncertainty,
+  useCrystallizationStore,
+} from "@/features/crystallization"
+import {
+  calculateGost28084Uncertainty as calculateGost28084CrystallizationStartUncertainty,
+  useCrystallizationStartStore,
+} from "@/features/crystallization-start"
 import { calculateGost3900Uncertainty, resolveDensityAt20FieldValue } from "@/features/density"
 import {
   calculateGost18995Uncertainty,
@@ -14,22 +26,67 @@ import {
   calculateGost4333Uncertainty,
   useFlashPointStore,
 } from "@/features/flash-point"
-import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
+import {
+  calculateGost20287Uncertainty as calculateGost20287FreezingPointUncertainty,
+  useFreezingPointStore,
+} from "@/features/freezing-point"
 import { calculateViscosityIndexForStrings } from "@/features/index-viscosity/lib/viscositycalculateIV"
 import {
   calculateGost6370Uncertainty,
   formatToSignificantDigits,
   useMechanicalImpuritiesStore,
 } from "@/features/mechanical-impurities"
-import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
+import {
+  calculateGost6479Uncertainty,
+  useMechanicalImpuritiesGost6479Store,
+} from "@/features/mechanical-impurities-gost-6479"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
-import { resolvePhFieldValue } from "@/features/ph"
-import { resolvePourPointFieldValue } from "@/features/pour-point"
-import { resolveKinematicViscosityFieldValue } from "@/features/viscosity"
-import { calculateWaterContent, calculateWaterContentAverage } from "@/features/water-content"
+import { calculateGost28084Uncertainty, usePhStore } from "@/features/ph"
+import {
+  calculateGost20287Uncertainty as calculateGost20287PourPointUncertainty,
+  usePourPointStore,
+} from "@/features/pour-point"
+import {
+  calculateGost33Uncertainty,
+  useKinematicViscosity100Store,
+  useKinematicViscosity40Store,
+} from "@/features/viscosity"
+import { viscosityPrecisionData } from "@/features/viscosity/constans/viscosityPrecisionData"
+import {
+  calculateGost2477Uncertainty,
+  resolveWaterContentAverage,
+  type Gost2477ReceiverCapacity,
+  type Gost2477WaterShareType,
+} from "@/features/water-content"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
 import type { InitialTestData } from "./initialTestData"
+
+const parseNumeric = (value: string): number | null => {
+  const normalized = value.trim().replace(",", ".")
+  if (normalized === "") return null
+  const parsed = Number(normalized)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+const resolveViscosityPrecisionPercents = (
+  precisionName: string,
+  averageFlowTime: string,
+  kinematicViscosity: string,
+): { detectionLimitPercent: number; repeatabilityLimitPercent: number } | null => {
+  const precision = viscosityPrecisionData.find((item) => item.name === precisionName)
+  const flowTime = parseNumeric(averageFlowTime)
+  const viscosity = parseNumeric(kinematicViscosity)
+
+  if (!precision || flowTime === null || flowTime <= 0 || viscosity === null || viscosity <= 0) {
+    return null
+  }
+
+  return {
+    detectionLimitPercent: (precision.d(flowTime) / flowTime) * 100,
+    repeatabilityLimitPercent: (precision.r(viscosity) / viscosity) * 100,
+  }
+}
 
 export type CalcXUncertaintyRow = {
   id: TestVisibilityKey
@@ -38,24 +95,36 @@ export type CalcXUncertaintyRow = {
   uncertainty: string
 }
 
-const resolveWaterContentAverage = (formData: InitialTestData) => {
-  const firstValue = calculateWaterContent(
-    formData.waterContentFirstSampleMass,
-    formData.waterContentFirstWaterVolume,
-    2,
-  )
-  const secondValue = calculateWaterContent(
-    formData.waterContentSecondSampleMass,
-    formData.waterContentSecondWaterVolume,
-    2,
-  )
+const resolveWaterContentResult = (formData: InitialTestData) =>
+  resolveWaterContentAverage({
+    firstSample: formData.waterContentFirstSampleMass,
+    firstWaterVolume: formData.waterContentFirstWaterVolume,
+    secondSample: formData.waterContentSecondSampleMass,
+    secondWaterVolume: formData.waterContentSecondWaterVolume,
+    receiverTrap: formData.waterContentReceiverTrap,
+  })
 
-  return calculateWaterContentAverage(firstValue, secondValue)
+const resolveWaterContentWaterShare = (formData: InitialTestData): Gost2477WaterShareType =>
+  formData.waterContentWaterShare === "Массовая доля воды" ? "mass" : "volume"
+
+const resolveWaterContentReceiverCapacity = (
+  formData: InitialTestData,
+): Gost2477ReceiverCapacity => (formData.waterContentReceiverTrap.includes("5 см") ? 5 : 10)
+
+const resolveWaterContentUncertainty = (formData: InitialTestData): string => {
+  const result = calculateGost2477Uncertainty({
+    waterShare: resolveWaterContentWaterShare(formData),
+    receiverCapacity: resolveWaterContentReceiverCapacity(formData),
+    waterVolume: formData.waterContentFirstWaterVolume,
+    sampleAmount: formData.waterContentFirstSampleMass,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
 }
 
-const resolveViscosityIndex = (formData: InitialTestData) => {
-  const viscosity100 = resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
-  const viscosity40 = resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
+const resolveViscosityIndex = () => {
+  const viscosity100 = useKinematicViscosity100Store.getState().average
+  const viscosity40 = useKinematicViscosity40Store.getState().average
   const result = calculateViscosityIndexForStrings(viscosity100, viscosity40)
 
   return result === null ? "" : String(result)
@@ -99,6 +168,50 @@ const resolveMechanicalImpuritiesUncertainty = (formData: InitialTestData): stri
   return result === null ? "" : formatToSignificantDigits(result.ExpandedUncertainty, 2)
 }
 
+const resolveMechanicalImpuritiesGost6479Uncertainty = (formData: InitialTestData): string => {
+  const result = calculateGost6479Uncertainty({
+    filterWithImpuritiesMass: formData.mechanicalImpuritiesGost6479FirstM1,
+    cleanFilterMass: formData.mechanicalImpuritiesGost6479FirstM2,
+    sampleMass: formData.mechanicalImpuritiesGost6479FirstM3,
+    meanMassFraction: useMechanicalImpuritiesGost6479Store.getState().average,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
+const resolvePhUncertainty = (formData: InitialTestData): string => {
+  const result = calculateGost28084Uncertainty({
+    measuredPh: usePhStore.getState().average,
+    phMeter: formData.phEquipmentMeter.includes("J0088992") ? "J0088992" : "other",
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
+}
+
+const resolveCrystallizationStartUncertainty = (): string => {
+  const result = calculateGost28084CrystallizationStartUncertainty({
+    measuredTemperature: useCrystallizationStartStore.getState().average,
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
+}
+
+const resolveCrystallizationUncertainty = (): string => {
+  const result = calculateGost18995CrystallizationUncertainty({
+    measuredTemperature: useCrystallizationStore.getState().average,
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
+}
+
+const resolveBoilingPointUncertainty = (): string => {
+  const result = calculateGost189956BoilingPointUncertainty({
+    measuredTemperature: useBoilingPointStore.getState().average,
+  })
+
+  return result === null ? "" : result.ExpandedUncertainty.toFixed(1).replace(".", ",")
+}
+
 const resolveFlashPointUncertainty = (formData: InitialTestData): string => {
   const correctedFlashPoint = useFlashPointStore.getState().averageCorrectedTemperature
   const result = calculateGost4333Uncertainty({
@@ -111,6 +224,67 @@ const resolveFlashPointUncertainty = (formData: InitialTestData): string => {
   return result === null ? "" : String(result.ExpandedUncertainty)
 }
 
+const resolveKinematicViscosity100Uncertainty = (formData: InitialTestData): string => {
+  const { average, firstTAverage, precisionName } = useKinematicViscosity100Store.getState()
+  const percents = resolveViscosityPrecisionPercents(precisionName, firstTAverage, average)
+
+  if (percents === null) return ""
+
+  const result = calculateGost33Uncertainty({
+    averageFlowTime: firstTAverage,
+    viscometerConstant: formData.kinematicViscosity100FirstViscometerConstant,
+    kinematicViscosity: average,
+    detectionLimitPercent: percents.detectionLimitPercent,
+    repeatabilityLimitPercent: percents.repeatabilityLimitPercent,
+    testTemperature: 100,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
+const resolveKinematicViscosity40Uncertainty = (formData: InitialTestData): string => {
+  const { average, firstTAverage, precisionName } = useKinematicViscosity40Store.getState()
+  const percents = resolveViscosityPrecisionPercents(precisionName, firstTAverage, average)
+
+  if (percents === null) return ""
+
+  const result = calculateGost33Uncertainty({
+    averageFlowTime: firstTAverage,
+    viscometerConstant: formData.kinematicViscosity40FirstViscometerConstant,
+    kinematicViscosity: average,
+    detectionLimitPercent: percents.detectionLimitPercent,
+    repeatabilityLimitPercent: percents.repeatabilityLimitPercent,
+    testTemperature: 40,
+    samplingStandardUncertainty: 0,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
+const resolvePourPointUncertainty = (): string => {
+  const result = calculateGost20287PourPointUncertainty({
+    measuredPourPoint: usePourPointStore.getState().average,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
+const resolveFreezingPointUncertainty = (): string => {
+  const result = calculateGost20287FreezingPointUncertainty({
+    measuredFreezingPoint: useFreezingPointStore.getState().average,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
+const resolveAutoIgnitionUncertainty = (): string => {
+  const result = calculateGost121044Uncertainty({
+    measuredAutoIgnitionTemperature: useAutoIgnitionStore.getState().average,
+  })
+
+  return result === null ? "" : String(result.ExpandedUncertainty).replace(".", ",")
+}
+
 const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): string => {
   switch (id) {
     case "flashPoint":
@@ -118,33 +292,33 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "mechanicalImpurities":
       return useMechanicalImpuritiesStore.getState().average
     case "mechanicalImpuritiesGost6479":
-      return resolveMechanicalImpuritiesGost6479FieldValue(formData, "mechanicalImpuritiesGost6479Average")
+      return useMechanicalImpuritiesGost6479Store.getState().average
     case "densityAt20":
       return resolveDensityAt20FieldValue(formData, "densityAt20Average")
     case "densityAt20Gost18995":
       return resolveDensityAt20Gost18995FieldValue(formData, "densityAt20Gost18995Average")
     case "ph":
-      return resolvePhFieldValue(formData, "phAverage")
+      return usePhStore.getState().average
     case "crystallizationStart":
-      return resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
+      return useCrystallizationStartStore.getState().average
     case "crystallization":
-      return resolveCrystallizationFieldValue(formData, "crystallizationAverage")
+      return useCrystallizationStore.getState().average
     case "boilingPoint":
-      return resolveBoilingPointFieldValue(formData, "boilingPointAverage")
+      return useBoilingPointStore.getState().average
     case "corrosion":
       return formData.corrosionResultsCopperAverage
     case "kinematicViscosity100":
-      return resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
+      return useKinematicViscosity100Store.getState().average
     case "kinematicViscosity40":
-      return resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
+      return useKinematicViscosity40Store.getState().average
     case "viscosityIndex":
-      return resolveViscosityIndex(formData)
+      return resolveViscosityIndex()
     case "waterContent":
-      return resolveWaterContentAverage(formData)
+      return resolveWaterContentResult(formData)
     case "pourPoint":
-      return resolvePourPointFieldValue(formData, "pourPointAverage")
+      return usePourPointStore.getState().average
     case "freezingPoint":
-      return resolveFreezingPointFieldValue(formData, "freezingPointAverage")
+      return useFreezingPointStore.getState().average
     case "noackLoss":
       return resolveNoackLossFieldValue(formData, "noackLossAverage")
     case "dynamicViscosity30":
@@ -154,7 +328,7 @@ const resolveTestResult = (id: TestVisibilityKey, formData: InitialTestData): st
     case "baseNumber":
       return resolveBaseNumberFieldValue(formData, "baseNumberAverage")
     case "autoIgnition":
-      return resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
+      return useAutoIgnitionStore.getState().average
   }
 }
 
@@ -167,12 +341,56 @@ const resolveTestUncertainty = (id: TestVisibilityKey, formData: InitialTestData
     return resolveMechanicalImpuritiesUncertainty(formData)
   }
 
+  if (id === "mechanicalImpuritiesGost6479") {
+    return resolveMechanicalImpuritiesGost6479Uncertainty(formData)
+  }
+
   if (id === "densityAt20") {
     return resolveDensityAt20Uncertainty(formData)
   }
 
   if (id === "densityAt20Gost18995") {
     return resolveDensityAt20Gost18995Uncertainty(formData)
+  }
+
+  if (id === "ph") {
+    return resolvePhUncertainty(formData)
+  }
+
+  if (id === "crystallizationStart") {
+    return resolveCrystallizationStartUncertainty()
+  }
+
+  if (id === "crystallization") {
+    return resolveCrystallizationUncertainty()
+  }
+
+  if (id === "boilingPoint") {
+    return resolveBoilingPointUncertainty()
+  }
+
+  if (id === "kinematicViscosity100") {
+    return resolveKinematicViscosity100Uncertainty(formData)
+  }
+
+  if (id === "kinematicViscosity40") {
+    return resolveKinematicViscosity40Uncertainty(formData)
+  }
+
+  if (id === "waterContent") {
+    return resolveWaterContentUncertainty(formData)
+  }
+
+  if (id === "pourPoint") {
+    return resolvePourPointUncertainty()
+  }
+
+  if (id === "freezingPoint") {
+    return resolveFreezingPointUncertainty()
+  }
+
+  if (id === "autoIgnition") {
+    return resolveAutoIgnitionUncertainty()
   }
 
   return "0"

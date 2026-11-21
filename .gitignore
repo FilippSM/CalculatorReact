@@ -30,3 +30,9 @@ dist-ssr
 .env.production.local
 *storybook.log
 storybook-static
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

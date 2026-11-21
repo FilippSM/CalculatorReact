@@ -1,20 +1,24 @@
 import { useFlashPointStore } from "@/features/flash-point"
 import { resolveDensityAt20FieldValue } from "@/features/density"
 import { resolveDensityAt20Gost18995FieldValue } from "@/features/density-at-20-gost-18995"
-import { resolvePhFieldValue } from "@/features/ph"
-import { resolveCrystallizationStartFieldValue } from "@/features/crystallization-start"
-import { resolveCrystallizationFieldValue } from "@/features/crystallization"
-import { resolveBoilingPointFieldValue } from "@/features/boiling-point"
+import { usePhStore } from "@/features/ph"
+import { useCrystallizationStartStore } from "@/features/crystallization-start"
+import { useCrystallizationStore } from "@/features/crystallization"
+import { useBoilingPointStore } from "@/features/boiling-point"
 import { useMechanicalImpuritiesStore } from "@/features/mechanical-impurities"
-import { resolveMechanicalImpuritiesGost6479FieldValue } from "@/features/mechanical-impurities-gost-6479"
-import { resolvePourPointFieldValue } from "@/features/pour-point"
-import { resolveFreezingPointFieldValue } from "@/features/freezing-point"
+import { useMechanicalImpuritiesGost6479Store } from "@/features/mechanical-impurities-gost-6479"
+import { usePourPointStore } from "@/features/pour-point"
+import { useFreezingPointStore } from "@/features/freezing-point"
 import { resolveNoackLossFieldValue } from "@/features/noack-loss"
 import { resolveDynamicViscosity30FieldValue } from "@/features/dynamic-viscosity-30"
 import { resolveColorCntFieldValue } from "@/features/color-cnt"
 import { resolveBaseNumberFieldValue } from "@/features/base-number"
-import { resolveAutoIgnitionFieldValue } from "@/features/auto-ignition"
-import { resolveKinematicViscosityFieldValue } from "@/features/viscosity"
+import { useAutoIgnitionStore } from "@/features/auto-ignition"
+import {
+  useKinematicViscosity100Store,
+  useKinematicViscosity40Store,
+} from "@/features/viscosity"
+import { resolveWaterContentAverage } from "@/features/water-content"
 import { buildCalcXUncertaintyRows } from "./calcXUncertaintyRows"
 import { getVisibleProtocolTests } from "./calcXTestConfig"
 import type { TestVisibilityKey } from "./calcXTestVisibilityConfig"
@@ -164,32 +168,29 @@ export const buildProtocolDocument = (
             : test.id === "mechanicalImpurities"
             ? useMechanicalImpuritiesStore.getState().average
             : test.id === "mechanicalImpuritiesGost6479"
-              ? resolveMechanicalImpuritiesGost6479FieldValue(
-                  formData,
-                  "mechanicalImpuritiesGost6479Average",
-                )
+              ? useMechanicalImpuritiesGost6479Store.getState().average
               : test.id === "densityAt20"
               ? resolveDensityAt20FieldValue(formData, "densityAt20Average")
               : test.id === "densityAt20Gost18995"
                 ? resolveDensityAt20Gost18995FieldValue(formData, "densityAt20Gost18995Average")
                 : test.id === "ph"
-                  ? resolvePhFieldValue(formData, "phAverage")
+                  ? usePhStore.getState().average
                   : test.id === "crystallizationStart"
-                    ? resolveCrystallizationStartFieldValue(formData, "crystallizationStartAverage")
+                    ? useCrystallizationStartStore.getState().average
                     : test.id === "crystallization"
-                      ? resolveCrystallizationFieldValue(formData, "crystallizationAverage")
+                      ? useCrystallizationStore.getState().average
                       : test.id === "boilingPoint"
-                        ? resolveBoilingPointFieldValue(formData, "boilingPointAverage")
+                        ? useBoilingPointStore.getState().average
                         : test.id === "corrosion"
                           ? formData["corrosionResultsCopperAverage"]
                       : test.id === "kinematicViscosity100"
-                ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity100Average")
+                ? useKinematicViscosity100Store.getState().average
                 : test.id === "kinematicViscosity40"
-                  ? resolveKinematicViscosityFieldValue(formData, "kinematicViscosity40Average")
+                  ? useKinematicViscosity40Store.getState().average
                   : test.id === "pourPoint"
-                    ? resolvePourPointFieldValue(formData, "pourPointAverage")
+                    ? usePourPointStore.getState().average
                     : test.id === "freezingPoint"
-                      ? resolveFreezingPointFieldValue(formData, "freezingPointAverage")
+                      ? useFreezingPointStore.getState().average
                       : test.id === "noackLoss"
                         ? resolveNoackLossFieldValue(formData, "noackLossAverage")
                         : test.id === "dynamicViscosity30"
@@ -199,8 +200,16 @@ export const buildProtocolDocument = (
                             : test.id === "baseNumber"
                               ? resolveBaseNumberFieldValue(formData, "baseNumberAverage")
                               : test.id === "autoIgnition"
-                                ? resolveAutoIgnitionFieldValue(formData, "autoIgnitionAverage")
-                                : formData[resultFields[test.id]],
+                                ? useAutoIgnitionStore.getState().average
+                                : test.id === "waterContent"
+                                  ? resolveWaterContentAverage({
+                                      firstSample: formData.waterContentFirstSampleMass,
+                                      firstWaterVolume: formData.waterContentFirstWaterVolume,
+                                      secondSample: formData.waterContentSecondSampleMass,
+                                      secondWaterVolume: formData.waterContentSecondWaterVolume,
+                                      receiverTrap: formData.waterContentReceiverTrap,
+                                    })
+                                  : formData[resultFields[test.id]],
         uncertainty: uncertaintyByTestId.get(test.id) || "—",
       }
     }),

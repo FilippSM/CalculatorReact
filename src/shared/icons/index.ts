@@ -1,5 +1,6 @@
-export {PinLocation} from './PinLocation'
-export {SearchIcon} from './SearchIcon'
-export {VisibilityIcon} from './VisibilityIcon'
-export {VisibilityOffIcon} from './VisibilityOffIcon'
-export {ArrowDownIcon} from './ArrowDownIcon'
+export { PinLocation } from "./PinLocation"
+export { SearchIcon } from "./SearchIcon"
+export { VisibilityIcon } from "./VisibilityIcon"
+export { VisibilityOffIcon } from "./VisibilityOffIcon"
+export { ArrowDownIcon } from "./ArrowDownIcon"
+export { ArrowUpIcon } from "./ArrowUpIcon"

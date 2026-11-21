@@ -1,4 +1,6 @@
+import type { ComponentType } from "react"
 import { protocolTestsTitle } from "../model/calcXProtocolConfig"
+import { getCalcXTestElementId } from "../model/calcXTestAnchor"
 import { testVisibilityConfig, type TestVisibilityKey } from "../model/calcXTestVisibilityConfig"
 import type { InitialTestData } from "../model/initialTestData"
 import styles from "./CalcXProtocol.module.scss"
@@ -30,6 +32,36 @@ type Props = {
   updateTestData: (field: keyof InitialTestData, value: string) => void
 }
 
+type TestItemProps = {
+  number: number
+  formData: InitialTestData
+  updateTestData: (field: keyof InitialTestData, value: string) => void
+}
+
+const testItemComponents = {
+  flashPoint: FlashPointTestItem,
+  mechanicalImpurities: MechanicalImpuritiesTestItem,
+  mechanicalImpuritiesGost6479: MechanicalImpuritiesGost6479TestItem,
+  densityAt20: DensityAt20TestItem,
+  densityAt20Gost18995: DensityAt20Gost18995TestItem,
+  ph: PhTestItem,
+  crystallizationStart: CrystallizationStartTestItem,
+  crystallization: CrystallizationTestItem,
+  boilingPoint: BoilingPointTestItem,
+  corrosion: CorrosionTestItem,
+  kinematicViscosity100: KinematicViscosity100TestItem,
+  kinematicViscosity40: KinematicViscosity40TestItem,
+  viscosityIndex: ViscosityIndexTestItem,
+  waterContent: WaterContentTestItem,
+  pourPoint: PourPointTestItem,
+  freezingPoint: FreezingPointTestItem,
+  noackLoss: NoackLossTestItem,
+  dynamicViscosity30: DynamicViscosity30TestItem,
+  colorCnt: ColorCntTestItem,
+  baseNumber: BaseNumberTestItem,
+  autoIgnition: AutoIgnitionTestItem,
+} satisfies Record<TestVisibilityKey, ComponentType<TestItemProps>>
+
 export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Props) => {
   const visibleTestNumbers = testVisibilityConfig.reduce<Partial<Record<TestVisibilityKey, number>>>(
     (accumulator, { id }) => {
@@ -46,153 +78,18 @@ export const CalcXTestsSection = ({ formData, visibleTests, updateTestData }: Pr
     <div className={styles.section}>
       <h2>{protocolTestsTitle}</h2>
 
-      {visibleTests.flashPoint && visibleTestNumbers.flashPoint !== undefined && (
-        <FlashPointTestItem
-          number={visibleTestNumbers.flashPoint}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
+      {testVisibilityConfig.map(({ id }) => {
+        const number = visibleTestNumbers[id]
+        if (!visibleTests[id] || number === undefined) return null
 
-      {visibleTests.mechanicalImpurities && visibleTestNumbers.mechanicalImpurities !== undefined && (
-        <MechanicalImpuritiesTestItem
-          number={visibleTestNumbers.mechanicalImpurities}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
+        const TestItem = testItemComponents[id]
 
-      {visibleTests.mechanicalImpuritiesGost6479 && visibleTestNumbers.mechanicalImpuritiesGost6479 !== undefined && (
-        <MechanicalImpuritiesGost6479TestItem
-          number={visibleTestNumbers.mechanicalImpuritiesGost6479}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.densityAt20 && visibleTestNumbers.densityAt20 !== undefined && (
-        <DensityAt20TestItem
-          number={visibleTestNumbers.densityAt20}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.densityAt20Gost18995 && visibleTestNumbers.densityAt20Gost18995 !== undefined && (
-        <DensityAt20Gost18995TestItem
-          number={visibleTestNumbers.densityAt20Gost18995}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.ph && visibleTestNumbers.ph !== undefined && (
-        <PhTestItem number={visibleTestNumbers.ph} formData={formData} updateTestData={updateTestData} />
-      )}
-
-      {visibleTests.crystallizationStart && visibleTestNumbers.crystallizationStart !== undefined && (
-        <CrystallizationStartTestItem
-          number={visibleTestNumbers.crystallizationStart}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.crystallization && visibleTestNumbers.crystallization !== undefined && (
-        <CrystallizationTestItem
-          number={visibleTestNumbers.crystallization}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.boilingPoint && visibleTestNumbers.boilingPoint !== undefined && (
-        <BoilingPointTestItem
-          number={visibleTestNumbers.boilingPoint}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.corrosion && visibleTestNumbers.corrosion !== undefined && (
-        <CorrosionTestItem number={visibleTestNumbers.corrosion} formData={formData} updateTestData={updateTestData} />
-      )}
-
-      {visibleTests.kinematicViscosity100 && visibleTestNumbers.kinematicViscosity100 !== undefined && (
-        <KinematicViscosity100TestItem
-          number={visibleTestNumbers.kinematicViscosity100}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.kinematicViscosity40 && visibleTestNumbers.kinematicViscosity40 !== undefined && (
-        <KinematicViscosity40TestItem
-          number={visibleTestNumbers.kinematicViscosity40}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.viscosityIndex && visibleTestNumbers.viscosityIndex !== undefined && (
-        <ViscosityIndexTestItem
-          number={visibleTestNumbers.viscosityIndex}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.waterContent && visibleTestNumbers.waterContent !== undefined && (
-        <WaterContentTestItem
-          number={visibleTestNumbers.waterContent}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.pourPoint && visibleTestNumbers.pourPoint !== undefined && (
-        <PourPointTestItem number={visibleTestNumbers.pourPoint} formData={formData} updateTestData={updateTestData} />
-      )}
-
-      {visibleTests.freezingPoint && visibleTestNumbers.freezingPoint !== undefined && (
-        <FreezingPointTestItem
-          number={visibleTestNumbers.freezingPoint}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.noackLoss && visibleTestNumbers.noackLoss !== undefined && (
-        <NoackLossTestItem number={visibleTestNumbers.noackLoss} formData={formData} updateTestData={updateTestData} />
-      )}
-
-      {visibleTests.dynamicViscosity30 && visibleTestNumbers.dynamicViscosity30 !== undefined && (
-        <DynamicViscosity30TestItem
-          number={visibleTestNumbers.dynamicViscosity30}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.colorCnt && visibleTestNumbers.colorCnt !== undefined && (
-        <ColorCntTestItem number={visibleTestNumbers.colorCnt} formData={formData} updateTestData={updateTestData} />
-      )}
-
-      {visibleTests.baseNumber && visibleTestNumbers.baseNumber !== undefined && (
-        <BaseNumberTestItem
-          number={visibleTestNumbers.baseNumber}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
-
-      {visibleTests.autoIgnition && visibleTestNumbers.autoIgnition !== undefined && (
-        <AutoIgnitionTestItem
-          number={visibleTestNumbers.autoIgnition}
-          formData={formData}
-          updateTestData={updateTestData}
-        />
-      )}
+        return (
+          <div key={id} id={getCalcXTestElementId(id)}>
+            <TestItem number={number} formData={formData} updateTestData={updateTestData} />
+          </div>
+        )
+      })}
     </div>
   )
 }

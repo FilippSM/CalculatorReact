@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`рендерится кнопка Add calc 1`] = `
+<button
+  class="_button_6c8356 _add_6c8356 _add--light_6c8356"
+>
+  Add calc
+</button>
+`;

@@ -1,4 +1,8 @@
-import { useKinematicViscosityCalculations } from "@/features/viscosity"
+import {
+  DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME,
+  useKinematicViscosity40Store,
+  useKinematicViscosityCalculations,
+} from "@/features/viscosity"
 import { Input } from "@/shared/components/Input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/Select"
 import { constansVisc } from "@/features/viscosity/constans/constans-visc"
@@ -46,15 +50,16 @@ const updateViscometerFields = (updateTestData: Props["updateTestData"], constan
 
 export const KinematicViscosity40TestItem = ({ number, formData, updateTestData }: Props) => {
   const [selectedViscometerConstant, setSelectedViscometerConstant] = useState("")
-  const [selectedPrecisionName, setSelectedPrecisionName] = useState("Компаундированные масла при 40 °С и 100 °С")
+  const precisionName = useKinematicViscosity40Store((state) => state.precisionName)
+  const average = useKinematicViscosity40Store((state) => state.average)
+  const firstTAverage = useKinematicViscosity40Store((state) => state.firstTAverage)
+  const setResults = useKinematicViscosity40Store((state) => state.setResults)
   const {
-    firstTAverage,
     secondTAverage,
     firstV1,
     secondV2,
     firstDeterminability,
     secondDeterminability,
-    average,
     repeatability,
   } = useKinematicViscosityCalculations({
     firstT1: formData.kinematicViscosity40FirstT1,
@@ -63,7 +68,8 @@ export const KinematicViscosity40TestItem = ({ number, formData, updateTestData 
     secondT2: formData.kinematicViscosity40SecondT2,
     firstConstant: formData.kinematicViscosity40FirstViscometerConstant,
     secondConstant: formData.kinematicViscosity40SecondViscometerConstant,
-    precisionName: selectedPrecisionName,
+    precisionName,
+    target: "40",
   })
 
   return (
@@ -81,7 +87,16 @@ export const KinematicViscosity40TestItem = ({ number, formData, updateTestData 
 
       <div className={styles.precisionBlock}>
         <h3>Прецизионность:</h3>
-        <Select value={selectedPrecisionName} onValueChange={setSelectedPrecisionName}>
+        <Select
+          value={precisionName || DEFAULT_KINEMATIC_VISCOSITY_PRECISION_NAME}
+          onValueChange={(value) =>
+            setResults({
+              average,
+              firstTAverage,
+              precisionName: value,
+            })
+          }
+        >
           <SelectTrigger className={styles.fullWidthSelect}>
             <SelectValue />
           </SelectTrigger>
@@ -148,7 +163,7 @@ export const KinematicViscosity40TestItem = ({ number, formData, updateTestData 
                       .slice(0, FIRST_MEASUREMENT_COLUMNS * MEASUREMENT_GROUPS_COUNT)
                       .map((header, index) => (
                         <th key={index}>
-                          {replacePlaceholders(header, { precisionName: selectedPrecisionName })}
+                          {replacePlaceholders(header, { precisionName })}
                         </th>
                       ))}
                   </tr>
@@ -289,7 +304,7 @@ export const KinematicViscosity40TestItem = ({ number, formData, updateTestData 
                       .slice(FIRST_MEASUREMENT_COLUMNS * MEASUREMENT_GROUPS_COUNT)
                       .map((header, index) => (
                         <th key={index}>
-                          {replacePlaceholders(header, { precisionName: selectedPrecisionName })}
+                          {replacePlaceholders(header, { precisionName })}
                         </th>
                       ))}
                   </tr>
